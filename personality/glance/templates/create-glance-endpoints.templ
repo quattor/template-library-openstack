@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo "Glance user and role creation"
+keystone user-create --name=glance --pass=GLANCE_KEYSTONE_PASSWORD --email=GLANCE_EMAIL
+keystone user-role-add --user=glance --tenant=service --role=admin
+
+echo "Glance service endpoint creation"
+keystone service-create --name=glance --type=image \
+  --description="Glance Volume Service"
+GLANCE_SERVICE_ID=$(keystone service-list | awk -v var="image" '$0 ~ var { print $2 }')
+keystone endpoint-create \
+  --service-id=${GLANCE_SERVICE_ID} \
+  --publicurl=http://GLANCE_HOSTNAME:9292 \
+  --internalurl=http://GLANCE_HOSTNAME:9292 \
+  --adminurl=http://GLANCE_HOSTNAME:9292
