@@ -8,18 +8,18 @@ variable KEYSTONE_GROUP ?= 'keystone';
 variable ADMIN_TOKEN ?= error('ADMIN_TOKEN required but not specified');
 
 # Base endpoints URLs for Keystone
-variable PUBLIC_ENDPOINT ?= 'http://' + FULL_HOSTNAME + ':%(public_port)s/';
-variable ADMIN_ENDPOINT ?= 'http://' + FULL_HOSTNAME + ':%(admin_port)s/';
+variable PUBLIC_ENDPOINT ?= KEYSTONE_PROTOCOL + '://' + KEYSTONE_PUBLIC_HOST + ':%(public_port)s/';
+variable ADMIN_ENDPOINT ?= KEYSTONE_PROTOCOL + '://' + KEYSTONE_INTERNAL_HOST + ':%(admin_port)s/';
 
 
 # Database related variables
 variable KEYSTONE_MYSQL_ADMINUSER ?= 'root';
-variable KEYSTONE_MYSQL_ADMINPWD ?= error('CREAM_MYSQL_ADMINPWD required but not specified');
+variable KEYSTONE_MYSQL_ADMINPWD ?= error('KEYSTONE_MYSQL_ADMINPWD required but not specified');
 variable KEYSTONE_DB_NAME ?= 'keystone';
 variable KEYSTONE_DB_USER ?= 'keystone';
 variable KEYSTONE_DB_PASSWORD ?= error('KEYSTONE_DB_PASSWORD required but not specified');
 
-variable SQL_CONNECTION ?= 'mysql://'+KEYSTONE_DB_USER+':'+KEYSTONE_DB_PASSWORD+'@'+KEYSTONE_MYSQL_SERVER+'/'+KEYSTONE_DB_NAME;
+variable KEYSTONE_SQL_CONNECTION ?= 'mysql://'+KEYSTONE_DB_USER+':'+KEYSTONE_DB_PASSWORD+'@'+KEYSTONE_MYSQL_SERVER+'/'+KEYSTONE_DB_NAME;
 
 
 #------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ variable KEYSTONE_CONFIG_CONTENTS ?= file_contents('personality/keystone/templat
 variable KEYSTONE_CONFIG_CONTENTS=replace('ADMIN_TOKEN',ADMIN_TOKEN,KEYSTONE_CONFIG_CONTENTS);
 variable KEYSTONE_CONFIG_CONTENTS=replace('PUBLIC_ENDPOINT',PUBLIC_ENDPOINT,KEYSTONE_CONFIG_CONTENTS);
 variable KEYSTONE_CONFIG_CONTENTS=replace('ADMIN_ENDPOINT',ADMIN_ENDPOINT,KEYSTONE_CONFIG_CONTENTS);
-variable KEYSTONE_CONFIG_CONTENTS=replace('SQL_CONNECTION',SQL_CONNECTION,KEYSTONE_CONFIG_CONTENTS);
+variable KEYSTONE_CONFIG_CONTENTS=replace('SQL_CONNECTION',KEYSTONE_SQL_CONNECTION,KEYSTONE_CONFIG_CONTENTS);
 
 "/software/components/filecopy/services" = npush(
     escape(KEYSTONE_CONFIG), nlist(
@@ -67,9 +67,9 @@ include { 'components/mysql/config' };
 };
 
 
-# ---------------------------------------------------------------------------- 
+#------------------------------------------------------------------------------ 
 # Enable and start Keystone service
-# ---------------------------------------------------------------------------- 
+#------------------------------------------------------------------------------
 
 include { 'components/chkconfig/config' };
 
