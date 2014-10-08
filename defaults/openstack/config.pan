@@ -51,24 +51,41 @@ variable SITE_DEF_VOMSDIR      ?= SITE_DEF_GRIDSEC_ROOT+"/vomsdir";
 
 variable SITE_DOMAIN ?= undef;
 
+variable REGION_NAME ?= 'regionOne';
+variable NEUTRON_REGION_NAME ?= REGION_NAME;
+
+
 #----------------------------------------------------------------
 # SERVICE LOCATIONS
 #----------------------------------------------------------------
 
-# Keystone
-variable KEYSTONE_HOST ?= undef;
+# Nova host (cloud controller) 
+variable NOVA_PUBLIC_HOST ?= undef;
+variable NOVA_INTERNAL_HOST ?= NOVA_PUBLIC_HOST;
 
-# Nova scheduler
-variable NOVA_SCHEDULER_HOST ?= undef;
+# Keystone
+variable KEYSTONE_PUBLIC_HOST ?= NOVA_PUBLIC_HOST;
+variable KEYSTONE_INTERNAL_HOST ?= NOVA_INTERNAL_HOST;
 
 # Cinder host
-variable CINDER_HOST ?= undef;
+variable CINDER_PUBLIC_HOST ?= NOVA_PUBLIC_HOST;
+variable CINDER_INTERNAL_HOST ?= NOVA_INTERNAL_HOST;
 
 # Glance host
-variable GLANCE_HOST ?= undef;
-
-# Compute host list
-variable NOVA_COMPUTE_HOSTS ?= undef;
+variable GLANCE_PUBLIC_HOST ?= NOVA_PUBLIC_HOST;
+variable GLANCE_INTERNAL_HOST ?= NOVA_INTERNAL_HOST;
 
 # Neutron host
-variable NEUTRON_HOST ?= undef;
+variable NEUTRON_PUBLIC_HOST ?= NOVA_PUBLIC_HOST;
+variable NEUTRON_INTERNAL_HOST ?= NOVA_INTERNAL_HOST;
+
+# Rabbit host
+variable RABBIT_HOST ?= NOVA_INTERNAL_HOST;
+
+# MySQL host
+variable MYSQL_HOST ?= NOVA_INTERNAL_HOST;
+
+# Default endpoints
+variable KEYSTONE_PROTOCOL ?= 'http';
+variable KEYSTONE_PUBLIC_ENDPOINT ?= KEYSTONE_PROTOCOL + '://' + KEYSTONE_PUBLIC_HOST + ':5000/v2.0';
+variable KEYSTONE_INTERNAL_ENDPOINT ?= KEYSTONE_PROTOCOL + '://' + KEYSTONE_INTERNAL_HOST + ':5000/v2.0';
