@@ -12,12 +12,12 @@ variable GLANCE_SERVICES ?= list('openstack-glance-api','openstack-glance-regist
 
 # Database related variables
 variable GLANCE_MYSQL_ADMINUSER ?= 'root';
-variable GLANCE_MYSQL_ADMINPWD ?= error('CREAM_MYSQL_ADMINPWD required but not specified');
+variable GLANCE_MYSQL_ADMINPWD ?= error('GLANCE_MYSQL_ADMINPWD required but not specified');
 variable GLANCE_DB_NAME ?= 'glance';
 variable GLANCE_DB_USER ?= 'glance';
 variable GLANCE_DB_PASSWORD ?= error('GLANCE_DB_PASSWORD required but not specified');
 
-variable SQL_CONNECTION ?= 'mysql://'+GLANCE_DB_USER+':'+GLANCE_DB_PASSWORD+'@'+GLANCE_MYSQL_SERVER+'/'+GLANCE_DB_NAME;
+variable GLANCE_SQL_CONNECTION ?= 'mysql://'+GLANCE_DB_USER+':'+GLANCE_DB_PASSWORD+'@'+GLANCE_MYSQL_SERVER+'/'+GLANCE_DB_NAME;
 
 
 #------------------------------------------------------------------------------
@@ -31,8 +31,8 @@ variable GLANCE_API_CONFIG_CONTENTS ?= file_contents('personality/glance/templat
 variable GLANCE_API_CONFIG_CONTENTS=replace('RABBIT_HOST',RABBIT_HOST,GLANCE_API_CONFIG_CONTENTS);
 variable GLANCE_API_CONFIG_CONTENTS=replace('RABBIT_USERID',RABBIT_USER,GLANCE_API_CONFIG_CONTENTS);
 variable GLANCE_API_CONFIG_CONTENTS=replace('RABBIT_PASSWORD',RABBIT_PASSWORD,GLANCE_API_CONFIG_CONTENTS);
-variable GLANCE_API_CONFIG_CONTENTS=replace('SQL_CONNECTION',SQL_CONNECTION,GLANCE_API_CONFIG_CONTENTS);
-variable GLANCE_API_CONFIG_CONTENTS=replace('KEYSTONE_HOSTNAME',KEYSTONE_HOSTNAME,GLANCE_API_CONFIG_CONTENTS);
+variable GLANCE_API_CONFIG_CONTENTS=replace('SQL_CONNECTION',GLANCE_SQL_CONNECTION,GLANCE_API_CONFIG_CONTENTS);
+variable GLANCE_API_CONFIG_CONTENTS=replace('KEYSTONE_HOST',KEYSTONE_INTERNAL_HOST,GLANCE_API_CONFIG_CONTENTS);
 variable GLANCE_API_CONFIG_CONTENTS=replace('GLANCE_KEYSTONE_TENANT',GLANCE_KEYSTONE_TENANT,GLANCE_API_CONFIG_CONTENTS);
 variable GLANCE_API_CONFIG_CONTENTS=replace('GLANCE_KEYSTONE_USER',GLANCE_KEYSTONE_USER,GLANCE_API_CONFIG_CONTENTS);
 variable GLANCE_API_CONFIG_CONTENTS=replace('GLANCE_KEYSTONE_PASSWORD',GLANCE_KEYSTONE_PASSWORD,GLANCE_API_CONFIG_CONTENTS);
@@ -50,8 +50,8 @@ variable GLANCE_REGISTRY_CONFIG ?= '/etc/glance/glance-registry.conf';
 
 variable GLANCE_REGISTRY_CONFIG_CONTENTS ?= file_contents('personality/glance/templates/glance-registry.templ');
 
-variable GLANCE_REGISTRY_CONFIG_CONTENTS=replace('SQL_CONNECTION',SQL_CONNECTION,GLANCE_REGISTRY_CONFIG_CONTENTS);
-variable GLANCE_REGISTRY_CONFIG_CONTENTS=replace('KEYSTONE_HOSTNAME',KEYSTONE_HOSTNAME,GLANCE_REGISTRY_CONFIG_CONTENTS);
+variable GLANCE_REGISTRY_CONFIG_CONTENTS=replace('SQL_CONNECTION',GLANCE_SQL_CONNECTION,GLANCE_REGISTRY_CONFIG_CONTENTS);
+variable GLANCE_REGISTRY_CONFIG_CONTENTS=replace('KEYSTONE_HOST',KEYSTONE_MANAGEMENT_IP,GLANCE_REGISTRY_CONFIG_CONTENTS);
 variable GLANCE_REGISTRY_CONFIG_CONTENTS=replace('GLANCE_KEYSTONE_TENANT',GLANCE_KEYSTONE_TENANT,GLANCE_REGISTRY_CONFIG_CONTENTS);
 variable GLANCE_REGISTRY_CONFIG_CONTENTS=replace('GLANCE_KEYSTONE_USER',GLANCE_KEYSTONE_USER,GLANCE_REGISTRY_CONFIG_CONTENTS);
 variable GLANCE_REGISTRY_CONFIG_CONTENTS=replace('GLANCE_KEYSTONE_PASSWORD',GLANCE_KEYSTONE_PASSWORD,GLANCE_REGISTRY_CONFIG_CONTENTS);
@@ -74,8 +74,9 @@ variable GLANCE_API_PASTE ?= '/etc/glance/api-paste.ini';
 
 variable GLANCE_API_PASTE_CONTENTS ?= file_contents('personality/glance/templates/glance-api-paste.templ');
 
-variable GLANCE_API_PASTE_CONTENTS=replace('KEYSTONE_HOSTNAME',KEYSTONE_HOSTNAME,GLANCE_API_PASTE_CONTENTS);
-variable GLANCE_API_PASTE_CONTENTS=replace('KEYSTONE_URI',KEYSTONE_URI,GLANCE_API_PASTE_CONTENTS);
+variable GLANCE_API_PASTE_CONTENTS=replace('KEYSTONE_HOST',KEYSTONE_MANAGEMENT_IP,GLANCE_API_PASTE_CONTENTS);
+variable GLANCE_API_PASTE_CONTENTS=replace('KEYSTONE_PROTOCOL',KEYSTONE_PROTOCOL,GLANCE_API_PASTE_CONTENTS);
+variable GLANCE_API_PASTE_CONTENTS=replace('KEYSTONE_URI',KEYSTONE_INTERNAL_ENDPOINT,GLANCE_API_PASTE_CONTENTS);
 variable GLANCE_API_PASTE_CONTENTS=replace('GLANCE_KEYSTONE_TENANT',GLANCE_KEYSTONE_TENANT,GLANCE_API_PASTE_CONTENTS);
 variable GLANCE_API_PASTE_CONTENTS=replace('GLANCE_KEYSTONE_USER',GLANCE_KEYSTONE_USER,GLANCE_API_PASTE_CONTENTS);
 variable GLANCE_API_PASTE_CONTENTS=replace('GLANCE_KEYSTONE_PASSWORD',GLANCE_KEYSTONE_PASSWORD,GLANCE_API_PASTE_CONTENTS);
@@ -93,8 +94,9 @@ variable GLANCE_REGISTRY_PASTE ?= '/etc/glance/glance-registry-paste.ini';
 
 variable GLANCE_REGISTRY_PASTE_CONTENTS ?= file_contents('personality/glance/templates/glance-registry-paste.templ');
 
-variable GLANCE_REGISTRY_PASTE_CONTENTS=replace('KEYSTONE_HOSTNAME',KEYSTONE_HOSTNAME,GLANCE_REGISTRY_PASTE_CONTENTS);
-variable GLANCE_REGISTRY_PASTE_CONTENTS=replace('KEYSTONE_URI',KEYSTONE_URI,GLANCE_REGISTRY_PASTE_CONTENTS);
+variable GLANCE_REGISTRY_PASTE_CONTENTS=replace('KEYSTONE_HOST',KEYSTONE_MANAGEMENT_IP,GLANCE_REGISTRY_PASTE_CONTENTS);
+variable GLANCE_REGISTRY_PASTE_CONTENTS=replace('KEYSTONE_PROTOCOL',KEYSTONE_PROTOCOL,GLANCE_REGISTRY_PASTE_CONTENTS);
+variable GLANCE_REGISTRY_PASTE_CONTENTS=replace('KEYSTONE_URI',KEYSTONE_INTERNAL_ENDPOINT,GLANCE_REGISTRY_PASTE_CONTENTS);
 variable GLANCE_REGISTRY_PASTE_CONTENTS=replace('GLANCE_KEYSTONE_TENANT',GLANCE_KEYSTONE_TENANT,GLANCE_REGISTRY_PASTE_CONTENTS);
 variable GLANCE_REGISTRY_PASTE_CONTENTS=replace('GLANCE_KEYSTONE_USER',GLANCE_KEYSTONE_USER,GLANCE_REGISTRY_PASTE_CONTENTS);
 variable GLANCE_REGISTRY_PASTE_CONTENTS=replace('GLANCE_KEYSTONE_PASSWORD',GLANCE_KEYSTONE_PASSWORD,GLANCE_REGISTRY_PASTE_CONTENTS);
@@ -131,43 +133,6 @@ include { 'components/mysql/config' };
 };
 
 
-# ---------------------------------------------------------------------------- 
-# Enable and start Glance services
-# ---------------------------------------------------------------------------- 
-
-include { 'components/glitestartup/config' };
-
-variable GLANCE_STARTUP_FILE ?= '/etc/glance-services';
-variable GLANCE_INIT_SCRIPT ?= '/etc/rc.d/init.d/openstack-glance';
-
-'/software/components/glitestartup/configFile' = GLANCE_STARTUP_FILE;
-'/software/components/glitestartup/initScript' = GLANCE_INIT_SCRIPT;
-'/software/components/glitestartup/scriptPaths' = list("/etc/init.d");
-'/software/components/glitestartup/restartServices' = true;
-
-'/software/components/glitestartup/services' = {
-  if ( exists(SELF) && is_defined(SELF) ) {
-    SELF;
-  } else {
-    nlist();
-  };
-};
-
-'/software/components/glitestartup/services' = {  
-  services = SELF;
-
-  foreach (i;service;GLANCE_SERVICES) {
-    services = glitestartup_mod_service(service);
-  };
-
-  if ( is_defined(services) && (length(services) > 0) ) {
-    services;
-  } else {
-    null;
-  };
-};
-
-
 #------------------------------------------------------------------------------
 # Endpoint configuration script
 #------------------------------------------------------------------------------
@@ -177,7 +142,8 @@ variable GLANCE_ENDPOINTS_CONTENTS ?= file_contents('personality/glance/template
 
 variable GLANCE_ENDPOINTS_CONTENTS = replace('GLANCE_KEYSTONE_PASSWORD',GLANCE_KEYSTONE_PASSWORD,GLANCE_ENDPOINTS_CONTENTS);
 variable GLANCE_ENDPOINTS_CONTENTS = replace('GLANCE_EMAIL',GLANCE_EMAIL,GLANCE_ENDPOINTS_CONTENTS);
-variable GLANCE_ENDPOINTS_CONTENTS = replace('GLANCE_HOSTNAME',FULL_HOSTNAME,GLANCE_ENDPOINTS_CONTENTS);
+variable GLANCE_ENDPOINTS_CONTENTS = replace('GLANCE_PUBLIC_HOST',GLANCE_PUBLIC_HOST,GLANCE_ENDPOINTS_CONTENTS);
+variable GLANCE_ENDPOINTS_CONTENTS = replace('GLANCE_HOST',GLANCE_INTERNAL_HOST,GLANCE_ENDPOINTS_CONTENTS);
 
 "/software/components/filecopy/services" = npush(
     escape(GLANCE_ENDPOINTS), nlist(
@@ -186,3 +152,20 @@ variable GLANCE_ENDPOINTS_CONTENTS = replace('GLANCE_HOSTNAME',FULL_HOSTNAME,GLA
         "perms","0700",
     ),
 );
+
+
+#----------------------------------------------------------------------------
+# Startup configuration
+#----------------------------------------------------------------------------
+
+include { 'components/chkconfig/config' };
+
+'/software/components/chkconfig/service'= {
+  foreach(i;service;GLANCE_SERVICES) {
+    SELF[service] = nlist('on','',
+                          'startstop',true,
+                    );
+  };
+
+  SELF;
+};

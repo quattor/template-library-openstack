@@ -67,7 +67,7 @@ paste.filter_factory = glance.api.middleware.context:UnauthenticatedContextMiddl
 [filter:authtoken]
 paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
 delay_auth_decision = true
-auth_host = KEYSTONE_HOSTNAME
+auth_host = KEYSTONE_HOST
 admin_user = GLANCE_KEYSTONE_USER
 admin_tenant_name = GLANCE_KEYSTONE_TENANT
 admin_password = GLANCE_KEYSTONE_PASSWORD

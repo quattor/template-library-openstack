@@ -427,9 +427,9 @@ scrub_time = 43200
 #image_cache_dir=/var/lib/glance/image-cache/
 
 [keystone_authtoken]
-auth_host=KEYSTONE_HOSTNAME
+auth_host=KEYSTONE_HOST
 auth_port=35357
-auth_protocol=http
+auth_protocol=KEYSTONE_PROTOCOL
 admin_tenant_name=GLANCE_KEYSTONE_TENANT
 admin_user=GLANCE_KEYSTONE_USER
 admin_password=GLANCE_KEYSTONE_PASSWORD

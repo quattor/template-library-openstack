@@ -10,6 +10,6 @@ keystone service-create --name=glance --type=image \
 GLANCE_SERVICE_ID=$(keystone service-list | awk -v var="image" '$0 ~ var { print $2 }')
 keystone endpoint-create \
   --service-id=${GLANCE_SERVICE_ID} \
-  --publicurl=http://GLANCE_HOSTNAME:9292 \
-  --internalurl=http://GLANCE_HOSTNAME:9292 \
-  --adminurl=http://GLANCE_HOSTNAME:9292
+  --publicurl=http://GLANCE_PUBLIC_HOST:9292 \
+  --internalurl=http://GLANCE_INTERNAL_HOST:9292 \
+  --adminurl=http://GLANCE_INTERNAL_HOST:9292

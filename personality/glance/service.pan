@@ -1,7 +1,7 @@
 
 unique template personality/glance/service;
 
-variable GLANCE_MYSQL_SERVER ?= OPENSTACK_MYSQL_SERVER;
+variable GLANCE_MYSQL_SERVER ?= MYSQL_HOST;
 
 # Add RPMs for Glance
 include { 'personality/glance/rpms/config' };
