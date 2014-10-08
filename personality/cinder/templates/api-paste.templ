@@ -50,9 +50,9 @@ paste.filter_factory = cinder.api.middleware.auth:CinderKeystoneContext.factory
 
 [filter:authtoken]
 paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
-auth_host = KEYSTONE_HOSTNAME
+auth_host = KEYSTONE_HOST
 auth_port = 35357
-auth_protocol = http
+auth_protocol = KEYSTONE_PROTOCOL 
 auth_uri = KEYSTONE_URI
 admin_tenant_name = CINDER_TENANT_NAME
 admin_user = CINDER_KEYSTONE_USER

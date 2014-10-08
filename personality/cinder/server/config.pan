@@ -8,7 +8,7 @@ include { 'personality/cinder/config' };
 
 # Database related variables
 variable CINDER_MYSQL_ADMINUSER ?= 'root';
-variable CINDER_MYSQL_ADMINPWD ?= error('CREAM_MYSQL_ADMINPWD required but not specified');
+variable CINDER_MYSQL_ADMINPWD ?= error('CINDER_MYSQL_ADMINPWD required but not specified');
 
 
 #------------------------------------------------------------------------------
@@ -42,7 +42,8 @@ variable CINDER_ENDPOINTS_CONTENTS ?= file_contents('personality/cinder/server/t
 
 variable CINDER_ENDPOINTS_CONTENTS = replace('CINDER_KEYSTONE_PASSWORD',CINDER_KEYSTONE_PASSWORD,CINDER_ENDPOINTS_CONTENTS);
 variable CINDER_ENDPOINTS_CONTENTS = replace('CINDER_EMAIL',CINDER_EMAIL,CINDER_ENDPOINTS_CONTENTS);
-variable CINDER_ENDPOINTS_CONTENTS = replace('CINDER_HOSTNAME',FULL_HOSTNAME,CINDER_ENDPOINTS_CONTENTS);
+variable CINDER_ENDPOINTS_CONTENTS = replace('CINDER_PUBLIC_HOST',CINDER_PUBLIC_HOST,CINDER_ENDPOINTS_CONTENTS);
+variable CINDER_ENDPOINTS_CONTENTS = replace('CINDER_INTERNAL_HOST',CINDER_INTERNAL_HOST,CINDER_ENDPOINTS_CONTENTS);
 
 "/software/components/filecopy/services" = npush(
     escape(CINDER_ENDPOINTS), nlist(

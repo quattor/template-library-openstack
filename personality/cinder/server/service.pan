@@ -1,7 +1,7 @@
 
 unique template personality/cinder/server/service;
 
-variable CINDER_MYSQL_SERVER ?= OPENSTACK_MYSQL_SERVER;
+variable CINDER_MYSQL_SERVER ?= MYSQL_HOST;
 
 # Add RPMs for Cinder
 include { 'personality/cinder/server/rpms/config' };
