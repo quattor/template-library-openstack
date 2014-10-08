@@ -1,4 +1,4 @@
-unique template personality/neutron/controller/rpms/config;
+unique template personality/neutron/network/rpms/config;
 
 prefix '/software/packages';
 
