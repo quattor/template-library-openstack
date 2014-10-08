@@ -56,7 +56,7 @@
 #
 
 # ip address of this host (string value)
-#my_ip=10.0.0.1
+my_ip=MY_IP
 
 # Name of this node.  This can be an opaque identifier.  It is
 # not necessarily a hostname, FQDN, or IP address. However,
@@ -234,7 +234,7 @@
 #cert_manager=nova.cert.manager.CertManager
 
 # full class name for the Manager for network (string value)
-#network_manager=nova.network.manager.FlatDHCPManager
+network_manager=nova.network.manager.NeutronManager
 
 # full class name for the Manager for scheduler (string value)
 #scheduler_manager=nova.scheduler.manager.SchedulerManager
@@ -284,7 +284,7 @@
 
 # File name for the paste.deploy config for nova-api (string
 # value)
-#api_paste_config=api-paste.ini
+api_paste_config=/etc/nova/api-paste.ini
 
 # A python format string that is used as the template to
 # generate log lines. The following values can be formatted
@@ -317,7 +317,7 @@
 
 # The strategy to use for auth: noauth or keystone. (string
 # value)
-#auth_strategy=noauth
+auth_strategy=keystone
 
 # Treat X-Forwarded-For as the canonical remote address. Only
 # enable this if you have a sanitizing proxy. (boolean value)
@@ -395,11 +395,11 @@
 
 # Set flag to indicate Neutron will proxy metadata requests
 # and resolve instance ids. (boolean value)
-#service_neutron_metadata_proxy=false
+service_neutron_metadata_proxy=NEUTRON_METADATA_PROXY_ENABLED
 
 # Shared secret to validate proxies Neutron metadata requests
 # (string value)
-#neutron_metadata_proxy_shared_secret=
+#neutron_metadata_proxy_shared_secret=METADATA_PROXY_SHARED_SECRET
 
 
 #
@@ -579,7 +579,7 @@
 #
 
 # Host on which to listen for incoming requests (string value)
-#novncproxy_host=0.0.0.0
+novncproxy_host=0.0.0.0
 
 # Port on which to listen for incoming requests (integer
 # value)
@@ -906,7 +906,7 @@
 #
 
 # default glance hostname or ip (string value)
-#glance_host=$my_ip
+glance_host=GLANCE_HOST
 
 # default glance port (integer value)
 #glance_port=9292
@@ -977,7 +977,7 @@
 
 # The full class name of the network API class to use (string
 # value)
-#network_api_class=nova.network.api.API
+network_api_class=nova.network.neutronv2.api.API
 
 
 #
@@ -1098,7 +1098,7 @@
 #dnsmasq_config_file=
 
 # Driver used to create ethernet devices. (string value)
-#linuxnet_interface_driver=nova.network.linux_net.LinuxBridgeInterfaceDriver
+linuxnet_interface_driver=nova.network.linux_net.LinuxOVSInterfaceDriver
 
 # Name of Open vSwitch bridge used with linuxnet (string
 # value)
@@ -1238,7 +1238,7 @@
 #
 
 # URL for connecting to neutron (string value)
-#neutron_url=http://127.0.0.1:9696
+neutron_url=NEUTRON_URL
 
 # timeout value for connecting to neutron in seconds (integer
 # value)
@@ -1246,30 +1246,30 @@
 
 # username for connecting to neutron in admin context (string
 # value)
-#neutron_admin_username=<None>
+neutron_admin_username=NEUTRON_ADMIN_NAME
 
 # password for connecting to neutron in admin context (string
 # value)
-#neutron_admin_password=<None>
+neutron_admin_password=NEUTRON_ADMIN_PASSWORD
 
 # tenant name for connecting to neutron in admin context
 # (string value)
-#neutron_admin_tenant_name=<None>
+neutron_admin_tenant_name=NEUTRON_ADMIN_TENANT
 
 # region name for connecting to neutron in admin context
 # (string value)
-#neutron_region_name=<None>
+neutron_region_name=NEUTRON_REGION_NAME
 
 # auth url for connecting to neutron in admin context (string
 # value)
-#neutron_admin_auth_url=http://localhost:5000/v2.0
+neutron_admin_auth_url=NEUTRON_ADMIN_AUTH_URL
 
 # if set, ignore any SSL validation issues (boolean value)
 #neutron_api_insecure=false
 
 # auth strategy for connecting to neutron in admin context
 # (string value)
-#neutron_auth_strategy=keystone
+neutron_auth_strategy=keystone
 
 # Name of Integration Bridge used by Open vSwitch (string
 # value)
@@ -1305,7 +1305,7 @@
 #
 
 # The full class name of the security API class (string value)
-#security_group_api=nova
+security_group_api=neutron
 
 
 #
@@ -1488,7 +1488,7 @@
 
 # The messaging module to use, defaults to kombu. (string
 # value)
-#rpc_backend=nova.openstack.common.rpc.impl_qpid
+rpc_backend=nova.openstack.common.rpc.impl_kombu
 
 # Size of RPC thread pool (integer value)
 #rpc_thread_pool_size=64
@@ -1548,7 +1548,7 @@
 
 # The RabbitMQ broker address where a single node is used
 # (string value)
-#rabbit_host=localhost
+rabbit_host=RABBIT_HOST
 
 # The RabbitMQ broker port where a single node is used
 # (integer value)
@@ -1561,10 +1561,10 @@
 #rabbit_use_ssl=false
 
 # the RabbitMQ userid (string value)
-#rabbit_userid=guest
+rabbit_userid=RABBIT_USER
 
 # the RabbitMQ password (string value)
-#rabbit_password=guest
+rabbit_password=RABBIT_PASSWORD
 
 # the RabbitMQ virtual host (string value)
 #rabbit_virtual_host=/
@@ -1937,7 +1937,7 @@
 
 # Firewall driver (defaults to hypervisor specific iptables
 # driver) (string value)
-#firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
+firewall_driver=nova.virt.firewall.NoopFirewallDriver
 
 # Whether to allow network traffic from same network (boolean
 # value)
@@ -2460,15 +2460,15 @@
 
 # location of nova xvp vnc console proxy, in the form
 # "http://127.0.0.1:6081/console" (string value)
-#xvpvncproxy_base_url=http://127.0.0.1:6081/console
+xvpvncproxy_base_url=XVPVNCPROXY_BASE_URL
 
 # IP address on which instance vncservers should listen
 # (string value)
-#vncserver_listen=127.0.0.1
+vncserver_listen=VNCSERVER_LISTEN
 
 # the address to which proxy clients (like nova-xvpvncproxy)
 # should connect (string value)
-#vncserver_proxyclient_address=127.0.0.1
+vncserver_proxyclient_address=VNCSERVER_PROXYCLIENT_ADDRESS
 
 # enable vnc related features (boolean value)
 #vnc_enabled=true
@@ -2860,7 +2860,7 @@
 
 # The SQLAlchemy connection string used to connect to the
 # database (string value)
-#connection=mysql://nova:nova@localhost/nova
+connection=SQL_CONNECTION
 
 # The SQLAlchemy connection string used to connect to the
 # slave database (string value)
@@ -3384,22 +3384,22 @@
 [keystone_authtoken]
 
 # the name of the admin tenant (string value)
-#admin_tenant_name=%SERVICE_TENANT_NAME%
+admin_tenant_name=NOVA_KEYSTONE_TENANT
 
 # the keystone admin username (string value)
-#admin_user=%SERVICE_USER%
+admin_user=NOVA_KEYSTONE_USER
 
 # the keystone admin password (string value)
-#admin_password=%SERVICE_PASSWORD%
+admin_password=NOVA_KEYSTONE_PASSWORD
 
 # the keystone host (string value)
-#auth_host=127.0.0.1
+auth_host=KEYSTONE_HOST
 
 # the keystone port (integer value)
 #auth_port=35357
 
 # protocol to be used for auth requests http/https (string value)
-#auth_protocol=http
+auth_protocol=KEYSTONE_PROTOCOL
 
 # Workaround for https://bugs.launchpad.net/nova/+bug/1154809
 #auth_version=v2.0

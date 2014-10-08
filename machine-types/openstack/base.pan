@@ -172,6 +172,17 @@ include { USER_CONFIG_INCLUDE };
 include { return(OPENSTACK_BASE_CONFIG_SITE) };
 
 
+#
+# Setup SUDO
+#
+
+include { 'components/sudo/config' };
+
+"/software/components/sudo/includes_dirs" = {
+  push("/etc/sudoers.d");
+};
+
+
 # OPENSTACK_OS_POSTCONFIG defines a template that must be executed at the very
 # end of any OpenStack machine type.
 # The template is called by machine-types templates.

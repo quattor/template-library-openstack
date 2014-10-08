@@ -119,3 +119,10 @@ paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
 # in the home directory for the user the nova process is running as.
 #signing_dir = /var/lib/nova/keystone-signing
 # Workaround for https://bugs.launchpad.net/nova/+bug/1154809
+auth_host = KEYSTONE_HOST
+auth_port = 35357
+auth_protocol = KEYSTONE_PROTOCOL
+auth_uri = KEYSTONE_URI
+admin_tenant_name = NOVA_KEYSTONE_TENANT
+admin_user = NOVA_KEYSTONE_USER
+admin_password = NOVA_KEYSTONE_PASSWORD
