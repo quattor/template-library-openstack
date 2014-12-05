@@ -2,10 +2,10 @@
 
 unique template personality/neutron/network/config;
 
-variable NEUTRON_SERVICES ?= list('neutron-openvswitch-agent','neutron-dhcp-agent','neutron-metadata-agent','neutron-l3-agent','dnsmasq');
+variable NEUTRON_SERVICES ?= list('neutron-openvswitch-agent','neutron-dhcp-agent','neutron-metadata-agent','neutron-l3-agent');
 variable NEUTRON_NODE_TYPE ?= 'network';
-variable METADATA_IP ?= DB_IP[escape(FULL_HOSTNAME)];
-variable NOVA_METADATA_IP ?= NOVA_INTERNAL_HOST;
+variable METADATA_IP ?= NOVA_INTERNAL_IP;
+variable NOVA_METADATA_IP ?= NOVA_INTERNAL_IP;
 
 # include configuration common to client and server
 include { 'personality/neutron/config' };
