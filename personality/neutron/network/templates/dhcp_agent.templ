@@ -25,7 +25,7 @@ interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
 
 # The agent can use other DHCP drivers.  Dnsmasq is the simplest and requires
 # no additional setup of the DHCP server.
-# dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq
+dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq
 
 # Allow overlapping IP (Must have kernel build with CONFIG_NET_NS=y and
 # iproute2 package that supports namespaces).
