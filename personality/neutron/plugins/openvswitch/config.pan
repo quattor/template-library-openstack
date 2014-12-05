@@ -5,7 +5,7 @@ include { 'personality/neutron/plugins/openvswitch/rpms' };
 
 variable TENANT_NETWORK_TYPE ?= 'vlan';
 variable BRIDGE_MAPPINGS ?= 'physnet1:br-eth1';
-variable NETWORK_VLAN_RANGES ?= 'physnet1:901:929';
+variable NETWORK_VLAN_RANGES ?= 'physnet1:1:4094';
 
 #----------------------------------------------------------------------------- 
 # Enable and start Open vSwitch service
@@ -27,8 +27,8 @@ variable OPENVSWITCH_PLUGIN_CONFIG_CONTENTS=replace('NETWORK_VLAN_RANGES',NETWOR
 "/software/components/filecopy/services" = npush(
     escape(OPENVSWITCH_PLUGIN_CONFIG), nlist(
         "config",OPENVSWITCH_PLUGIN_CONFIG_CONTENTS,
-        "owner","root",
-        "perms","0644",
+        "owner","root:neutron",
+        "perms","0640",
         "restart", "/sbin/service neutron-openvswitch-agent restart",
 
     ),
@@ -36,8 +36,8 @@ variable OPENVSWITCH_PLUGIN_CONFIG_CONTENTS=replace('NETWORK_VLAN_RANGES',NETWOR
 
 include { 'components/symlink/config' };
 '/software/components/symlink/links'=push(
-  nlist('name', '/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini',
+  nlist('name', '/etc/neutron/plugin.ini',
         'replace', nlist('all','yes','link','yes'),
-        'target', '/etc/neutron/plugin.ini',
+        'target', '/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini',
   ),
 );
