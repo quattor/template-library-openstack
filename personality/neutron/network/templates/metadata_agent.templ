@@ -1,0 +1,28 @@
+[DEFAULT]
+# Show debugging output in log (sets DEBUG log level output)
+# debug = True
+
+# The Neutron user information for accessing the Neutron API.
+auth_url = KEYSTONE_URI 
+auth_region = NEUTRON_REGION_NAME
+admin_tenant_name = NEUTRON_KEYSTONE_TENANT
+admin_user = NEUTRON_KEYSTONE_USER
+admin_password = NEUTRON_KEYSTONE_PASSWORD
+
+# Network service endpoint type to pull from the keystone catalog
+# endpoint_type = adminURL
+
+# IP address used by Nova metadata server
+nova_metadata_ip = NOVA_METADATA_IP 
+
+# TCP Port used by Nova metadata server
+# nova_metadata_port = 8775
+
+# When proxying metadata requests, Neutron signs the Instance-ID header with a
+# shared secret to prevent spoofing.  You may select any string for a secret,
+# but it must match here and in the configuration used by the Nova Metadata
+# Server. NOTE: Nova uses a different key: neutron_metadata_proxy_shared_secret
+metadata_proxy_shared_secret = METADATA_PROXY_SHARED_SECRET
+
+# Location of Metadata Proxy UNIX domain socket
+# metadata_proxy_socket = $state_path/metadata_proxy
