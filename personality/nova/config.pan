@@ -11,8 +11,6 @@ variable NOVA_KEYSTONE_PASSWORD ?= error('NOVA_KEYSTONE_PASSWORD required but no
 
 # Neutron related variables
 variable NEUTRON_URL ?= 'http://' + NEUTRON_INTERNAL_HOST + ':9696';
-variable NEUTRON_METADATA_PROXY_ENABLED ?= true;
-variable METADATA_PROXY_SHARED_SECRET ?= '';
 variable NEUTRON_ADMIN_NAME ?= 'neutron';
 variable NEUTRON_ADMIN_PASSWORD ?=error('NEUTRON_ADMIN_PASSWORD required but not specified');
 variable NEUTRON_ADMIN_TENANT ?= 'service';
