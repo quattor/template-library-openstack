@@ -33,11 +33,3 @@ variable OPENVSWITCH_PLUGIN_CONFIG_CONTENTS=replace('NETWORK_VLAN_RANGES',NETWOR
 
     ),
 );
-
-include { 'components/symlink/config' };
-'/software/components/symlink/links'=push(
-  nlist('name', '/etc/neutron/plugin.ini',
-        'replace', nlist('all','yes','link','yes'),
-        'target', '/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini',
-  ),
-);
