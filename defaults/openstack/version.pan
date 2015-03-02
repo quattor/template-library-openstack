@@ -5,6 +5,6 @@ unique template defaults/openstack/version;
 
 # OpenStack major version (used mainly to tune OS configuration).
 # There is no reason to redefine this variable.
-variable OPENSTACK_MIDDLEWARE_NAME = 'HAVANA';
-variable OPENSTACK_MIDDLEWARE_VERSION = '8';
+variable OPENSTACK_MIDDLEWARE_NAME = 'ICEHOUSE';
+variable OPENSTACK_MIDDLEWARE_VERSION = '9';
 

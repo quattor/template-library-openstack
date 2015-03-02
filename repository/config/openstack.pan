@@ -6,10 +6,10 @@ include { 'quattor/functions/repository' };
 desc = defines the variant of the OpenStack RPM repository to use (typically the OpenStack version).\
 The full repository template name will be built appending the version, os, arch. 
 values = any string
-default = havana
+default = icehouse
 required = no
 }
-variable REPOSITORY_OPENSTACK_VARIANT ?= 'havana';
+variable REPOSITORY_OPENSTACK_VARIANT ?= 'icehouse';
 
 variable REPOSITORY_OPENSTACK_BASE ?= REPOSITORY_OPENSTACK_VARIANT + '_' + OS_VERSION_PARAMS['major'] + '_' + PKG_ARCH_DEFAULT;
 
