@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Cinder user and role creation"
+echo "Nova user and role creation"
 keystone user-create --name=nova --pass=NOVA_KEYSTONE_PASSWORD --email=NOVA_EMAIL
 keystone user-role-add --user=nova --tenant=service --role=admin
 
