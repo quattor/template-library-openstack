@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo "Neutron user and role creation"
+keystone user-create --name=neutron --pass=NEUTRON_KEYSTONE_PASSWORD --email=NEUTRON_EMAIL
+keystone user-role-add --user=neutron --tenant=service --role=admin
+
+echo "Neutron Compute service endpoint creation"
+keystone service-create --name=neutron --type=network \
+  --description="OpenStack Networking"
+NEUTRON_SERVICE_ID=$(keystone service-list | awk -v var="volume" '$0 ~ var { print $2 }')
+keystone endpoint-create \
+  --service-id=${NEUTRON_SERVICE_ID} \
+  --publicurl=http://NEUTRON_PUBLIC_HOST:9696 \
+  --internalurl=http://NEUTRON_INTERNAL_HOST:9696 \
+  --adminurl=http://NEUTRON_INTERNAL_HOST:9696
