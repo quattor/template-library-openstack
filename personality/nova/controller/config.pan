@@ -1,5 +1,6 @@
 template personality/nova/controller/config; 
 
+variable NOVA_EMAIL ?= SITE_EMAIL;
 variable NOVA_SERVICES ?= list('openstack-nova-api','openstack-nova-cert','openstack-consoleauth','openstack-nova-scheduler','openstack-nova-conductor','openstack-nova-novncproxy');
 variable VNCSERVER_LISTEN ?= DB_IP[escape(FULL_HOSTNAME)];
 
@@ -36,7 +37,7 @@ include { 'components/mysql/config' };
 #------------------------------------------------------------------------------
 
 variable NOVA_ENDPOINTS ?= '/root/sbin/create-nova-endpoints.sh';
-variable NOVA_ENDPOINTS_CONTENTS ?= file_contents('personality/nova/server/templates/create-nova-endpoints.templ');
+variable NOVA_ENDPOINTS_CONTENTS ?= file_contents('personality/nova/controller/templates/create-nova-endpoints.templ');
 
 variable NOVA_ENDPOINTS_CONTENTS = replace('NOVA_KEYSTONE_PASSWORD',NOVA_KEYSTONE_PASSWORD,NOVA_ENDPOINTS_CONTENTS);
 variable NOVA_ENDPOINTS_CONTENTS = replace('NOVA_EMAIL',NOVA_EMAIL,NOVA_ENDPOINTS_CONTENTS);
