@@ -4,7 +4,7 @@ template machine-types/openstack/neutron;
 include { 'machine-types/openstack/base' };
 
 # Neutron server configuration
-include { 'personality/neutron/server/service' };
+include { 'personality/neutron/controller/service' };
 
 # Do any final configuration needed for some reasons
 # Should be done at the very end of machine configuration
