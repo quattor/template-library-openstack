@@ -1,93 +1,222 @@
 unique template defaults/openstack/config;
 
-# This file defines a set of global variables for configuring the 
-# OpenStack middleware.  Where the variables have sensible defaults,
-# real values are given.  Others which must be changed are defined
-# as 'undef'.  These will generate errors if you use them without
-# redefining the value. 
+##################################
+# Define site specific variables #
+##################################
+include if_exists('site/openstack/config');
+variable PRIMARY_IP ?= DB_IP[escape(FULL_HOSTNAME)];
 
-# This template should be included after any of your customizations
-# but before using any of the standard OpenStack templates in your
-# machine definitions.
+############################
+# Active SSL configuration #
+############################
+variable OS_SSL ?= false;
+variable OS_SSL_CERT ?= '/etc/certs/' + FULL_HOSTNAME + '.crt';
+variable OS_SSL_KEY ?= '/etc/certs/' + FULL_HOSTNAME + '.key';
+variable OS_SSL_CHAIN ?= null;
 
-# Default architecture
-variable PKG_ARCH_DEFAULT ?= 'x86_64';
+##############
+# RegionName #
+##############
+variable OS_REGION_NAME ?= 'RegionOne';
 
-# Define the root locations of the MW software trees. These
-# are used in many configuration files and for setting the ld.so.conf 
-# libraries.  You do not redefine these unless you install the OpenStack
-# middleware in non-standard locations. 
+############################################
+# Virtual Machine interface for hypervisor #
+############################################
+variable OS_INTERFACE_MAPPING ?= boot_nic();
 
-# Installation root for the software.  Most of the OpenStack packages
-# install by default in /. 
+# Force user to specify OS_ADMIN_TOKEN
+variable OS_ADMIN_TOKEN ?= error('OS_ADMIN_TOKEN must be declared');
+variable OS_USERNAME ?= 'admin';
+variable OS_PASSWORD ?= 'admin';
+variable OS_METADATA_SECRET ?= error('OS_METADATA_SECRET must be declared');
 
-variable OPENSTACK_LOCATION ?= '/';
-variable OPENSTACK_LOCATION_ETC ?= '/etc';
-variable OPENSTACK_LOCATION_LOG ?= '/var/log';
-variable OPENSTACK_LOCATION_VAR ?= '/var';
-variable OPENSTACK_LOCATION_TMP ?= '/tmp';
+##########################################
+# NODE_TYPE is 'compute' or 'controller' #
+##########################################
+variable OS_NODE_TYPE ?= 'compute';
+variable OS_LOGGING_TYPE ?= 'file';
+variable OS_AUTH_CLIENT_CONFIG ?= 'features/keystone/client/config';
 
-#----------------------------------------------------------------
-# SECURITY LOCATIONS
-#----------------------------------------------------------------
+###############################
+# Define OS_CONTROLLER_HOST  #
+##############################
+variable OS_CONTROLLER_HOST ?= error('OS_CONTROLLER_HOST must be declared');
+variable OS_CONTROLLER_PROTOCOL ?= if (OS_SSL) {
+  'https';
+} else {
+  'http';
+};
 
-# Constants used for security-related files and directories.  Change these
-# only if you keep these in non-standard locations.
+#############################
+# Mariadb specific variable #
+#############################
+variable OS_DB_HOST ?= 'localhost';
+variable OS_DB_ADMIN_USERNAME ?= 'root';
+variable OS_DB_ADMIN_PASSWORD ?= 'root';
 
-variable SITE_DEF_GRIDSEC_ROOT ?= "/etc/grid-security";
-variable SITE_DEF_HOST_CERT    ?= SITE_DEF_GRIDSEC_ROOT+"/hostcert.pem";
-variable SITE_DEF_HOST_KEY     ?= SITE_DEF_GRIDSEC_ROOT+"/hostkey.pem";
-variable SITE_DEF_GRIDMAP      ?= SITE_DEF_GRIDSEC_ROOT+"/grid-mapfile";
-variable SITE_DEF_GRIDMAPDIR   ?= SITE_DEF_GRIDSEC_ROOT+"/gridmapdir";
-variable SITE_DEF_CERTDIR      ?= SITE_DEF_GRIDSEC_ROOT+"/certificates";
-variable SITE_DEF_VOMSDIR      ?= SITE_DEF_GRIDSEC_ROOT+"/vomsdir";
+############################
+# Glance specific variable #
+############################
+variable OS_GLANCE_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
+variable OS_GLANCE_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_GLANCE_DB_HOST ?= OS_DB_HOST;
+variable OS_GLANCE_DB_USERNAME ?= 'glance';
+variable OS_GLANCE_DB_PASSWORD ?= 'GLANCE_DBPASS';
+variable OS_GLANCE_USERNAME ?= 'glance';
+variable OS_GLANCE_PASSWORD ?= 'GLANCE_PASS';
+variable OS_GLANCE_STORE_DIR ?= '/var/lib/glance/images/';
 
-#----------------------------------------------------------------
-# SITE DEFINITIONS
-#----------------------------------------------------------------
+############################
+# Heat specific variable #
+############################
+variable OS_HEAT_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
+variable OS_HEAT_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_HEAT_DB_HOST ?= OS_DB_HOST;
+variable OS_HEAT_ENABLED ?= false;
+variable OS_HEAT_DB_USERNAME ?= 'heat';
+variable OS_HEAT_DB_PASSWORD ?= 'HEAT_DBPASS';
+variable OS_HEAT_USERNAME ?= 'heat';
+variable OS_HEAT_PASSWORD ?= 'HEAT_PASS';
+variable OS_HEAT_STACK_DOMAIN ?= 'heat';
+variable OS_HEAT_DOMAIN_ADMIN_USERNAME ?= 'heat_domain_admin';
+variable OS_HEAT_DOMAIN_ADMIN_PASSWORD ?= 'HEAT_DOMAIN_ADMIN_PASS';
 
-# Site's DNS domain name.  This must be a fully-qualified domain
-# name as a string.  It is used throughout the standard configuration.
+##############################
+# Keystone specific variable #
+##############################
+variable OS_KEYSTONE_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
+variable OS_KEYSTONE_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_KEYSTONE_DB_HOST ?= OS_DB_HOST;
+variable OS_KEYSTONE_DB_USERNAME ?= 'keystone';
+variable OS_KEYSTONE_DB_PASSWORD ?= 'KEYSTONE_DBPASS';
+variable OS_KEYSTONE_IDENTITY_DRIVER ?= 'sql';
+variable OS_KEYSTONE_IDENTITY_LDAP_PARAMS ?= dict();
 
-variable SITE_DOMAIN ?= undef;
+#############################
+# Memcache specfic variable #
+#############################
+variable OS_MEMCACHE_HOST ?= 'localhost';
 
-variable REGION_NAME ?= 'regionOne';
-variable NEUTRON_REGION_NAME ?= REGION_NAME;
+#############################
+# MongoDB specfic variable #
+#############################
+variable OS_MONGODB_DBPATH ?= '/var/mongodb';
+
+##########################
+# Nova specific variable #
+##########################
+variable OS_NOVA_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
+variable OS_NOVA_VNC_HOST ?= OS_NOVA_CONTROLLER_HOST;
+variable OS_NOVA_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_NOVA_VNC_PROTOCOL ?= OS_NOVA_CONTROLLER_PROTOCOL;
+variable OS_NOVA_CPU_RATIO ?= 1.0;
+variable OS_NOVA_RAM_RATIO ?= 1.0;
+variable OS_NOVA_VIRT_TYPE ?= 'kvm';
+variable OS_NOVA_DB_HOST ?= OS_DB_HOST;
+variable OS_NOVA_DB_USERNAME ?= 'nova';
+variable OS_NOVA_DB_PASSWORD ?= 'NOVA_DBPASS';
+variable OS_NOVA_USERNAME ?= 'nova';
+variable OS_NOVA_PASSWORD ?= 'NOVA_PASS';
+
+#############################
+# Neutron specific variable #
+#############################
+variable OS_NEUTRON_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
+variable OS_NEUTRON_NETWORK_PROVIDER ?= OS_NEUTRON_CONTROLLER_HOST;
+variable OS_NEUTRON_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_NEUTRON_DB_HOST ?= OS_DB_HOST;
+variable OS_NEUTRON_DB_USERNAME ?= 'neutron';
+variable OS_NEUTRON_DB_PASSWORD ?= 'NEUTRON_DBPASS';
+variable OS_NEUTRON_USERNAME ?= 'neutron';
+variable OS_NEUTRON_PASSWORD ?= 'NEUTRON_PASS';
+variable OS_NEUTRON_NETWORK_TYPE ?= 'provider-service';
+variable OS_NEUTRON_OVERLAY_IP ?= PRIMARY_IP;
+variable OS_NEUTRON_BASE_MAC ?= null;
+variable OS_NEUTRON_DVR_BASE_MAC ?= null;
+variable OS_NEUTRON_DEFAULT ?= true;
+variable OS_NEUTRON_DEFAULT_NETWORKS ?= "192.168.0.0/24";
+variable OS_NEUTRON_DEFAULT_DHCP_POOL ?= dict(
+  'start', '192.168.0.10',
+  'end', '192.168.0.254',
+);
+variable OS_NEUTRON_DEFAULT_GATEWAY ?= '192.168.0.1';
+variable OS_NEUTRON_DEFAULT_NAMESERVER ?= '192.168.0.1';
+
+############################
+# Cinder specific variable #
+############################
+
+# Cinder Controller
+variable OS_CINDER_ENABLED ?= false;
+variable OS_CINDER_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
+variable OS_CINDER_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_CINDER_DB_HOST ?= OS_DB_HOST;
+variable OS_CINDER_DB_USERNAME ?= 'cinder';
+variable OS_CINDER_DB_PASSWORD ?= 'CINDER_DBPASS';
+variable OS_CINDER_USERNAME ?= 'cinder';
+variable OS_CINDER_PASSWORD ?= 'CINDER_PASS';
+# Cinder Storage
+variable OS_CINDER_STORAGE_HOST ?= OS_CINDER_CONTROLLER_HOST;
+variable OS_CINDER_STORAGE_TYPE ?= 'lvm';
+
+############################
+# Ceilometer specific variable #
+############################
+variable OS_CEILOMETER_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
+variable OS_CEILOMETER_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_CEILOMETER_METERS_ENABLED ?= false;
+variable OS_CEILOMETER_DB_HOST ?= OS_DB_HOST;
+variable OS_CEILOMETER_ENABLED ?= false;
+variable OS_CEILOMETER_DB_USERNAME ?= 'ceilometer';
+variable OS_CEILOMETER_DB_PASSWORD ?= 'CEILOMETER_DBPASS';
+variable OS_CEILOMETER_USERNAME ?= 'ceilometer';
+variable OS_CEILOMETER_PASSWORD ?= 'CEILOMETER_PASS';
 
 
-#----------------------------------------------------------------
-# SERVICE LOCATIONS
-#----------------------------------------------------------------
 
-# Nova host (cloud controller) 
-variable NOVA_PUBLIC_HOST ?= undef;
-variable NOVA_INTERNAL_HOST ?= NOVA_PUBLIC_HOST;
+##############################
+# RabbitMQ specific variable #
+##############################
+variable OS_RABBITMQ_HOST ?= OS_CONTROLLER_HOST;
+variable OS_RABBITMQ_USERNAME ?= 'openstack';
+variable OS_RABBITMQ_PASSWORD ?= 'RABBIT_PASS';
 
-# Keystone
-variable KEYSTONE_PUBLIC_HOST ?= NOVA_PUBLIC_HOST;
-variable KEYSTONE_INTERNAL_HOST ?= NOVA_INTERNAL_HOST;
+###########
+# Horizon #
+###########
+variable OS_HORIZON_HOST ?= OS_CONTROLLER_HOST;
+variable OS_HORIZON_ALLOWED_HOSTS ?= list('*');
+variable OS_HORIZON_DEFAULT_ROLE ?= 'users';
+variable OS_HORIZON_SECRET_KEY ?= error('OS_HORIZON_SECRET_KEY must be defined');
+variable OS_HORIZON_DEFAULT_DOMAIN ?= 'default';
+variable OS_HORIZON_KEYSTONE_API_VERSION ?= '3';
+variable OS_HORIZON_MULTIDOMAIN_ENABLED ?= {
+  if (OS_KEYSTONE_IDENTITY_DRIVER == 'sql') {
+    false;
+  } else {
+    true;
+  };
+};
 
-# Cinder host
-variable CINDER_PUBLIC_HOST ?= NOVA_PUBLIC_HOST;
-variable CINDER_INTERNAL_HOST ?= NOVA_INTERNAL_HOST;
+##############################
+# Metadata specific variable #
+##############################
+variable OS_METADATA_HOST ?= OS_NOVA_CONTROLLER_HOST;
 
-# Glance host
-variable GLANCE_PUBLIC_HOST ?= NOVA_PUBLIC_HOST;
-variable GLANCE_INTERNAL_HOST ?= NOVA_INTERNAL_HOST;
-
-# Neutron host
-variable NEUTRON_PUBLIC_HOST ?= NOVA_PUBLIC_HOST;
-variable NEUTRON_INTERNAL_HOST ?= NOVA_INTERNAL_HOST;
-variable NEUTRON_METADATA_PROXY_ENABLED ?= true;
-variable METADATA_PROXY_SHARED_SECRET ?= '';
-
-# Rabbit host
-variable RABBIT_HOST ?= NOVA_INTERNAL_HOST;
-
-# MySQL host
-variable MYSQL_HOST ?= NOVA_INTERNAL_HOST;
-
-# Default endpoints
-variable KEYSTONE_PROTOCOL ?= 'http';
-variable KEYSTONE_PUBLIC_ENDPOINT ?= KEYSTONE_PROTOCOL + '://' + KEYSTONE_PUBLIC_HOST + ':5000/v2.0';
-variable KEYSTONE_INTERNAL_ENDPOINT ?= KEYSTONE_PROTOCOL + '://' + KEYSTONE_INTERNAL_HOST + ':5000/v2.0';
+###########################
+# CEPH Specific Variables #
+###########################
+variable OS_CEPH ?= false;
+variable OS_CEPH_GLANCE_POOL ?= 'images';
+variable OS_CEPH_GLANCE_USER ?= 'glance';
+variable OS_CEPH_GLANCE_CEPH_CONF ?= '/etc/ceph/ceph.conf';
+variable OS_CEPH_CINDER_POOL ?= 'volumes';
+variable OS_CEPH_CINDER_USER ?= 'cinder';
+variable OS_CEPH_CINDER_CEPH_CONF ?= '/etc/ceph/ceph.conf';
+variable OS_CEPH_CINDER_BACKUP_POOL ?= 'backups';
+variable OS_CEPH_CINDER_BACKUP_USER ?= 'cinder-backup';
+variable OS_CEPH_CINDER_BACKUP_CEPH_CONF ?= '/etc/ceph/ceph.conf';
+variable OS_CEPH_NOVA_POOL ?= 'vms';
+variable OS_CEPH_NOVA_USER ?= 'cinder';
+variable OS_CEPH_NOVA_CEPH_CONF ?= '/etc/ceph/ceph.conf';
+variable OS_CEPH_LIBVIRT_SECRET ?= if (OS_CEPH) {error('OS_CEPH_LIBVIRT_SECRET must be defined when OS_CEPH is true');} else {null;};
