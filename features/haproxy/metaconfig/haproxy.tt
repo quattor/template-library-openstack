@@ -1,0 +1,55 @@
+global
+[% FOREACH log IN global.logs -%]
+    log /dev/log [% FOREACH item IN log.value -%] [% item %] [%- END -%]
+
+    [%- END -%]
+
+[% FOREACH option IN global.config -%]
+    [% option.key %] [% option.value %]
+
+    [%- END -%]
+
+    stats [% FOREACH option IN global.stats.pairs %] [% option.key %] [% option.value %] [%- END -%]
+
+
+defaults
+[% FOREACH config IN defaults.config.pairs -%]
+    [% config.key %] [% config.value %]
+
+    [%- END -%]
+[% FOREACH option IN defaults.options.pairs -%]
+    option [% option.value %]
+
+    [%- END -%]
+[% FOREACH timeout IN defaults.timeouts.pairs -%]
+    timeout [% timeout.key %] [% timeout.value %]
+
+    [%- END -%]
+
+listen stats :1936
+    mode http
+    stats enable
+    stats hide-version
+    stats uri /
+    stats refresh 5s
+
+
+[% FOREACH vhost IN vhosts -%]
+listen  [% vhost.name %]
+    bind [% vhost.bind %] [% FOREACH option IN vhost.bindoptions -%] [% option.key %] [% option.value %] [%- END -%]
+
+[% FOREACH config IN vhost.config.pairs -%]
+    [% config.key %] [% config.value %]
+
+    [%- END -%]
+[% FOREACH option IN vhost.options -%]
+    option [% option %]
+
+    [%- END -%]
+    default-server port [% vhost.port %] [% FOREACH option IN vhost.defaultoptions.pairs -%] [% option.key %] [% option.value %] [%- END -%]
+
+[% FOREACH server IN vhost.servers.pairs -%]
+    server [% server.key %] [% server.value %]:[% vhost.port %] [% FOREACH option IN vhost.serveroptions.pairs -%] [% option.key %] [% option.value %] [%- END -%] check
+
+    [%- END -%]
+[%- END -%]
