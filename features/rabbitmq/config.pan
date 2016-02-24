@@ -19,3 +19,9 @@ prefix '/software/components/dirperm';
   );
   SELF;
 };
+
+include if (OS_HA) {
+    'features/rabbitmq/ha';
+} else {
+    null;
+};

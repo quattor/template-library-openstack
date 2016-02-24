@@ -19,4 +19,5 @@ prefix '/software/components/chkconfig/service';
 'mongod/on' = '';
 'mongod/startstop' = true;
 
+
 include 'features/mongodb/mongodb' + to_string(OS_MONGODB_VERSION);

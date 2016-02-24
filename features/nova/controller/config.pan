@@ -117,3 +117,9 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 # [vnc] section
 'contents/vnc/vncserver_listen' = '$my_ip';
 'contents/vnc/vncserver_proxyclient_address' = '$my_ip';
+
+include if (OS_HA) {
+    'features/nova/controller/ha';
+} else {
+    null;
+};
