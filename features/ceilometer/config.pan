@@ -71,3 +71,10 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 'contents/service_credentials/os_password' = OS_CEILOMETER_PASSWORD;
 'contents/service_credentials/os_endpoint_type' = 'internalURL';
 'contents/service_credentials/os_region_name' = OS_REGION_NAME;
+
+
+include if (OS_HA) {
+    'features/ceilometer/ha';
+} else {
+    null;
+};
