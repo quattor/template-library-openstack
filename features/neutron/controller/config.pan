@@ -84,3 +84,10 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 'contents/oslo_concurrency/lock_path' = '/var/lib/neutron/tmp';
 #[oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+
+
+include if (OS_HA) {
+    'features/neutron/controller/ha';
+} else {
+    null;
+};

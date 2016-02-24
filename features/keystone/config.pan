@@ -32,8 +32,19 @@ prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
   OS_KEYSTONE_DB_HOST +
   '/keystone';
 
+
 # [memcache] section
-'contents/memcache/servers' = OS_MEMCACHE_HOST + ':11211';
+'contents/memcache/servers' = { hosts = '';
+foreach(k;v;OS_MEMCACHE_HOSTS) {
+        if ( hosts != '') {
+            hosts = hosts + ',' + v + ':11211';
+        } else {
+            hosts = v + ':11211';
+        };
+
+        hosts;
+    };
+};
 
 # [revoke] section
 'contents/revoke/driver' = 'sql';

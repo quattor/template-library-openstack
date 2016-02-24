@@ -6,6 +6,10 @@ unique template defaults/openstack/config;
 include if_exists('site/openstack/config');
 variable PRIMARY_IP ?= DB_IP[escape(FULL_HOSTNAME)];
 
+variable OS_HA ?= false;
+
+
+
 ############################
 # Active SSL configuration #
 ############################
@@ -65,6 +69,7 @@ variable OS_GLANCE_DB_PASSWORD ?= 'GLANCE_DBPASS';
 variable OS_GLANCE_USERNAME ?= 'glance';
 variable OS_GLANCE_PASSWORD ?= 'GLANCE_PASS';
 variable OS_GLANCE_STORE_DIR ?= '/var/lib/glance/images/';
+variable OS_GLANCE_PORT = 9292;
 
 ############################
 # Heat specific variable #
@@ -81,6 +86,8 @@ variable OS_HEAT_STACK_DOMAIN ?= 'heat';
 variable OS_HEAT_DOMAIN_ADMIN_USERNAME ?= 'heat_domain_admin';
 variable OS_HEAT_DOMAIN_ADMIN_PASSWORD ?= 'HEAT_DOMAIN_ADMIN_PASS';
 
+
+
 ##############################
 # Keystone specific variable #
 ##############################
@@ -92,10 +99,13 @@ variable OS_KEYSTONE_DB_PASSWORD ?= 'KEYSTONE_DBPASS';
 variable OS_KEYSTONE_IDENTITY_DRIVER ?= 'sql';
 variable OS_KEYSTONE_IDENTITY_LDAP_PARAMS ?= dict();
 
+
+
+
 #############################
 # Memcache specfic variable #
 #############################
-variable OS_MEMCACHE_HOST ?= 'localhost';
+variable OS_MEMCACHE_HOSTs ?= list('localhost');
 
 #############################
 # MongoDB specfic variable #
@@ -117,6 +127,8 @@ variable OS_NOVA_DB_USERNAME ?= 'nova';
 variable OS_NOVA_DB_PASSWORD ?= 'NOVA_DBPASS';
 variable OS_NOVA_USERNAME ?= 'nova';
 variable OS_NOVA_PASSWORD ?= 'NOVA_PASS';
+
+
 
 #############################
 # Neutron specific variable #
@@ -142,6 +154,7 @@ variable OS_NEUTRON_DEFAULT_DHCP_POOL ?= dict(
 variable OS_NEUTRON_DEFAULT_GATEWAY ?= '192.168.0.1';
 variable OS_NEUTRON_DEFAULT_NAMESERVER ?= '192.168.0.1';
 
+
 ############################
 # Cinder specific variable #
 ############################
@@ -159,6 +172,9 @@ variable OS_CINDER_PASSWORD ?= 'CINDER_PASS';
 variable OS_CINDER_STORAGE_HOST ?= OS_CINDER_CONTROLLER_HOST;
 variable OS_CINDER_STORAGE_TYPE ?= 'lvm';
 
+
+
+
 ############################
 # Ceilometer specific variable #
 ############################
@@ -174,6 +190,8 @@ variable OS_CEILOMETER_PASSWORD ?= 'CEILOMETER_PASS';
 
 
 
+
+
 ##############################
 # RabbitMQ specific variable #
 ##############################
@@ -186,7 +204,7 @@ variable OS_RABBITMQ_PASSWORD ?= 'RABBIT_PASS';
 ###########
 variable OS_HORIZON_HOST ?= OS_CONTROLLER_HOST;
 variable OS_HORIZON_ALLOWED_HOSTS ?= list('*');
-variable OS_HORIZON_DEFAULT_ROLE ?= 'users';
+variable OS_HORIZON_DEFAULT_ROLE ?= 'user';
 variable OS_HORIZON_SECRET_KEY ?= error('OS_HORIZON_SECRET_KEY must be defined');
 variable OS_HORIZON_DEFAULT_DOMAIN ?= 'default';
 variable OS_HORIZON_KEYSTONE_API_VERSION ?= '3';
@@ -197,6 +215,7 @@ variable OS_HORIZON_MULTIDOMAIN_ENABLED ?= {
     true;
   };
 };
+
 
 ##############################
 # Metadata specific variable #
@@ -220,3 +239,6 @@ variable OS_CEPH_NOVA_POOL ?= 'vms';
 variable OS_CEPH_NOVA_USER ?= 'cinder';
 variable OS_CEPH_NOVA_CEPH_CONF ?= '/etc/ceph/ceph.conf';
 variable OS_CEPH_LIBVIRT_SECRET ?= if (OS_CEPH) {error('OS_CEPH_LIBVIRT_SECRET must be defined when OS_CEPH is true');} else {null;};
+
+
+include if (OS_HA) {'defaults/openstack/ha';} else {null;};

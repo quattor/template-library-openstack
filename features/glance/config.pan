@@ -96,3 +96,9 @@ include if (OS_CEPH) {
 } else {
     'features/glance/file';
 };
+
+include if (OS_HA) {
+    'features/glance/ha';
+} else {
+    null;
+};
