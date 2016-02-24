@@ -1,0 +1,1 @@
+unique template features/keystone/identity/sql;
