@@ -55,3 +55,9 @@ prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}';
 'contents/oslo_concurrency/lock_path' = '/var/lib/cinder/tmp';
 #[oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+
+include if (OS_HA) {
+    'features/cinder/controller/ha';
+} else {
+    null;
+};

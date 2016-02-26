@@ -78,7 +78,8 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 # [cinder] section
 'contents/cinder' = {
   if (OS_CINDER_ENABLED) {
-    dict('os_region_name', OS_REGION_NAME);
+    dict('os_region_name', OS_REGION_NAME,
+        'cinder_catalog_info','volumev2:cinderv2:publicURL',);
   } else {
     null;
   };
