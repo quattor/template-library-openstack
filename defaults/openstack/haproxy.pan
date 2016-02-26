@@ -282,9 +282,9 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
     'port' , OS_CEILOMETER_PORT,
     'bind' ,  '*:'+to_string(OS_CEILOMETER_PORT),
     'config' , dict(
-        'mode' , 'tcp',
+        'mode' , 'http',
         'balance' , 'source',),
-    'options' , list('tcpka','tcplog','ssl-hello-chk'),
+    'options' , list('tcpka','httplog','ssl-hello-chk','tcp-check'),
     'defaultoptions',dict(
         'inter', '2s',
         'downinter', '5s',
