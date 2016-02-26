@@ -104,7 +104,6 @@ $DEBUG_DATABASES mongo --host $CEILOMETER_DB_HOST --eval "
 echo "[DONE] Database configuration"
 
 echo "[START] service configuration"
-systemctl start openstack-keystone
 echo "  keystone"
 if openstack service list | grep 'identity' ; then
     echo ' - already exists';
