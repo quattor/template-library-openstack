@@ -1,0 +1,40 @@
+[% FOREACH port IN listen -%]
+Listen [% port %]
+
+[%-  END -%]
+
+[% FOREACH vhost IN vhosts -%]
+<VirtualHost *:[% vhost.port %]>
+    WSGIDaemonProcess [% vhost.processgroup %] processes=5 threads=1 user=keystone group=keystone display-name=%{GROUP}
+    WSGIProcessGroup [% vhost.processgroup %]
+    WSGIScriptAlias / [% vhost.script %]
+    WSGIApplicationGroup %{GLOBAL}
+    WSGIPassAuthorization On
+    <IfVersion >= 2.4>
+      ErrorLogFormat "%{cu}t %M"
+    </IfVersion>
+
+    [% IF vhost.ssl.defined %]
+    SSLEngine on
+    SSLCertificateFile [% vhost.ssl.cert %]
+    SSLCertificateKeyFile [% vhost.ssl.key %]
+      [%- IF vhost.ssl.chain.defined %]
+      SSLCertificateChainFile [% vhost.ssl.chain %]
+      [%- END %]
+    [%- END %]
+
+    ErrorLog /var/log/httpd/keystone-error.log
+    CustomLog /var/log/httpd/keystone-access.log combined
+
+    <Directory /usr/bin>
+        <IfVersion >= 2.4>
+            Require all granted
+        </IfVersion>
+        <IfVersion < 2.4>
+            Order allow,deny
+            Allow from all
+        </IfVersion>
+    </Directory>
+</VirtualHost>
+
+[%- END -%]
