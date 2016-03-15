@@ -18,7 +18,4 @@ foreach(k;v;OS_MEMCACHE_HOSTS) {
     };
 };
 'contents/DEFAULT/dhcp_agents_per_network' = 2;
-'contents/DEFAULT/l3_ha' = 'True';
 'contents/DEFAULT/allow_automatic_l3agent_failover' = 'True';
-'contents/DEFAULT/max_l3_agents_per_router' = 2;
-'contents/DEFAULT/min_l3_agents_per_router' = 2;
