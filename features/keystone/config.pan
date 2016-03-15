@@ -23,6 +23,7 @@ prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
 
 # [DEFAULT] section
 'contents/DEFAULT/admin_token' ?= OS_ADMIN_TOKEN;
+'contents/DEFAULT/notification_driver' = 'messagingv2';
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
 
 # [database] section
@@ -41,6 +42,9 @@ prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
 # [token] section
 'contents/token/provider' = 'uuid';
 'contents/token/driver' = 'memcache';
+
+#[oslo_messaging_rabbit] section
+'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # Configure identity backend
 include 'features/keystone/identity/' + OS_KEYSTONE_IDENTITY_DRIVER;
