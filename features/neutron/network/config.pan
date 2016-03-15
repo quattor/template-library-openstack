@@ -45,6 +45,7 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 'contents/DEFAULT/auth_strategy' = 'keystone';
 'contents/DEFAULT/base_mac' = OS_NEUTRON_BASE_MAC;
 'contents/DEFAULT/dvr_base_mac' = OS_NEUTRON_DVR_BASE_MAC;
+'contents/DEFAULT/notification_driver' = 'messagingv2';
 
 # [keystone_authtoken]
 'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
