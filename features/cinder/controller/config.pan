@@ -28,6 +28,7 @@ prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}';
 'contents/DEFAULT/rpc_backend' = 'rabbit';
 'contents/DEFAULT/auth_strategy' = 'keystone';
 'contents/DEFAULT/my_ip' = PRIMARY_IP;
+'contents/DEFAULT/notification_driver' = 'messagingv2';
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
 'contents/DEFAULT/ssl_cert_file' = if (OS_SSL) {
   OS_SSL_CERT;
