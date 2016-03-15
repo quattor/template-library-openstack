@@ -43,6 +43,7 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 'contents/DEFAULT/notify_nova_on_port_data_changes' = 'True';
 'contents/DEFAULT/nova_url' = OS_NOVA_CONTROLLER_PROTOCOL + '://' + OS_NOVA_CONTROLLER_HOST + ':8774/v2';
 'contents/DEFAULT/auth_strategy' = 'keystone';
+'contents/DEFAULT/notification_driver' = 'messagingv2';
 'contents/DEFAULT/ssl_cert_file' = if ( OS_SSL ) {
   OS_SSL_CERT;
 } else {
