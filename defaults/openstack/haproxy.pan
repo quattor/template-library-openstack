@@ -106,6 +106,27 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
     'servers', OS_NEUTRON_SERVERS,)
 );
 
+prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
+'module' = 'haproxy';
+'contents/vhosts/' = append(dict('name' , 'neutron-metadata',
+    'port' , OS_NEUTRON_METADATA_PORT,
+    'bind' ,  '*:'+to_string(OS_NEUTRON_METADATA_PORT),
+    'config' , dict(
+        'mode' , 'tcp',
+        'balance' , 'source',),
+    'options' , list('tcpka','httplog','ssl-hello-chk','tcp-check'),
+    'defaultoptions',dict(
+        'inter', '2s',
+        'downinter', '5s',
+        'rise', 3,
+        'fall', 2,
+        'slowstart', '60s',
+        'maxqueue', 128,
+        'weight', 100,),
+    'servers', OS_NEUTRON_SERVERS,)
+);
+
+
 ########
 # Keystone #
 ########
