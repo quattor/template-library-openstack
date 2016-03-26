@@ -52,3 +52,7 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/DEFAULT/instance_usage_audit_period' = 'hour';
 'contents/DEFAULT/notify_on_state_change' = 'vm_and_task_state';
 'contents/DEFAULT/notification_driver' = 'messagingv2';
+'contents/DEFAULT/compute_monitors' = 'ComputeDriverCPUMonitor,cpu.virt_driver';
+
+# Configure snmpd for ceilometer
+include 'features/ceilometer/meters/nova/snmp';
