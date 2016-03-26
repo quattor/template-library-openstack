@@ -12,12 +12,12 @@ include 'features/accounts/config';
 include 'features/dashboard/rpms/config';
 
 include 'components/filecopy/config';
-prefix '/software/components/filecopy/services/{/usr/share/templates/quattor/metaconfig/django-horizon.tt}';
+prefix '/software/components/filecopy/services/{/usr/share/templates/quattor/metaconfig/openstack/django-horizon.tt}';
 'config' = file_contents('features/dashboard/metaconfig/django-horizon.tt');
 
 include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local_settings}';
-'module' = 'django-horizon';
+'module' = 'openstack/django-horizon';
 
 'daemons/httpd' = 'restart';
 

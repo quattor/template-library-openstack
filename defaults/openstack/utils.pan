@@ -1,13 +1,13 @@
 unique template defaults/openstack/utils;
 
 include 'components/filecopy/config';
-prefix '/software/components/filecopy/services/{/usr/share/templates/quattor/metaconfig/env.tt}';
+prefix '/software/components/filecopy/services/{/usr/share/templates/quattor/metaconfig/openstack/env.tt}';
 'config' = file_contents('defaults/openstack/metaconfig/env.tt');
 
 # Create Admin environment script
 include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/root/admin-openrc.sh}';
-'module' = 'env';
+'module' = 'openstack/env';
 'contents/variables/OS_PROJECT_DOMAIN_ID' = 'default';
 'contents/variables/OS_USER_DOMAIN_ID' = 'default';
 'contents/variables/OS_PROJECT_NAME' = 'admin';
