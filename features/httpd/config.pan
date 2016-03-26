@@ -15,7 +15,7 @@ prefix '/software/components/metaconfig/services/{/etc/httpd/conf.d/01-servernam
 'contents/ServerName' = OS_KEYSTONE_CONTROLLER_HOST;
 
 prefix '/software/components/metaconfig/services/{/etc/httpd/conf.d/wsgi-keystone.conf}';
-'module' = 'apache-keystone';
+'module' = 'openstack/wsgi-keystone';
 'daemons/httpd' = 'restart';
 'contents/listen' = list(5000, 35357);
 
@@ -46,6 +46,6 @@ prefix '/software/components/metaconfig/services/{/etc/httpd/conf.d/wsgi-keyston
 };
 
 include 'components/filecopy/config';
-prefix '/software/components/filecopy/services/{/usr/share/templates/quattor/metaconfig/apache-keystone.tt}';
-'config' = file_contents('features/httpd/metaconfig/apache-keystone.tt');
+prefix '/software/components/filecopy/services/{/usr/share/templates/quattor/metaconfig/openstack/wsgi-keystone.tt}';
+'config' = file_contents('features/httpd/metaconfig/wsgi-keystone.tt');
 'perms' = '0644';
