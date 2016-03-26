@@ -26,6 +26,7 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}';
 # [DEFAULT] section
 'contents/DEFAULT/notification_driver' = 'messagingv2';
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
+'contents/DEFAULT/show_multiple_locations' = OS_GLANCE_MULTIPLE_LOCATIONS;
 'contents/DEFAULT/cert_file' = if (OS_SSL) {
   OS_SSL_CERT;
 } else {
