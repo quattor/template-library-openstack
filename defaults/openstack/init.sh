@@ -151,7 +151,7 @@ echo "  cinder volumev2"
 if openstack service list | grep 'volumev2' ; then
     echo ' - already exists';
 else
-    $DEBUG_SERVICES openstack service create --name cinder   --description "OpenStack Block Storage" volumev2;
+    $DEBUG_SERVICES openstack service create --name cinderv2   --description "OpenStack Block Storage" volumev2;
 fi
 echo "  ceilometer"
 if openstack service list | grep 'metering' ; then
