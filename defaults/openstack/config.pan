@@ -62,6 +62,7 @@ variable OS_GLANCE_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
 variable OS_GLANCE_DB_HOST ?= OS_DB_HOST;
 variable OS_GLANCE_DB_USERNAME ?= 'glance';
 variable OS_GLANCE_DB_PASSWORD ?= 'GLANCE_DBPASS';
+variable OS_GLANCE_MULTIPLE_LOCATIONS ?= null;
 variable OS_GLANCE_USERNAME ?= 'glance';
 variable OS_GLANCE_PASSWORD ?= 'GLANCE_PASS';
 variable OS_GLANCE_STORE_DIR ?= '/var/lib/glance/images/';
