@@ -1,24 +1,5 @@
 template defaults/openstack/ha;
 
-variable OS_GLANCE_PORT ?= 9292;
-variable OS_HEAT_CFN_PORT ?= 8000;
-variable OS_HEAT_PORT ?= 8004;
-variable OS_HEAT_PORTS ?= list(OS_HEAT_PORT,OS_HEAT_CFN_PORT);
-variable OS_KEYSTONE_PORT ?= 5000;
-variable OS_KEYSTONE_ADMIN_PORT ?= 35357;
-variable OS_KEYSTONE_PORTS ?= list(OS_KEYSTONE_PORT,OS_KEYSTONE_ADMIN_PORT);
-variable OS_NOVA_OSAPI_PORT ?= 8774;
-variable OS_NOVA_EC2_PORT ?= 8773;
-variable OS_NOVA_METADATA_PORT ?= 8774;
-variable OS_NOVA_NOVNC_PORT ?= 6080;
-variable OS_NOVA_PORTS ?= list(OS_NOVA_OSAPI_PORT, OS_NOVA_EC2_PORT, OS_NOVA_EC2_PORT, OS_NOVA_NOVNC_PORT);
-variable OS_NEUTRON_PORT ?= 9696;
-variable OS_NEUTRON_METADATA_PORT ?= 9697;
-variable OS_CINDER_PORT ?= 8776;
-variable OS_CEILOMETER_PORT ?= 8777;
-variable OS_HORIZON_PORT ?= if (OS_SSL) { port = 443; } else { port = 80};
-
-
 #########################
 # HA Specific Variables #
 #########################
