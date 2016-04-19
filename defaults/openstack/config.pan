@@ -70,7 +70,7 @@ variable OS_GLANCE_MULTIPLE_LOCATIONS ?= null;
 variable OS_GLANCE_USERNAME ?= 'glance';
 variable OS_GLANCE_PASSWORD ?= 'GLANCE_PASS';
 variable OS_GLANCE_STORE_DIR ?= '/var/lib/glance/images/';
-variable OS_GLANCE_PORT = 9292;
+variable OS_GLANCE_PORT ?= 9292;
 
 ############################
 # Heat specific variable #
