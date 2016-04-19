@@ -86,8 +86,9 @@ variable OS_HEAT_PASSWORD ?= 'HEAT_PASS';
 variable OS_HEAT_STACK_DOMAIN ?= 'heat';
 variable OS_HEAT_DOMAIN_ADMIN_USERNAME ?= 'heat_domain_admin';
 variable OS_HEAT_DOMAIN_ADMIN_PASSWORD ?= 'HEAT_DOMAIN_ADMIN_PASS';
-
-
+variable OS_HEAT_CFN_PORT ?= 8000;
+variable OS_HEAT_PORT ?= 8004;
+variable OS_HEAT_PORTS ?= list(OS_HEAT_PORT,OS_HEAT_CFN_PORT);
 
 ##############################
 # Keystone specific variable #
@@ -99,9 +100,9 @@ variable OS_KEYSTONE_DB_USERNAME ?= 'keystone';
 variable OS_KEYSTONE_DB_PASSWORD ?= 'KEYSTONE_DBPASS';
 variable OS_KEYSTONE_IDENTITY_DRIVER ?= 'sql';
 variable OS_KEYSTONE_IDENTITY_LDAP_PARAMS ?= dict();
-
-
-
+variable OS_KEYSTONE_PORT ?= 5000;
+variable OS_KEYSTONE_ADMIN_PORT ?= 35357;
+variable OS_KEYSTONE_PORTS ?= list(OS_KEYSTONE_PORT,OS_KEYSTONE_ADMIN_PORT);
 
 #############################
 # Memcache specfic variable #
@@ -129,8 +130,11 @@ variable OS_NOVA_DB_USERNAME ?= 'nova';
 variable OS_NOVA_DB_PASSWORD ?= 'NOVA_DBPASS';
 variable OS_NOVA_USERNAME ?= 'nova';
 variable OS_NOVA_PASSWORD ?= 'NOVA_PASS';
-
-
+variable OS_NOVA_OSAPI_PORT ?= 8774;
+variable OS_NOVA_EC2_PORT ?= 8773;
+variable OS_NOVA_METADATA_PORT ?= 8774;
+variable OS_NOVA_NOVNC_PORT ?= 6080;
+variable OS_NOVA_PORTS ?= list(OS_NOVA_OSAPI_PORT, OS_NOVA_EC2_PORT, OS_NOVA_EC2_PORT, OS_NOVA_NOVNC_PORT);
 
 #############################
 # Neutron specific variable #
@@ -147,6 +151,8 @@ variable OS_NEUTRON_NETWORK_TYPE ?= 'provider-service';
 variable OS_NEUTRON_OVERLAY_IP ?= PRIMARY_IP;
 variable OS_NEUTRON_BASE_MAC ?= null;
 variable OS_NEUTRON_DVR_BASE_MAC ?= null;
+variable OS_NEUTRON_PORT ?= 9696;
+variable OS_NEUTRON_METADATA_PORT ?= 9697;
 variable OS_NEUTRON_DEFAULT ?= true;
 variable OS_NEUTRON_DEFAULT_NETWORKS ?= "192.168.0.0/24";
 variable OS_NEUTRON_DEFAULT_DHCP_POOL ?= dict(
@@ -173,9 +179,7 @@ variable OS_CINDER_PASSWORD ?= 'CINDER_PASS';
 # Cinder Storage
 variable OS_CINDER_STORAGE_HOST ?= OS_CINDER_CONTROLLER_HOST;
 variable OS_CINDER_STORAGE_TYPE ?= 'lvm';
-
-
-
+variable OS_CINDER_PORT ?= 8776;
 
 ############################
 # Ceilometer specific variable #
@@ -189,10 +193,7 @@ variable OS_CEILOMETER_DB_USERNAME ?= 'ceilometer';
 variable OS_CEILOMETER_DB_PASSWORD ?= 'CEILOMETER_DBPASS';
 variable OS_CEILOMETER_USERNAME ?= 'ceilometer';
 variable OS_CEILOMETER_PASSWORD ?= 'CEILOMETER_PASS';
-
-
-
-
+variable OS_CEILOMETER_PORT ?= 8777;
 
 ##############################
 # RabbitMQ specific variable #
@@ -205,6 +206,13 @@ variable OS_RABBITMQ_PASSWORD ?= 'RABBIT_PASS';
 # Horizon #
 ###########
 variable OS_HORIZON_HOST ?= OS_CONTROLLER_HOST;
+variable OS_HORIZON_PORT ?= {}
+  if (OS_SSL) {
+    port = 443;
+  } else {
+    port = 80
+  };
+};
 variable OS_HORIZON_ALLOWED_HOSTS ?= list('*');
 variable OS_HORIZON_DEFAULT_ROLE ?= 'user';
 variable OS_HORIZON_SECRET_KEY ?= error('OS_HORIZON_SECRET_KEY must be defined');
