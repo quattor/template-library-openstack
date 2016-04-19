@@ -100,6 +100,7 @@ variable OS_MEMCACHE_HOST ?= 'localhost';
 #############################
 # MongoDB specfic variable #
 #############################
+variable OS_MONGODB_VERSION ?= 2;
 variable OS_MONGODB_DBPATH ?= '/var/mongodb';
 
 ##########################
