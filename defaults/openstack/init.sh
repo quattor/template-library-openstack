@@ -1,8 +1,5 @@
 #!/bin/bash
 echo "load variable"
-# RabbitMQ variable
-export RABBITMQ_USERNAME=%s
-export RABBITMQ_PASSWORD=%s
 
 # Default Region
 export REGION=%s
@@ -62,7 +59,6 @@ export OS_IMAGE_API_VERSION=2
 export ENDPOINT_TYPES="public internal"
 export ADMIN_ENDPOINT_TYPE="admin"
 
-export DEBUG_RABBITMQ=$DEBUG
 export DEBUG_DOMAINS=$DEBUG
 export DEBUG_DATABASES=$DEBUG
 export DEBUG_SERVICES=$DEBUG
@@ -73,10 +69,7 @@ export DEBUG_USERS=$DEBUG
 export DEBUG_USERS_TO_ROLES=$DEBUG
 export DEBUG_NETWORKS=$DEBUG
 
-echo "[START] Rabbitmq configuration"
-$DEBUG_RABBITMQ rabbitmqctl add_user $RABBITMQ_USERNAME $RABBITMQ_PASSWORD
-$DEBUG_RABBITMQ rabbitmqctl set_permissions $RABBITMQ_USERNAME ".*" ".*" ".*"
-echo "[DONE] Rabbitmq configuration"
+
 
 echo "[START] Domain configuration"
 $DEBUG_DOMAINS openstack domain create --description "Stack projects and users" $HEAT_STACK_DOMAIN

@@ -25,3 +25,15 @@ include if (OS_HA) {
 } else {
     null;
 };
+
+include 'components/filecopy/config';
+prefix '/software/components/filecopy/services';
+'{/root/init-rabbitmq.sh}' = dict(
+    'perms' , '755',
+    'config' , format(
+        file_contents('features/rabbitmq/init-rabbitmq.sh'),
+        OS_RABBITMQ_USERNAME,
+        OS_RABBITMQ_PASSWORD
+    ),
+    'restart' , './root/init-rabbitmq.sh',
+);

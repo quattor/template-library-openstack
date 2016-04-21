@@ -32,8 +32,6 @@ prefix '/software/components/filecopy/services';
   'perms' ,'755',
   'config', format(
     CONTENTS_INIT_SCRIPT,
-    OS_RABBITMQ_USERNAME,
-    OS_RABBITMQ_PASSWORD,
     OS_REGION_NAME,
     OS_KEYSTONE_CONTROLLER_HOST,
     OS_KEYSTONE_CONTROLLER_HOST,
