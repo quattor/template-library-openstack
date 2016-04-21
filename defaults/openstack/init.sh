@@ -1,8 +1,7 @@
 #!/bin/bash
 echo "load variable"
 
-# Default Region
-export REGION=%s
+
 
 # Keystone URL
 export KEYSTONE_URI="http://%s:5000"
@@ -14,7 +13,6 @@ export HEAT_ORCHESTRATION_URL="http://%s:8004/v1/%%\(tenant_id\)s"
 export HEAT_CLOUDFORMATION_URL="http://%s:8000/v1"
 export CINDER_URL="http://%s:8776/v1/%%\(tenant_id\)s"
 export CINDERV2_URL="http://%s:8776/v2/%%\(tenant_id\)s"
-export CEILOMETER_URL="http://%s:8777"
 #
 
 export ADMIN_USERNAME=%s
@@ -32,11 +30,7 @@ export HEAT_DOMAIN_ADMIN_USER=%s
 export HEAT_DOMAIN_ADMIN_PASSWORD=%s
 export CINDER_USER=%s
 export CINDER_PASSWORD=%s
-export CEILOMETER_DB_HOST=%s
-export CEILOMETER_DB_USER=%s
-export CEILOMETER_DB_PASSWORD=%s
-export CEILOMETER_USER=%s
-export CEILOMETER_PASSWORD=%s
+
 export OS_TOKEN=%s
 export NEUTRON_DEFAULT_NETWORK=%s
 export NEUTRON_DEFAULT_DHCP_START=%s
@@ -55,19 +49,7 @@ export OS_AUTH_URL=$OS_URL
 export OS_IDENTITY_API_VERSION=3
 export OS_IMAGE_API_VERSION=2
 
-# Internal variables
-export ENDPOINT_TYPES="public internal"
-export ADMIN_ENDPOINT_TYPE="admin"
 
-export DEBUG_DOMAINS=$DEBUG
-export DEBUG_DATABASES=$DEBUG
-export DEBUG_SERVICES=$DEBUG
-export DEBUG_ENDPOINTS=$DEBUG
-export DEBUG_PROJECTS=$DEBUG
-export DEBUG_ROLES=$DEBUG
-export DEBUG_USERS=$DEBUG
-export DEBUG_USERS_TO_ROLES=$DEBUG
-export DEBUG_NETWORKS=$DEBUG
 
 
 

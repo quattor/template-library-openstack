@@ -6,6 +6,9 @@ include 'defaults/openstack/functions';
 # Include general openstack variables
 include 'defaults/openstack/config';
 
+# Include utils
+include 'defaults/openstack/utils';
+
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
@@ -86,9 +89,27 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 #[oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
-
 include if (OS_HA) {
     'features/neutron/controller/ha';
 } else {
     null;
 };
+
+include 'components/filecopy/config';
+prefix '/software/components/filecopy/services';
+'{/root/init-neutron.sh}' = dict(
+  'perms' ,'755',
+  'config', format(
+    file_contents('features/neutron/controller/init-neutron.sh'),
+    OS_INIT_SCRIPT_GENERAL,
+    OS_NEUTRON_CONTROLLER_HOST,
+    OS_NEUTRON_USERNAME,
+    OS_NEUTRON_PASSWORD,
+    OS_NEUTRON_DEFAULT_NETWORKS,
+    OS_NEUTRON_DEFAULT_DHCP_POOL['start'],
+    OS_NEUTRON_DEFAULT_DHCP_POOL['end'],
+    OS_NEUTRON_DEFAULT_GATEWAY,
+    OS_NEUTRON_DEFAULT_NAMESERVER,
+  ),
+  'restart' , '/root/init-neutron.sh',
+);

@@ -10,6 +10,9 @@ include 'defaults/openstack/config';
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
+# Include utils
+include 'defaults/openstack/utils';
+
 include 'features/keystone/rpms/config';
 
 # Include some useful configuration
@@ -59,3 +62,15 @@ foreach(k;v;OS_MEMCACHE_HOSTS) {
 
 # Configure identity backend
 include 'features/keystone/identity/' + OS_KEYSTONE_IDENTITY_DRIVER;
+
+include 'components/filecopy/config';
+prefix '/software/components/filecopy/services';
+'{/root/init-keystone.sh}' = dict(
+  'perms' ,'755',
+  'config', format(
+    file_contents('features/keystone/init-keystone.sh'),
+    OS_INIT_SCRIPT_GENERAL,
+    
+  ),
+  'restart' , '/root/init-keystone.sh',
+);

@@ -1,4 +1,4 @@
-template features/mongodb/mongodb3.pan
+template features/mongodb/mongodb3;
 
 # Configuration file for MongoDB
 include 'components/metaconfig/config';

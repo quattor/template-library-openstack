@@ -60,6 +60,8 @@ variable CONTENTS_INIT_SCRIPT = {
   };
 };
 
+variable OS_INIT_SCRIPT_GENERAL = format(file_contents('defaults/openstack/init-general.sh'),OS_REGION_NAME);
+
 prefix '/software/components/filecopy/services';
 '{/root/init.sh}' = dict(
   'perms' ,'755',
@@ -75,7 +77,6 @@ prefix '/software/components/filecopy/services';
     OS_HEAT_CONTROLLER_HOST,
     OS_CINDER_CONTROLLER_HOST,
     OS_CINDER_CONTROLLER_HOST,
-    OS_CEILOMETER_CONTROLLER_HOST,
     OS_USERNAME,
     OS_PASSWORD,
     OS_GLANCE_USERNAME,
@@ -91,11 +92,7 @@ prefix '/software/components/filecopy/services';
     OS_HEAT_DOMAIN_ADMIN_PASSWORD,
     OS_CINDER_USERNAME,
     OS_CINDER_PASSWORD,
-    OS_CEILOMETER_DB_HOST,
-    OS_CEILOMETER_DB_USERNAME,
-    OS_CEILOMETER_DB_PASSWORD,
-    OS_CEILOMETER_USERNAME,
-    OS_CEILOMETER_PASSWORD,
+
     OS_ADMIN_TOKEN,
     OS_NEUTRON_DEFAULT_NETWORKS,
     OS_NEUTRON_DEFAULT_DHCP_POOL['start'],
