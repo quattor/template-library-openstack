@@ -205,7 +205,7 @@ variable OS_RABBITMQ_PASSWORD ?= 'RABBIT_PASS';
 # Horizon #
 ###########
 variable OS_HORIZON_HOST ?= OS_CONTROLLER_HOST;
-variable OS_HORIZON_PORT ?= {}
+variable OS_HORIZON_PORT ?= {
   if (OS_SSL) {
     port = 443;
   } else {
