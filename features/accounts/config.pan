@@ -45,5 +45,5 @@ prefix '/software/components/accounts';
 'kept_groups/memcached' = '';
 
 # MongoDB user
-'kept_users/mongodb' = '';
-'kept_groups/mongodb' = '';
+'kept_users/mongod' = '';
+'kept_groups/mongod' = '';
