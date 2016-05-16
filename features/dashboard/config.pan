@@ -32,3 +32,8 @@ prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local
 'contents/keystone/port' = 5000;
 'contents/secret_key' = OS_HORIZON_SECRET_KEY;
 
+include if (OS_HA) {
+    'features/dashboard/ha';
+} else {
+    null;
+};
