@@ -13,9 +13,8 @@ foreach(k;v;OS_MEMCACHE_HOSTS) {
         } else {
             hosts = v + ':11211';
         };
-
-        hosts;
     };
+    hosts;
 };
 'contents/DEFAULT/dhcp_agents_per_network' = 2;
 'contents/DEFAULT/allow_automatic_l3agent_failover' = 'True';
