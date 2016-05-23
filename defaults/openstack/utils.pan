@@ -60,7 +60,10 @@ variable CONTENTS_INIT_SCRIPT = {
   };
 };
 
-variable OS_INIT_SCRIPT_GENERAL = format(file_contents('defaults/openstack/init-general.sh'),OS_REGION_NAME);
+variable OS_INIT_SCRIPT_GENERAL = format(file_contents('defaults/openstack/init-general.sh'),OS_ADMIN_TOKEN,OS_REGION_NAME,OS_KEYSTONE_CONTROLLER_HOST,
+OS_KEYSTONE_CONTROLLER_HOST,
+OS_USERNAME,
+OS_PASSWORD,);
 
 prefix '/software/components/filecopy/services';
 '{/root/init.sh}' = dict(
