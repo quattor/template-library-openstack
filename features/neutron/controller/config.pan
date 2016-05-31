@@ -95,6 +95,8 @@ include if (OS_HA) {
     null;
 };
 
+variable OS_NEUTRON_INIT_SCRIPT = OS_INIT_SCRIPT_GENERAL + file_contents('defaults/openstack/init-network.sh');
+
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
 '{/root/init-neutron.sh}' = dict(
