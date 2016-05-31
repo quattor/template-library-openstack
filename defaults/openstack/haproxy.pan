@@ -13,7 +13,7 @@ prefix '/software/components/metaconfig/services/{/usr/local/bin/haproxy-reload}
 
 prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 'module' = 'haproxy';
-'contents/vhosts/' = if (length(OS_NOVA_SERVERS) != 0) {append(dict('name' , 'nova-osapi',
+'contents/vhosts/' = append(if (length(OS_NOVA_SERVERS) != 0) {dict('name' , 'nova-osapi',
     'port' , OS_NOVA_OSAPI_PORT,
     'bind' ,  '*:'+to_string(OS_NOVA_OSAPI_PORT),
     'config' , dict(
@@ -29,9 +29,9 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_NOVA_SERVERS,)
-    };
+    }
 );
-'contents/vhosts/' = if (length(OS_NOVA_SERVERS) != 0) {append(dict('name' , 'nova-ec2',
+'contents/vhosts/' = append(if (length(OS_NOVA_SERVERS) != 0) {dict('name' , 'nova-ec2',
     'port' , OS_NOVA_EC2_PORT,
     'bind' ,  '*:'+to_string(OS_NOVA_EC2_PORT),
     'config' , dict(
@@ -47,9 +47,9 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_NOVA_SERVERS,)
-    };
+    }
 );
-'contents/vhosts/' = if (length(OS_NOVA_SERVERS) != 0) {append(dict('name' , 'nova-metadata',
+'contents/vhosts/' = append(if (length(OS_NOVA_SERVERS) != 0) {dict('name' , 'nova-metadata',
     'port' , OS_NOVA_METADATA_PORT,
     'bind' ,  '*:'+to_string(OS_NOVA_METADATA_PORT),
     'config' , dict(
@@ -65,9 +65,9 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_NOVA_SERVERS,)
-    };
+    }
 );
-'contents/vhosts/' = if (length(OS_NOVA_SERVERS) != 0) {append(dict('name' , 'nova-novnc',
+'contents/vhosts/' = append(if (length(OS_NOVA_SERVERS) != 0) {dict('name' , 'nova-novnc',
     'port' , OS_NOVA_NOVNC_PORT,
     'bind' ,  '*:'+to_string(OS_NOVA_NOVNC_PORT),
     'config' , dict(
@@ -83,7 +83,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_NOVA_SERVERS,)
-    };
+    }
 );
 
 ########
@@ -92,7 +92,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 
 prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 'module' = 'haproxy';
-'contents/vhosts/' = if (length(OS_NEUTRON_SERVERS) != 0) {append(dict('name' , 'neutron',
+'contents/vhosts/' = append(if (length(OS_NEUTRON_SERVERS) != 0) {dict('name' , 'neutron',
     'port' , OS_NEUTRON_PORT,
     'bind' ,  '*:'+to_string(OS_NEUTRON_PORT),
     'config' , dict(
@@ -108,12 +108,12 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_NEUTRON_SERVERS,)
-    };
+    }
 );
 
 prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 'module' = 'haproxy';
-'contents/vhosts/' = if (length(OS_NEUTRON_SERVERS) != 0) {append(dict('name' , 'neutron-metadata',
+'contents/vhosts/' = append(if (length(OS_NEUTRON_SERVERS) != 0) {dict('name' , 'neutron-metadata',
     'port' , OS_NEUTRON_METADATA_PORT,
     'bind' ,  '*:'+to_string(OS_NEUTRON_METADATA_PORT),
     'config' , dict(
@@ -129,7 +129,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_NEUTRON_SERVERS,)
-    };
+    }
 );
 
 
@@ -140,7 +140,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 
 prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 'module' = 'haproxy';
-'contents/vhosts/' = if (length(OS_KEYSTONE_SERVERS) != 0) {append(dict('name' , 'keystone',
+'contents/vhosts/' = append(if (length(OS_KEYSTONE_SERVERS) != 0) {dict('name' , 'keystone',
     'port' , OS_KEYSTONE_PORT,
     'bind' ,  '*:'+to_string(OS_KEYSTONE_PORT),
     'config' , dict(
@@ -156,9 +156,9 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_KEYSTONE_SERVERS,)
-    };
+    }
 );
-'contents/vhosts/' = if (length(OS_KEYSTONE_SERVERS) != 0) {append(dict('name' , 'keystone-admin',
+'contents/vhosts/' = append(if (length(OS_KEYSTONE_SERVERS) != 0) {dict('name' , 'keystone-admin',
     'port' , OS_KEYSTONE_ADMIN_PORT,
     'bind' , '*:'+to_string(OS_KEYSTONE_ADMIN_PORT),
     'config' , dict(
@@ -174,7 +174,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_KEYSTONE_SERVERS,)
-    };
+    }
 );
 
 
@@ -184,7 +184,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 
 prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 'module' = 'haproxy';
-'contents/vhosts/' = if (length(OS_CINDER_SERVERS) != 0) {append(dict('name' , 'cinder',
+'contents/vhosts/' = append(if (length(OS_CINDER_SERVERS) != 0) {dict('name' , 'cinder',
     'port' , OS_CINDER_PORT,
     'bind' ,  '*:'+to_string(OS_CINDER_PORT),
     'config' , dict(
@@ -200,7 +200,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_CINDER_SERVERS,)
-    };
+    }
 );
 
 ########
@@ -209,7 +209,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 
 prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 'module' = 'haproxy';
-'contents/vhosts/' = if (length(OS_GLANCE_SERVERS) != 0) {append(dict('name' , 'glance',
+'contents/vhosts/' = append(if (length(OS_GLANCE_SERVERS) != 0) {dict('name' , 'glance',
     'port' , OS_GLANCE_PORT,
     'bind' ,  '*:'+to_string(OS_GLANCE_PORT),
     'config' , dict(
@@ -225,7 +225,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_GLANCE_SERVERS,)
-    };
+    }
 );
 
 
@@ -235,7 +235,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 
 prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 'module' = 'haproxy';
-'contents/vhosts/' = if (length(OS_HORIZON_SERVERS) != 0) {append(dict('name' , 'horizon',
+'contents/vhosts/' = append(if (length(OS_HORIZON_SERVERS) != 0) {dict('name' , 'horizon',
     'port' , OS_HORIZON_PORT,
     'bind' , '*:'+to_string(OS_HORIZON_PORT),
     'config' , dict(
@@ -258,7 +258,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
        'cookie','control',
     ),
     'servers', OS_HORIZON_SERVERS,)
-    };
+    }
 );
 
 ########
@@ -268,7 +268,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 
 prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 'module' = 'haproxy';
-'contents/vhosts/' = if (length(OS_HEAT_SERVERS) != 0) {append(dict('name' , 'heat-cfn',
+'contents/vhosts/' = append(if (length(OS_HEAT_SERVERS) != 0) {dict('name' , 'heat-cfn',
     'port' , OS_HEAT_CFN_PORT,
     'bind' ,  '*:'+to_string(OS_HEAT_CFN_PORT),
     'config' , dict(
@@ -284,9 +284,9 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_HEAT_SERVERS,)
-    };
+    }
 );
-'contents/vhosts/' = if (length(OS_HEAT_SERVERS) != 0) {append(dict('name' , 'heat',
+'contents/vhosts/' = append(if (length(OS_HEAT_SERVERS) != 0) {dict('name' , 'heat',
     'port' , OS_HEAT_PORT,
     'bind' , '*:'+to_string(OS_HEAT_PORT),
     'config' , dict(
@@ -302,7 +302,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_HEAT_SERVERS,)
-    };
+    }
 );
 
 
@@ -313,7 +313,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 
 prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 'module' = 'haproxy';
-'contents/vhosts/' = if (length(OS_CEILOMETER_SERVERS) != 0) {append(dict('name' , 'ceilometer',
+'contents/vhosts/' = append(if (length(OS_CEILOMETER_SERVERS) != 0) {dict('name' , 'ceilometer',
     'port' , OS_CEILOMETER_PORT,
     'bind' ,  '*:'+to_string(OS_CEILOMETER_PORT),
     'config' , dict(
@@ -329,5 +329,5 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
         'maxqueue', 128,
         'weight', 100,),
     'servers', OS_CEILOMETER_SERVERS,)
-    };
+    }
 );
