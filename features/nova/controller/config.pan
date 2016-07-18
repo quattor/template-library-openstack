@@ -6,6 +6,9 @@ include 'defaults/openstack/functions';
 # Include general openstack variables
 include 'defaults/openstack/config';
 
+# Include utils
+include 'defaults/openstack/utils';
+
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
@@ -123,3 +126,17 @@ include if (OS_HA) {
 } else {
     null;
 };
+
+include 'components/filecopy/config';
+prefix '/software/components/filecopy/services';
+'{/root/init-nova.sh}' = dict(
+  'perms' ,'755',
+  'config', format(
+    file_contents('features/nova/controller/init-nova.sh'),
+    OS_INIT_SCRIPT_GENERAL,
+    OS_NOVA_CONTROLLER_HOST,
+    OS_NOVA_USERNAME,
+    OS_NOVA_PASSWORD,
+  ),
+  'restart' , '/root/init-nova.sh',
+);

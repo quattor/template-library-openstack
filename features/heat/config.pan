@@ -9,6 +9,9 @@ include 'defaults/openstack/config';
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
+# Include utils
+include 'defaults/openstack/utils';
+
 include 'features/heat/rpms/config';
 
 include 'components/chkconfig/config';
@@ -66,7 +69,25 @@ prefix '/software/components/metaconfig/services/{/etc/heat/heat.conf}';
   OS_HEAT_DB_PASSWORD + '@' +
   OS_HEAT_DB_HOST + '/heat';
 
-  # [keystone_authtoken] section
-  'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-  'contents/keystone_authtoken/username' = OS_GLANCE_USERNAME;
-  'contents/keystone_authtoken/password' = OS_GLANCE_PASSWORD;
+# [keystone_authtoken] section
+'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OS_GLANCE_USERNAME;
+'contents/keystone_authtoken/password' = OS_GLANCE_PASSWORD;
+
+include 'components/filecopy/config';
+prefix '/software/components/filecopy/services';
+'{/root/init-heat.sh}' = dict(
+  'perms' ,'755',
+  'config', format(
+    file_contents('features/heat/init-heat.sh'),
+    OS_INIT_SCRIPT_GENERAL,
+    OS_HEAT_CONTROLLER_HOST,
+    OS_HEAT_CONTROLLER_HOST,
+    OS_HEAT_USERNAME,
+    OS_HEAT_PASSWORD,
+    OS_HEAT_STACK_DOMAIN,
+    OS_HEAT_DOMAIN_ADMIN_USERNAME,
+    OS_HEAT_DOMAIN_ADMIN_PASSWORD,
+  ),
+  'restart' , '/root/init-heat.sh',
+);

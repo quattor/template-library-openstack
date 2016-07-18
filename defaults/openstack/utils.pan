@@ -17,6 +17,39 @@ prefix '/software/components/metaconfig/services/{/root/admin-openrc.sh}';
 'contents/variables/OS_AUTH_URL' = OS_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OS_KEYSTONE_CONTROLLER_HOST + ':35357/v3';
 'contents/variables/OS_IDENTITY_API_VERSION' = 3;
 
+include 'components/filecopy/config';
+# Copy scripts to help with init scripts
+prefix '/software/components/filecopy/services';
+'{/usr/local/bin/quattor_openstack_add_domain.sh}' = dict(
+    'perms' ,'755',
+    'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_domain.sh'),
+);
+'{/usr/local/bin/quattor_openstack_add_endpoint.sh}' = dict(
+    'perms' ,'755',
+    'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_endpoint.sh'),
+);
+'{/usr/local/bin/quattor_openstack_add_user.sh}' = dict(
+    'perms' ,'755',
+    'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_user.sh'),
+);
+'{/usr/local/bin/quattor_openstack_add_role.sh}' = dict(
+    'perms' ,'755',
+    'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_role.sh'),
+);
+'{/usr/local/bin/quattor_openstack_add_user_role.sh}' = dict(
+    'perms' ,'755',
+    'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_user_role.sh'),
+);
+'{/usr/local/bin/quattor_openstack_add_service.sh}' = dict(
+    'perms' ,'755',
+    'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_service.sh'),
+);
+'{/usr/local/bin/quattor_openstack_add_project.sh}' = dict(
+    'perms' ,'755',
+    'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_project.sh'),
+);
+
+
 # Create a initialization script
 
 variable CONTENTS_INIT_SCRIPT = {
@@ -26,50 +59,13 @@ variable CONTENTS_INIT_SCRIPT = {
     file_contents('defaults/openstack/init.sh');
   };
 };
-include 'components/filecopy/config';
-prefix '/software/components/filecopy/services';
-'{/root/init.sh}' = dict(
-  'perms' ,'755',
-  'config', format(
-    CONTENTS_INIT_SCRIPT,
-    OS_RABBITMQ_USERNAME,
-    OS_RABBITMQ_PASSWORD,
+
+variable OS_INIT_SCRIPT_GENERAL = format(
+    file_contents('defaults/openstack/init-general.sh'),
     OS_REGION_NAME,
+    OS_ADMIN_TOKEN,
     OS_KEYSTONE_CONTROLLER_HOST,
     OS_KEYSTONE_CONTROLLER_HOST,
-    OS_GLANCE_CONTROLLER_HOST,
-    OS_NOVA_CONTROLLER_HOST,
-    OS_NEUTRON_CONTROLLER_HOST,
-    OS_HEAT_CONTROLLER_HOST,
-    OS_HEAT_CONTROLLER_HOST,
-    OS_CINDER_CONTROLLER_HOST,
-    OS_CINDER_CONTROLLER_HOST,
-    OS_CEILOMETER_CONTROLLER_HOST,
     OS_USERNAME,
     OS_PASSWORD,
-    OS_GLANCE_USERNAME,
-    OS_GLANCE_PASSWORD,
-    OS_NOVA_USERNAME,
-    OS_NOVA_PASSWORD,
-    OS_NEUTRON_USERNAME,
-    OS_NEUTRON_PASSWORD,
-    OS_HEAT_USERNAME,
-    OS_HEAT_PASSWORD,
-    OS_HEAT_STACK_DOMAIN,
-    OS_HEAT_DOMAIN_ADMIN_USERNAME,
-    OS_HEAT_DOMAIN_ADMIN_PASSWORD,
-    OS_CINDER_USERNAME,
-    OS_CINDER_PASSWORD,
-    OS_CEILOMETER_DB_HOST,
-    OS_CEILOMETER_DB_USERNAME,
-    OS_CEILOMETER_DB_PASSWORD,
-    OS_CEILOMETER_USERNAME,
-    OS_CEILOMETER_PASSWORD,
-    OS_ADMIN_TOKEN,
-    OS_NEUTRON_DEFAULT_NETWORKS,
-    OS_NEUTRON_DEFAULT_DHCP_POOL['start'],
-    OS_NEUTRON_DEFAULT_DHCP_POOL['end'],
-    OS_NEUTRON_DEFAULT_GATEWAY,
-    OS_NEUTRON_DEFAULT_NAMESERVER,
-  ),
 );
