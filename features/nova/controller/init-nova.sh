@@ -9,6 +9,7 @@ export NOVA_PASSWORD=%s
 echo "[START] Databases configuration"
 echo "  Compute service"
 $DEBUG_DATABASES su -s /bin/sh -c "nova-manage db sync" nova
+$DEBUG_DATABASES su -s /bin/sh -c "nova-manage api_db sync" nova
 echo "[DONE] Database configuration"
 
 echo "[START] service configuration"
