@@ -8,8 +8,8 @@ prefix '/software/components/filecopy/services/{/usr/share/templates/quattor/met
 include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/root/admin-openrc.sh}';
 'module' = 'openstack/env';
-'contents/variables/OS_PROJECT_DOMAIN_ID' = 'default';
-'contents/variables/OS_USER_DOMAIN_ID' = 'default';
+'contents/variables/OS_PROJECT_DOMAIN_NAME' = 'default';
+'contents/variables/OS_USER_DOMAIN_NAME' = 'default';
 'contents/variables/OS_PROJECT_NAME' = 'admin';
 'contents/variables/OS_TENANT_NAME' = 'admin';
 'contents/variables/OS_USERNAME' = OS_USERNAME;
