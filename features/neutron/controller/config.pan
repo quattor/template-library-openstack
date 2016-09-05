@@ -77,8 +77,9 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 # [nova]
 'contents/nova/auth_url' = OS_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OS_KEYSTONE_CONTROLLER_HOST + ':35357';
 'contents/nova/auth_plugin' = 'password';
-'contents/nova/project_domain_id' = 'default';
-'contents/nova/user_domain_id' = 'default';
+'contents/nova/auth_type' = 'password';
+'contents/nova/project_domain_name' = 'default';
+'contents/nova/user_domain_name' = 'default';
 'contents/nova/region_name' = OS_REGION_NAME;
 'contents/nova/project_name' = 'service';
 'contents/nova/username' = OS_NOVA_USERNAME;
