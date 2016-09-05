@@ -4,7 +4,7 @@ unique template personality/keepalived/config;
 variable FLOATING_IPS ?= list(
     dict("name", "Openstack",
         "master", OS_LOADBALANCER_MASTER,
-        "router_id", 52,
+        "router_id", OS_KEEPALIVED_ROUTER_ID,
         "ip", OS_FLOATING_IP),
 );
 
