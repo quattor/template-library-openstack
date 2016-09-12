@@ -20,7 +20,7 @@ include 'features/neutron/controller/rpms/config';
 #include 'features/memcache/config';
 
 # Include variables needed to configure neutron
-include 'features/neutron/variables/' + OS_NEUTRON_NETWORK_TYPE;
+include 'features/neutron/variables/' + OS_NEUTRON_MECHANISM + '/' + OS_NEUTRON_NETWORK_TYPE;
 
 # network driver configuration
 include 'features/neutron/controller/mechanism/' + OS_NEUTRON_MECHANISM;

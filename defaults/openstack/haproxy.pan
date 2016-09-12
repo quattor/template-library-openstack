@@ -18,7 +18,8 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
     'bind' ,  '*:'+to_string(OS_NOVA_OSAPI_PORT),
     'config' , dict(
         'mode' , 'http',
-        'balance' , 'source',),
+        'balance' , 'source',
+    ),
     'options' , list('tcpka','httplog','ssl-hello-chk','httpchk'),
     'defaultoptions',dict(
         'inter', '2s',
