@@ -7,3 +7,4 @@ prefix '/software/packages';
 '{openstack-packstack}' ?= dict();
 '{python-openstackclient}' ?= dict();
 'python-memcached' ?= dict();
+'python-keystone' ?= dict();
