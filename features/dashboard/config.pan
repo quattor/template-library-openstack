@@ -33,6 +33,14 @@ prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local
 'contents/secret_key' = OS_HORIZON_SECRET_KEY;
 'contents/memcacheservers' = '127.0.0.1:11211';
 
+'contents/enable_distributed_router' =  {
+  if (exists(OS_NEUTRON_DVR_ENABLED) && OS_NEUTRON_DVR_ENABLED) {
+    'True';
+  } else {
+    'False';
+  };
+};
+
 include if (OS_HA) {
     'features/dashboard/ha';
 } else {
