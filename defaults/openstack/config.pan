@@ -103,6 +103,8 @@ variable OS_KEYSTONE_IDENTITY_LDAP_PARAMS ?= dict();
 variable OS_KEYSTONE_PORT ?= 5000;
 variable OS_KEYSTONE_ADMIN_PORT ?= 35357;
 variable OS_KEYSTONE_PORTS ?= list(OS_KEYSTONE_PORT,OS_KEYSTONE_ADMIN_PORT);
+variable OS_KEYSTONE_TOKEN_PROVIDER ?= 'uuid';
+variable OS_KEYSTONE_TOKEN_DRIVER ?= 'memcache';
 
 #############################
 # Memcache specfic variable #

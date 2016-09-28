@@ -53,8 +53,8 @@ foreach(k;v;OS_MEMCACHE_HOSTS) {
 'contents/revoke/driver' = 'sql';
 
 # [token] section
-'contents/token/provider' = 'uuid';
-'contents/token/driver' = 'memcache';
+'contents/token/provider' = OS_KEYSTONE_TOKEN_PROVIDER;
+'contents/token/driver' = OS_KEYSTONE_TOKEN_DRIVER;
 
 #[oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
@@ -69,7 +69,7 @@ prefix '/software/components/filecopy/services';
   'config', format(
     file_contents('features/keystone/init-keystone.sh'),
     OS_INIT_SCRIPT_GENERAL,
-    
+
   ),
   'restart' , '/root/init-keystone.sh',
 );
