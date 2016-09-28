@@ -6,7 +6,7 @@ include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}';
 'module' = 'tiny';
 # [DEFAULT] section
-'contents/default/memcached_servers' = { hosts = '';
+'contents/DEFAULT/memcached_servers' = { hosts = '';
 foreach(k;v;OS_MEMCACHE_HOSTS) {
         if ( hosts != '') {
             hosts = hosts + ',' + v + ':11211';
@@ -23,7 +23,7 @@ include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.conf}';
 'module' = 'tiny';
 # [DEFAULT] section
-'contents/default/memcached_servers' = { hosts = '';
+'contents/DEFAULT/memcached_servers' = { hosts = '';
 foreach(k;v;OS_MEMCACHE_HOSTS) {
         if ( hosts != '') {
             hosts = hosts + ',' + v + ':11211';
