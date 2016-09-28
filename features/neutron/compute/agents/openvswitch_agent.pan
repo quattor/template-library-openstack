@@ -4,6 +4,8 @@ include 'components/chkconfig/config';
 prefix '/software/components/chkconfig/service';
 'openvswitch/on' = '';
 'openvswitch/startstop' = true;
+'neutron-openvswitch-agent/on' = '';
+'neutron-openvswitch-agent/startstop' = true;
 
 include 'components/metaconfig/config';
 
