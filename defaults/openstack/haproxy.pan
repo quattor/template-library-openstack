@@ -3,9 +3,6 @@ template defaults/openstack/haproxy;
 include 'defaults/openstack/config';
 
 include 'components/metaconfig/config';
-prefix '/software/components/metaconfig/services/{/usr/local/bin/haproxy-reload}';
-'module' = 'haproxy-reload';
-'contents/ports' =append(list(OS_NOVA_OSAPI_PORT));
 
 ########
 # Nova #
