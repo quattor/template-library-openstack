@@ -15,13 +15,11 @@ Listen [% port %]
     </IfVersion>
 
     [% IF vhost.ssl.defined %]
-    SSLEngine on
-    SSLCertificateFile [% vhost.ssl.cert %]
-    SSLCertificateKeyFile [% vhost.ssl.key %]
-      [%- IF vhost.ssl.chain.defined %]
-      SSLCertificateChainFile [% vhost.ssl.chain %]
-      [%- END %]
+    [% FOREACH item IN vhost.ssl.pairs -%]
+[%     item.key %] [% item.value %]
+    [%     END %]
     [%- END %]
+
 
     ErrorLog /var/log/httpd/keystone-error.log
     CustomLog /var/log/httpd/keystone-access.log combined
