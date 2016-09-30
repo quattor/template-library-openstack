@@ -23,7 +23,7 @@ prefix '/software/components/metaconfig';
     SELF[escape('/etc/keystone/domains/keystone.default.conf')]['contents']['identity'] = dict('driver', 'sql');
 
     # foreach domain, populate the configuration file
-    foreach(domain;params;OS_KEYSTONE_IDENTITY_LDAP_PARAMS) {
+    foreach(domain;params;OPENSTACK_KEYSTONE_IDENTITY_LDAP_PARAMS) {
     # Populate configuration file with some default value
     SELF[escape('/etc/keystone/domains/keystone.'+domain+'.conf')] = dict(
       'module', 'tiny',

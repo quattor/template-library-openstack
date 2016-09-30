@@ -1,7 +1,7 @@
 structure template features/memcache/client/openstack;
 
 'memcached_servers' = { hosts = '';
-foreach(k;v;OS_MEMCACHE_HOSTS) {
+foreach(k;v;OPENSTACK_MEMCACHE_HOSTS) {
         if ( hosts != '') {
             hosts = hosts + ',' + v + ':11211';
         } else {

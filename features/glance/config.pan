@@ -28,35 +28,35 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}';
 'daemons/openstack-glance-api' = 'restart';
 # [DEFAULT] section
 'contents/DEFAULT/notification_driver' = 'messagingv2';
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
-'contents/DEFAULT/show_multiple_locations' = OS_GLANCE_MULTIPLE_LOCATIONS;
-'contents/DEFAULT/cert_file' = if (OS_SSL) {
-  OS_SSL_CERT;
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
+'contents/DEFAULT/show_multiple_locations' = OPENSTACK_GLANCE_MULTIPLE_LOCATIONS;
+'contents/DEFAULT/cert_file' = if (OPENSTACK_SSL) {
+  OPENSTACK_SSL_CERT;
 } else {
   null;
 };
-'contents/DEFAULT/key_file' = if (OS_SSL) {
-  OS_SSL_KEY;
+'contents/DEFAULT/key_file' = if (OPENSTACK_SSL) {
+  OPENSTACK_SSL_KEY;
 } else {
   null;
 };
-'contents/DEFAULT/registry_client_protocol' = OS_CONTROLLER_PROTOCOL;
+'contents/DEFAULT/registry_client_protocol' = OPENSTACK_CONTROLLER_PROTOCOL;
 
 #[oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [database] section
 'contents/database/connection' = 'mysql://' +
-  OS_GLANCE_DB_USERNAME + ':' +
-  OS_GLANCE_DB_PASSWORD + '@' +
-  OS_GLANCE_DB_HOST + '/glance';
+  OPENSTACK_GLANCE_DB_USERNAME + ':' +
+  OPENSTACK_GLANCE_DB_PASSWORD + '@' +
+  OPENSTACK_GLANCE_DB_HOST + '/glance';
 
-'contents/glance_store/filesystem_store_datadir' = OS_GLANCE_STORE_DIR;
+'contents/glance_store/filesystem_store_datadir' = OPENSTACK_GLANCE_STORE_DIR;
 
 # [keystone_authtoken] section
-'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OS_GLANCE_USERNAME;
-'contents/keystone_authtoken/password' = OS_GLANCE_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OPENSTACK_GLANCE_USERNAME;
+'contents/keystone_authtoken/password' = OPENSTACK_GLANCE_PASSWORD;
 
 # [paste_deploy] section
 'contents/paste_deploy/flavor' = 'keystone';
@@ -66,14 +66,14 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.co
 #'daemons/openstack-glance-registry' = 'restart';
 # [DEFAULT] section
 'contents/DEFAULT/notification_driver' = 'messagingv2';
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
-'contents/DEFAULT/cert_file' = if (OS_SSL) {
-  OS_SSL_CERT;
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
+'contents/DEFAULT/cert_file' = if (OPENSTACK_SSL) {
+  OPENSTACK_SSL_CERT;
 } else {
   null;
 };
-'contents/DEFAULT/key_file' = if (OS_SSL) {
-  OS_SSL_KEY;
+'contents/DEFAULT/key_file' = if (OPENSTACK_SSL) {
+  OPENSTACK_SSL_KEY;
 } else {
   null;
 };
@@ -83,25 +83,25 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.co
 
 # [database] section
 'contents/database/connection' = 'mysql://' +
-  OS_GLANCE_DB_USERNAME + ':' +
-  OS_GLANCE_DB_PASSWORD + '@' +
-  OS_GLANCE_DB_HOST + '/glance';
+  OPENSTACK_GLANCE_DB_USERNAME + ':' +
+  OPENSTACK_GLANCE_DB_PASSWORD + '@' +
+  OPENSTACK_GLANCE_DB_HOST + '/glance';
 
 # [keystone_authtoken] section
-'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OS_GLANCE_USERNAME;
-'contents/keystone_authtoken/password' = OS_GLANCE_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OPENSTACK_GLANCE_USERNAME;
+'contents/keystone_authtoken/password' = OPENSTACK_GLANCE_PASSWORD;
 
 # [paste_deploy] section
 'contents/paste_deploy/flavor' = 'keystone';
 
-include if (OS_CEPH) {
+include if (OPENSTACK_CEPH) {
     'features/glance/ceph';
 } else {
     'features/glance/file';
 };
 
-include if (OS_HA) {
+include if (OPENSTACK_HA) {
     'features/glance/ha';
 } else {
     null;
@@ -113,10 +113,10 @@ prefix '/software/components/filecopy/services';
   'perms' ,'755',
   'config', format(
     file_contents('features/glance/init-glance.sh'),
-    OS_INIT_SCRIPT_GENERAL,
-    OS_GLANCE_CONTROLLER_HOST,
-    OS_GLANCE_USERNAME,
-    OS_GLANCE_PASSWORD,
+    OPENSTACK_INIT_SCRIPT_GENERAL,
+    OPENSTACK_GLANCE_CONTROLLER_HOST,
+    OPENSTACK_GLANCE_USERNAME,
+    OPENSTACK_GLANCE_PASSWORD,
   ),
   'restart' , '/root/init-glance.sh',
 );

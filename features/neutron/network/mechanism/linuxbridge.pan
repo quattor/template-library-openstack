@@ -9,7 +9,7 @@ include 'features/neutron/network/agents/linuxbridge_agent';
 include 'features/neutron/network/agents/dhcp_agent';
 
 include {
-  if (OS_NEUTRON_VXLAN_ENABLED == 'True') {
+  if (OPENSTACK_NEUTRON_VXLAN_ENABLED == 'True') {
     'features/neutron/network/agents/l3_agent';
   } else {
     null;

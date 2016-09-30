@@ -13,10 +13,10 @@ include 'features/accounts/config';
 include 'features/neutron/compute/rpms/config';
 
 # Include variables needed to configure neutron
-include 'features/neutron/variables/' + OS_NEUTRON_MECHANISM + '/' + OS_NEUTRON_NETWORK_TYPE;
+include 'features/neutron/variables/' + OPENSTACK_NEUTRON_MECHANISM + '/' + OPENSTACK_NEUTRON_NETWORK_TYPE;
 
 # network driver configuration
-include 'features/neutron/compute/mechanism/' + OS_NEUTRON_MECHANISM;
+include 'features/neutron/compute/mechanism/' + OPENSTACK_NEUTRON_MECHANISM;
 
 # Include some common configuration
 include 'features/neutron/common/config';
@@ -29,12 +29,12 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 # [DEFAULT] section
 'contents/DEFAULT/auth_strategy' = 'keystone';
 'contents/DEFAULT/rpc_backend' = 'rabbit';
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 
 # [keystone_authtoken] section
-'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OS_NEUTRON_USERNAME;
-'contents/keystone_authtoken/password' = OS_NEUTRON_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OPENSTACK_NEUTRON_USERNAME;
+'contents/keystone_authtoken/password' = OPENSTACK_NEUTRON_PASSWORD;
 
 # [oslo_concurency] section
 'contents/oslo_concurency/lock_path' = '/var/lib/neutron/tmp';

@@ -48,75 +48,75 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/DEFAULT/linuxnet_interface_driver' = 'nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver';
 'contents/DEFAULT/firewall_driver' = 'nova.virt.firewall.NoopFirewallDriver';
 'contents/DEFAULT/enabled_apis' = 'osapi_compute,metadata';
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
-'contents/DEFAULT/ssl_cert_file' = if ( OS_SSL ) {
-  OS_SSL_CERT;
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
+'contents/DEFAULT/ssl_cert_file' = if ( OPENSTACK_SSL ) {
+  OPENSTACK_SSL_CERT;
 } else {
   null;
 };
-'contents/DEFAULT/ssl_key_file' = if ( OS_SSL ) {
-  OS_SSL_KEY;
+'contents/DEFAULT/ssl_key_file' = if ( OPENSTACK_SSL ) {
+  OPENSTACK_SSL_KEY;
 } else {
   null;
 };
-'contents/DEFAULT/enabled_ssl_apis' = if ( OS_SSL ) {
+'contents/DEFAULT/enabled_ssl_apis' = if ( OPENSTACK_SSL ) {
   'osapi_compute';
 } else {
   null;
 };
 # Enable SSL for novnc
-'contents/DEFAULT/cert' = if ( OS_SSL ) {
-  OS_SSL_CERT;
+'contents/DEFAULT/cert' = if ( OPENSTACK_SSL ) {
+  OPENSTACK_SSL_CERT;
 } else {
   null;
 };
-'contents/DEFAULT/key' = if ( OS_SSL ) {
-  OS_SSL_KEY;
+'contents/DEFAULT/key' = if ( OPENSTACK_SSL ) {
+  OPENSTACK_SSL_KEY;
 } else {
   null;
 };
-'contents/DEFAULT/ssl_only' = if ( OS_SSL ) {
+'contents/DEFAULT/ssl_only' = if ( OPENSTACK_SSL ) {
   'True';
 } else {
   null;
 };
-'contents/DEFAULT/cpu_allocation_ratio' = OS_NOVA_CPU_RATIO;
-'contents/DEFAULT/ram_allocation_ratio' = OS_NOVA_RAM_RATIO;
+'contents/DEFAULT/cpu_allocation_ratio' = OPENSTACK_NOVA_CPU_RATIO;
+'contents/DEFAULT/ram_allocation_ratio' = OPENSTACK_NOVA_RAM_RATIO;
 
 # [database] section
 'contents/database/connection' = 'mysql://' +
-  OS_NOVA_DB_USERNAME + ':' +
-  OS_NOVA_DB_PASSWORD + '@' +
-  OS_NOVA_DB_HOST + '/nova';
+  OPENSTACK_NOVA_DB_USERNAME + ':' +
+  OPENSTACK_NOVA_DB_PASSWORD + '@' +
+  OPENSTACK_NOVA_DB_HOST + '/nova';
   # [api_database] section
   'contents/api_database/connection' = 'mysql://' +
-    OS_NOVA_DB_USERNAME + ':' +
-    OS_NOVA_DB_PASSWORD + '@' +
-    OS_NOVA_DB_HOST + '/nova_api';
+    OPENSTACK_NOVA_DB_USERNAME + ':' +
+    OPENSTACK_NOVA_DB_PASSWORD + '@' +
+    OPENSTACK_NOVA_DB_HOST + '/nova_api';
 
 # [glance] section
-#'contents/glance/host' = OS_GLANCE_CONTROLLER_HOST;
-#'contents/glance/protocol' = OS_GLANCE_CONTROLLER_PROTOCOL;
-'contents/glance/api_servers' = OS_GLANCE_CONTROLLER_PROTOCOL+'://'+OS_GLANCE_CONTROLLER_HOST+':9292';
+#'contents/glance/host' = OPENSTACK_GLANCE_CONTROLLER_HOST;
+#'contents/glance/protocol' = OPENSTACK_GLANCE_CONTROLLER_PROTOCOL;
+'contents/glance/api_servers' = OPENSTACK_GLANCE_CONTROLLER_PROTOCOL+'://'+OPENSTACK_GLANCE_CONTROLLER_HOST+':9292';
 
 # [keystone_authtoken] section
-'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OS_NOVA_USERNAME;
-'contents/keystone_authtoken/password' = OS_NOVA_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OPENSTACK_NOVA_USERNAME;
+'contents/keystone_authtoken/password' = OPENSTACK_NOVA_PASSWORD;
 
 # [neutron] section
-'contents/neutron/url' = OS_NEUTRON_CONTROLLER_PROTOCOL + '://' + OS_NEUTRON_CONTROLLER_HOST + ':9696';
-'contents/neutron/auth_url' = OS_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OS_KEYSTONE_CONTROLLER_HOST + ':35357';
+'contents/neutron/url' = OPENSTACK_NEUTRON_CONTROLLER_PROTOCOL + '://' + OPENSTACK_NEUTRON_CONTROLLER_HOST + ':9696';
+'contents/neutron/auth_url' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OPENSTACK_KEYSTONE_CONTROLLER_HOST + ':35357';
 'contents/neutron/auth_plugin' = 'password';
 'contents/neutron/auth_type' = 'password';
 'contents/neutron/project_domain_name' = 'default';
 'contents/neutron/user_domain_name' = 'default';
-'contents/neutron/region_name' = OS_REGION_NAME;
+'contents/neutron/region_name' = OPENSTACK_REGION_NAME;
 'contents/neutron/project_name' = 'service';
-'contents/neutron/username' = OS_NEUTRON_USERNAME;
-'contents/neutron/password' = OS_NEUTRON_PASSWORD;
+'contents/neutron/username' = OPENSTACK_NEUTRON_USERNAME;
+'contents/neutron/password' = OPENSTACK_NEUTRON_PASSWORD;
 'contents/neutron/service_metadata_proxy' = 'True';
-'contents/neutron/metadata_proxy_shared_secret' = OS_METADATA_SECRET;
+'contents/neutron/metadata_proxy_shared_secret' = OPENSTACK_METADATA_SECRET;
 
 # [oslo_concurrency]
 'contents/oslo_concurrency/lock_path' = '/var/lib/nova/tmp';
@@ -127,7 +127,7 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/vnc/vncserver_listen' = '$my_ip';
 'contents/vnc/vncserver_proxyclient_address' = '$my_ip';
 
-include if (OS_HA) {
+include if (OPENSTACK_HA) {
     'features/nova/controller/ha';
 } else {
     null;
@@ -139,10 +139,10 @@ prefix '/software/components/filecopy/services';
   'perms' ,'755',
   'config', format(
     file_contents('features/nova/controller/init-nova.sh'),
-    OS_INIT_SCRIPT_GENERAL,
-    OS_NOVA_CONTROLLER_HOST,
-    OS_NOVA_USERNAME,
-    OS_NOVA_PASSWORD,
+    OPENSTACK_INIT_SCRIPT_GENERAL,
+    OPENSTACK_NOVA_CONTROLLER_HOST,
+    OPENSTACK_NOVA_USERNAME,
+    OPENSTACK_NOVA_PASSWORD,
   ),
   'restart' , '/root/init-nova.sh',
 );

@@ -20,7 +20,7 @@ prefix '/software/components/dirperm';
   SELF;
 };
 
-include if (OS_HA) {
+include if (OPENSTACK_HA) {
     'features/rabbitmq/ha';
 } else {
     null;
@@ -32,8 +32,8 @@ prefix '/software/components/filecopy/services';
     'perms' , '755',
     'config' , format(
         file_contents('features/rabbitmq/init-rabbitmq.sh'),
-        OS_RABBITMQ_USERNAME,
-        OS_RABBITMQ_PASSWORD
+        OPENSTACK_RABBITMQ_USERNAME,
+        OPENSTACK_RABBITMQ_PASSWORD
     ),
     'restart' , './root/init-rabbitmq.sh',
 );

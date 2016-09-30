@@ -1,6 +1,6 @@
 unique template machine-types/cloud/keystone;
 
-variable OS_NODE_TYPE ?= 'controller';
+variable OPENSTACK_NODE_TYPE ?= 'controller';
 include 'machine-types/cloud/base';
 
 include 'features/mariadb/config';

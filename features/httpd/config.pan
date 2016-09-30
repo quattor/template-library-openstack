@@ -12,7 +12,7 @@ prefix '/software/components/metaconfig/services/{/etc/httpd/conf.d/01-servernam
 'module' = 'general';
 'daemons/httpd' = 'restart';
 
-'contents/ServerName' = OS_KEYSTONE_CONTROLLER_HOST;
+'contents/ServerName' = OPENSTACK_KEYSTONE_CONTROLLER_HOST;
 
 prefix '/software/components/metaconfig/services/{/etc/httpd/conf.d/wsgi-keystone.conf}';
 'module' = 'openstack/wsgi-keystone';
@@ -22,11 +22,11 @@ prefix '/software/components/metaconfig/services/{/etc/httpd/conf.d/wsgi-keyston
 'contents/vhosts/0/port' = 5000;
 'contents/vhosts/0/processgroup' = 'keystone-public';
 'contents/vhosts/0/script' = '/usr/bin/keystone-wsgi-public';
-'contents/vhosts/0/ssl' = if (OS_SSL) {
-  SELF['cert'] = OS_SSL_CERT;
-  SELF['key'] = OS_SSL_KEY;
-  if (exists(OS_SSL_CHAIN)) {
-    SELF['chain'] = OS_SSL_CHAIN;
+'contents/vhosts/0/ssl' = if (OPENSTACK_SSL) {
+  SELF['cert'] = OPENSTACK_SSL_CERT;
+  SELF['key'] = OPENSTACK_SSL_KEY;
+  if (exists(OPENSTACK_SSL_CHAIN)) {
+    SELF['chain'] = OPENSTACK_SSL_CHAIN;
   };
   SELF;
 } else {
@@ -36,7 +36,7 @@ prefix '/software/components/metaconfig/services/{/etc/httpd/conf.d/wsgi-keyston
 'contents/vhosts/1/port' = 35357;
 'contents/vhosts/1/processgroup' = 'keystone-admin';
 'contents/vhosts/1/script' = '/usr/bin/keystone-wsgi-admin';
-'contents/vhosts/1/ssl' = if (OS_SSL) {
+'contents/vhosts/1/ssl' = if (OPENSTACK_SSL) {
   SELF['cert'] = '/etc/pki/tls/certs/localhost.crt';
   SELF['key'] = '/etc/pki/tls/private/localhost.key';
   SELF['chain'] = '/etc/pki/tls/certs/server-chain.crt';

@@ -11,7 +11,7 @@ prefix '/software/components/chkconfig/service';
 include 'features/neutron/compute/agents/openvswitch_agent';
 
 include {
-  if (exists(OS_NEUTRON_DVR_ENABLED) && OS_NEUTRON_DVR_ENABLED) {
+  if (exists(OPENSTACK_NEUTRON_DVR_ENABLED) && OPENSTACK_NEUTRON_DVR_ENABLED) {
     'features/neutron/compute/mechanism/dvr';
   } else {
     null;
@@ -19,7 +19,7 @@ include {
 };
 
 include {
-  if (exists(OS_NEUTRON_DVR_ENABLED) && OS_NEUTRON_DVR_ENABLED) {
+  if (exists(OPENSTACK_NEUTRON_DVR_ENABLED) && OPENSTACK_NEUTRON_DVR_ENABLED) {
     'features/neutron/variables/openvswitch/dvr';
   } else {
     null;

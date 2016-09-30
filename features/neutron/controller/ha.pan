@@ -6,7 +6,7 @@ include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 'module' = 'tiny';
 'contents/DEFAULT/memcached_servers' = { hosts = '';
-foreach(k;v;OS_MEMCACHE_HOSTS) {
+foreach(k;v;OPENSTACK_MEMCACHE_HOSTS) {
         if ( hosts != '') {
             hosts = hosts + ',' + v + ':11211';
         } else {

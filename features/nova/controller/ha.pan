@@ -6,7 +6,7 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'module' = 'tiny';
 # [DEFAULT] section
 'contents/DEFAULT/memcached_servers' = { hosts = '';
-foreach(k;v;OS_MEMCACHE_HOSTS) {
+foreach(k;v;OPENSTACK_MEMCACHE_HOSTS) {
         if ( hosts != '') {
             hosts = hosts + ',' + v + ':11211';
         } else {
@@ -16,7 +16,7 @@ foreach(k;v;OS_MEMCACHE_HOSTS) {
     hosts;
 };
 'contents/keystone_authtoken/memcached_servers' = { hosts = '';
-foreach(k;v;OS_MEMCACHE_HOSTS) {
+foreach(k;v;OPENSTACK_MEMCACHE_HOSTS) {
         if ( hosts != '') {
             hosts = hosts + ',' + v + ':11211';
         } else {

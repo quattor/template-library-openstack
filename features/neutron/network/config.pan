@@ -17,10 +17,10 @@ include 'features/neutron/network/rpms/config';
 #include 'features/memcache/config';
 
 # Include variables needed to configure neutron
-include 'features/neutron/variables/' + OS_NEUTRON_MECHANISM + '/' + OS_NEUTRON_NETWORK_TYPE;
+include 'features/neutron/variables/' + OPENSTACK_NEUTRON_MECHANISM + '/' + OPENSTACK_NEUTRON_NETWORK_TYPE;
 
 # network driver configuration
-include 'features/neutron/network/mechanism/' + OS_NEUTRON_MECHANISM;
+include 'features/neutron/network/mechanism/' + OPENSTACK_NEUTRON_MECHANISM;
 
 # Include some common configuration
 include 'features/neutron/common/config';
@@ -37,20 +37,20 @@ include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 'module' = 'tiny';
 # [DEFAULT]
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 'contents/DEFAULT/core_plugin' = 'ml2';
 'contents/DEFAULT/service_plugins' = 'router';
 'contents/DEFAULT/allow_overlapping_ips' = 'True';
 'contents/DEFAULT/rpc_backend' = 'rabbit';
 'contents/DEFAULT/auth_strategy' = 'keystone';
-'contents/DEFAULT/base_mac' = OS_NEUTRON_BASE_MAC;
-'contents/DEFAULT/dvr_base_mac' = OS_NEUTRON_DVR_BASE_MAC;
+'contents/DEFAULT/base_mac' = OPENSTACK_NEUTRON_BASE_MAC;
+'contents/DEFAULT/dvr_base_mac' = OPENSTACK_NEUTRON_DVR_BASE_MAC;
 'contents/DEFAULT/notification_driver' = 'messagingv2';
 
 # [keystone_authtoken]
-'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OS_NEUTRON_USERNAME;
-'contents/keystone_authtoken/password' = OS_NEUTRON_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OPENSTACK_NEUTRON_USERNAME;
+'contents/keystone_authtoken/password' = OPENSTACK_NEUTRON_PASSWORD;
 
 #[oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');

@@ -44,7 +44,7 @@ echo "[END] Role configuration"
 
 echo "[START] User configuration"
 echo "  heat user [$HEAT_USER]"
-$DEBUG_USERS quattor_openstack_add_user.sh $HEAT_USER $HEAT_PASSWORD $OS_PROJECT_DOMAIN_ID
+$DEBUG_USERS quattor_openstack_add_user.sh $HEAT_USER $HEAT_PASSWORD $OPENSTACK_PROJECT_DOMAIN_ID
 echo "  heat domain admin user [$HEAT_USER]"
 $DEBUG_USERS quattor_openstack_add_user.sh $HEAT_DOMAIN_ADMIN_USER $HEAT_DOMAIN_ADMIN_PASSWORD $HEAT_STACK_DOMAIN
 echo "[END] User configuration"

@@ -27,7 +27,7 @@ echo "[END] endpoints configuration"
 
 echo "[START] User configuration"
 echo "  nova user [$NOVA_USER]"
-$DEBUG_USERS quattor_openstack_add_user.sh $NOVA_USER $NOVA_PASSWORD $OS_PROJECT_DOMAIN_ID
+$DEBUG_USERS quattor_openstack_add_user.sh $NOVA_USER $NOVA_PASSWORD $OPENSTACK_PROJECT_DOMAIN_ID
 echo "[END] User configuration"
 
 echo "[START] Role configuration"

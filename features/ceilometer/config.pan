@@ -42,37 +42,37 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 'contents/DEFAULT/rpc_backend' = 'rabbit';
 'contents/DEFAULT/auth_strategy' = 'keystone';
 'contents/DEFAULT/my_ip' = PRIMARY_IP;
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
-'contents/DEFAULT/cert_file' = if (OS_SSL) {
-  OS_SSL_CERT;
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
+'contents/DEFAULT/cert_file' = if (OPENSTACK_SSL) {
+  OPENSTACK_SSL_CERT;
 } else {
   null;
 };
-'contents/DEFAULT/key_file' = if (OS_SSL) {
-  OS_SSL_KEY;
+'contents/DEFAULT/key_file' = if (OPENSTACK_SSL) {
+  OPENSTACK_SSL_KEY;
 } else {
   null;
 };
 
 # [database] section
-'contents/database/connection'='mongodb://'+ OS_CEILOMETER_DB_USERNAME + ':' + OS_CEILOMETER_DB_PASSWORD + '@' + OS_CEILOMETER_DB_HOST + ':27017/ceilometer';
+'contents/database/connection'='mongodb://'+ OPENSTACK_CEILOMETER_DB_USERNAME + ':' + OPENSTACK_CEILOMETER_DB_PASSWORD + '@' + OPENSTACK_CEILOMETER_DB_HOST + ':27017/ceilometer';
 
 # [oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [keystone_authtoken] section
-'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OS_CEILOMETER_USERNAME;
-'contents/keystone_authtoken/password' = OS_CEILOMETER_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OPENSTACK_CEILOMETER_USERNAME;
+'contents/keystone_authtoken/password' = OPENSTACK_CEILOMETER_PASSWORD;
 
-'contents/service_credentials/os_auth_url' = OS_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OS_KEYSTONE_CONTROLLER_HOST + ':5000/v2.0';
-'contents/service_credentials/username' = OS_CEILOMETER_USERNAME;
+'contents/service_credentials/os_auth_url' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OPENSTACK_KEYSTONE_CONTROLLER_HOST + ':5000/v2.0';
+'contents/service_credentials/username' = OPENSTACK_CEILOMETER_USERNAME;
 'contents/service_credentials/os_tenant_name' = 'service';
-'contents/service_credentials/os_password' = OS_CEILOMETER_PASSWORD;
+'contents/service_credentials/os_password' = OPENSTACK_CEILOMETER_PASSWORD;
 'contents/service_credentials/os_endpoint_type' = 'internalURL';
-'contents/service_credentials/os_region_name' = OS_REGION_NAME;
+'contents/service_credentials/os_region_name' = OPENSTACK_REGION_NAME;
 
-include if (OS_HA) {
+include if (OPENSTACK_HA) {
     'features/ceilometer/ha';
 } else {
     null;
@@ -84,13 +84,13 @@ prefix '/software/components/filecopy/services';
   'perms' ,'755',
   'config', format(
     file_contents('features/ceilometer/init-ceilometer.sh'),
-    OS_INIT_SCRIPT_GENERAL,
-    OS_CEILOMETER_CONTROLLER_HOST,
-    OS_CEILOMETER_DB_HOST,
-    OS_CEILOMETER_DB_USERNAME,
-    OS_CEILOMETER_DB_PASSWORD,
-    OS_CEILOMETER_USERNAME,
-    OS_CEILOMETER_PASSWORD,
+    OPENSTACK_INIT_SCRIPT_GENERAL,
+    OPENSTACK_CEILOMETER_CONTROLLER_HOST,
+    OPENSTACK_CEILOMETER_DB_HOST,
+    OPENSTACK_CEILOMETER_DB_USERNAME,
+    OPENSTACK_CEILOMETER_DB_PASSWORD,
+    OPENSTACK_CEILOMETER_USERNAME,
+    OPENSTACK_CEILOMETER_PASSWORD,
   ),
   'restart' , '/root/init-ceilometer.sh',
 );

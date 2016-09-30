@@ -4,7 +4,7 @@ prefix '/software/packages';
 'httpd' ?= dict();
 'mod_wsgi' ?= dict();
 '{mod_ssl}' ?= {
-  if ( OS_SSL ) {
+  if ( OPENSTACK_SSL ) {
     dict();
   } else {
     null;
