@@ -17,6 +17,7 @@ prefix '/software/components/metaconfig/services/{/root/admin-openrc.sh}';
 'contents/variables/OS_AUTH_URL' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OPENSTACK_KEYSTONE_CONTROLLER_HOST + ':35357/v3';
 'contents/variables/OS_IDENTITY_API_VERSION' = 3;
 
+
 include 'components/filecopy/config';
 # Copy scripts to help with init scripts
 prefix '/software/components/filecopy/services';
