@@ -31,6 +31,7 @@ prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local
 'contents/keystone/api_version' = OS_HORIZON_KEYSTONE_API_VERSION;
 'contents/keystone/port' = 5000;
 'contents/secret_key' = OS_HORIZON_SECRET_KEY;
+'contents/memcacheservers' = '127.0.0.1:11211';
 
 include if (OS_HA) {
     'features/dashboard/ha';
