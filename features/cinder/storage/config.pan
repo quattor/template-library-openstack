@@ -12,7 +12,7 @@ include 'features/accounts/config';
 include 'features/cinder/storage/rpms/config';
 
 # Include type specific configuration
-include 'features/cinder/storage/' + OS_CINDER_STORAGE_TYPE;
+include 'features/cinder/storage/' + OPENSTACK_CINDER_STORAGE_TYPE;
 
 include 'components/chkconfig/config';
 prefix '/software/components/chkconfig/service';
@@ -30,20 +30,20 @@ prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}';
 'contents/DEFAULT/rpc_backend' = 'rabbit';
 'contents/DEFAULT/auth_strategy' = 'keystone';
 'contents/DEFAULT/my_ip' = PRIMARY_IP;
-#'contents/DEFAULT/glance_host' = OS_GLANCE_CONTROLLER_HOST;
-'contents/DEFAULT/glance_api_servers' = OS_GLANCE_CONTROLLER_PROTOCOL + '://' + OS_GLANCE_CONTROLLER_HOST + ':9292';
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
+#'contents/DEFAULT/glance_host' = OPENSTACK_GLANCE_CONTROLLER_HOST;
+'contents/DEFAULT/glance_api_servers' = OPENSTACK_GLANCE_CONTROLLER_PROTOCOL + '://' + OPENSTACK_GLANCE_CONTROLLER_HOST + ':9292';
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 
 # [keystone_authtoken] section
-'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OS_CINDER_USERNAME;
-'contents/keystone_authtoken/password' = OS_CINDER_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OPENSTACK_CINDER_USERNAME;
+'contents/keystone_authtoken/password' = OPENSTACK_CINDER_PASSWORD;
 
 # [database] section
 'contents/database/connection' = 'mysql://' +
-  OS_CINDER_DB_USERNAME + ':' +
-  OS_CINDER_DB_PASSWORD + '@' +
-  OS_CINDER_DB_HOST + '/cinder';
+  OPENSTACK_CINDER_DB_USERNAME + ':' +
+  OPENSTACK_CINDER_DB_PASSWORD + '@' +
+  OPENSTACK_CINDER_DB_HOST + '/cinder';
 
 
 # [oslo_concurrency]

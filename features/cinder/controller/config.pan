@@ -32,28 +32,28 @@ prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}';
 'contents/DEFAULT/auth_strategy' = 'keystone';
 'contents/DEFAULT/my_ip' = PRIMARY_IP;
 'contents/DEFAULT/notification_driver' = 'messagingv2';
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
-'contents/DEFAULT/ssl_cert_file' = if (OS_SSL) {
-  OS_SSL_CERT;
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
+'contents/DEFAULT/ssl_cert_file' = if (OPENSTACK_SSL) {
+  OPENSTACK_SSL_CERT;
 } else {
   null;
 };
-'contents/DEFAULT/ssl_key_file' = if (OS_SSL) {
-  OS_SSL_KEY;
+'contents/DEFAULT/ssl_key_file' = if (OPENSTACK_SSL) {
+  OPENSTACK_SSL_KEY;
 } else {
   null;
 };
 
 # [keystone_authtoken] section
-'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OS_CINDER_USERNAME;
-'contents/keystone_authtoken/password' = OS_CINDER_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OPENSTACK_CINDER_USERNAME;
+'contents/keystone_authtoken/password' = OPENSTACK_CINDER_PASSWORD;
 
 # [database] section
 'contents/database/connection' = 'mysql://' +
-  OS_CINDER_DB_USERNAME + ':' +
-  OS_CINDER_DB_PASSWORD + '@' +
-  OS_CINDER_DB_HOST + '/cinder';
+  OPENSTACK_CINDER_DB_USERNAME + ':' +
+  OPENSTACK_CINDER_DB_PASSWORD + '@' +
+  OPENSTACK_CINDER_DB_HOST + '/cinder';
 
 # [oslo_concurrency]
 'contents/oslo_concurrency/lock_path' = '/var/lib/cinder/tmp';
@@ -61,7 +61,7 @@ prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}';
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
 
-include if (OS_HA) {
+include if (OPENSTACK_HA) {
     'features/cinder/controller/ha';
 } else {
     null;
@@ -73,11 +73,11 @@ prefix '/software/components/filecopy/services';
   'perms' ,'755',
   'config', format(
     file_contents('features/cinder/controller/init-cinder.sh'),
-    OS_INIT_SCRIPT_GENERAL,
-    OS_CINDER_CONTROLLER_HOST,
-    OS_CINDER_CONTROLLER_HOST,
-    OS_CINDER_USERNAME,
-    OS_CINDER_PASSWORD,
+    OPENSTACK_INIT_SCRIPT_GENERAL,
+    OPENSTACK_CINDER_CONTROLLER_HOST,
+    OPENSTACK_CINDER_CONTROLLER_HOST,
+    OPENSTACK_CINDER_USERNAME,
+    OPENSTACK_CINDER_PASSWORD,
   ),
   'restart' , '/root/init-cinder.sh',
 );

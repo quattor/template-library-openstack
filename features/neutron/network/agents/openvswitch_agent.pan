@@ -19,8 +19,8 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/plugins/ml2/openv
 'contents/agent/l2_population' = 'True';
 
 # [ovs] section
-'contents/ovs/bridge_mappings' = 'public:' + OS_INTERFACE_MAPPING;
-'contents/ovs/local_ip' = OS_NEUTRON_OVERLAY_IP;
+'contents/ovs/bridge_mappings' = 'public:' + OPENSTACK_INTERFACE_MAPPING;
+'contents/ovs/local_ip' = OPENSTACK_NEUTRON_OVERLAY_IP;
 
 # [securitygroup] section
 'contents/securitygroup/enable_security_group' = 'True';

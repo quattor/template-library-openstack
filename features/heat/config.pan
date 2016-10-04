@@ -30,49 +30,49 @@ prefix '/software/components/metaconfig/services/{/etc/heat/heat.conf}';
 'contents/DEFAULT/rpc_backend' = 'rabbit';
 'contents/DEFAULT/auth_strategy' = 'keystone';
 'contents/DEFAULT/my_ip' = PRIMARY_IP;
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
-'contents/DEFAULT/cert_file' = if (OS_SSL) {
-  OS_SSL_CERT;
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
+'contents/DEFAULT/cert_file' = if (OPENSTACK_SSL) {
+  OPENSTACK_SSL_CERT;
 } else {
   null;
 };
-'contents/DEFAULT/key_file' = if (OS_SSL) {
-  OS_SSL_KEY;
+'contents/DEFAULT/key_file' = if (OPENSTACK_SSL) {
+  OPENSTACK_SSL_KEY;
 } else {
   null;
 };
-'contents/DEFAULT/heat_metadata_server_url'=OS_HEAT_CONTROLLER_PROTOCOL + '://' + OS_HEAT_CONTROLLER_HOST + ':8000';
-'contents/DEFAULT/heat_waitcondition_server_url'=OS_HEAT_CONTROLLER_PROTOCOL + '://' + OS_HEAT_CONTROLLER_HOST + ':8000' + '/v1/waitcondition';
-'contents/DEFAULT/stack_domain_admin' = OS_HEAT_USERNAME;
-'contents/DEFAULT/stack_domain_admin_password' = OS_HEAT_PASSWORD;
-'contents/DEFAULT/stack_user_domain_name' = OS_HEAT_STACK_DOMAIN;
+'contents/DEFAULT/heat_metadata_server_url'=OPENSTACK_HEAT_CONTROLLER_PROTOCOL + '://' + OPENSTACK_HEAT_CONTROLLER_HOST + ':8000';
+'contents/DEFAULT/heat_waitcondition_server_url'=OPENSTACK_HEAT_CONTROLLER_PROTOCOL + '://' + OPENSTACK_HEAT_CONTROLLER_HOST + ':8000' + '/v1/waitcondition';
+'contents/DEFAULT/stack_domain_admin' = OPENSTACK_HEAT_USERNAME;
+'contents/DEFAULT/stack_domain_admin_password' = OPENSTACK_HEAT_PASSWORD;
+'contents/DEFAULT/stack_user_domain_name' = OPENSTACK_HEAT_STACK_DOMAIN;
 
 # [trustee] section
 'contents/trustee/auth_plugin'='password';
-'contents/trustee/auth_url'=OS_HEAT_CONTROLLER_PROTOCOL + '://' + OS_HEAT_CONTROLLER_HOST + ':35357';
-'contents/trustee/username'=OS_HEAT_USERNAME;
-'contents/trustee/password'=OS_HEAT_PASSWORD;
+'contents/trustee/auth_url'=OPENSTACK_HEAT_CONTROLLER_PROTOCOL + '://' + OPENSTACK_HEAT_CONTROLLER_HOST + ':35357';
+'contents/trustee/username'=OPENSTACK_HEAT_USERNAME;
+'contents/trustee/password'=OPENSTACK_HEAT_PASSWORD;
 'contents/trustee/user_domain_id'='default';
 
 # [clients_keystone] section
-'contents/clients_keystone/auth_url'=OS_HEAT_CONTROLLER_PROTOCOL + '://' + OS_HEAT_CONTROLLER_HOST + ':5000';
+'contents/clients_keystone/auth_url'=OPENSTACK_HEAT_CONTROLLER_PROTOCOL + '://' + OPENSTACK_HEAT_CONTROLLER_HOST + ':5000';
 
 # [ec2authtoken] section
-'contents/trustee/auth_url'=OS_HEAT_CONTROLLER_PROTOCOL + '://' + OS_HEAT_CONTROLLER_HOST + ':5000';
+'contents/trustee/auth_url'=OPENSTACK_HEAT_CONTROLLER_PROTOCOL + '://' + OPENSTACK_HEAT_CONTROLLER_HOST + ':5000';
 
 # [oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [database] section
 'contents/database/connection' = 'mysql://' +
-  OS_HEAT_DB_USERNAME + ':' +
-  OS_HEAT_DB_PASSWORD + '@' +
-  OS_HEAT_DB_HOST + '/heat';
+  OPENSTACK_HEAT_DB_USERNAME + ':' +
+  OPENSTACK_HEAT_DB_PASSWORD + '@' +
+  OPENSTACK_HEAT_DB_HOST + '/heat';
 
 # [keystone_authtoken] section
-'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OS_GLANCE_USERNAME;
-'contents/keystone_authtoken/password' = OS_GLANCE_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OPENSTACK_GLANCE_USERNAME;
+'contents/keystone_authtoken/password' = OPENSTACK_GLANCE_PASSWORD;
 
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
@@ -80,14 +80,14 @@ prefix '/software/components/filecopy/services';
   'perms' ,'755',
   'config', format(
     file_contents('features/heat/init-heat.sh'),
-    OS_INIT_SCRIPT_GENERAL,
-    OS_HEAT_CONTROLLER_HOST,
-    OS_HEAT_CONTROLLER_HOST,
-    OS_HEAT_USERNAME,
-    OS_HEAT_PASSWORD,
-    OS_HEAT_STACK_DOMAIN,
-    OS_HEAT_DOMAIN_ADMIN_USERNAME,
-    OS_HEAT_DOMAIN_ADMIN_PASSWORD,
+    OPENSTACK_INIT_SCRIPT_GENERAL,
+    OPENSTACK_HEAT_CONTROLLER_HOST,
+    OPENSTACK_HEAT_CONTROLLER_HOST,
+    OPENSTACK_HEAT_USERNAME,
+    OPENSTACK_HEAT_PASSWORD,
+    OPENSTACK_HEAT_STACK_DOMAIN,
+    OPENSTACK_HEAT_DOMAIN_ADMIN_USERNAME,
+    OPENSTACK_HEAT_DOMAIN_ADMIN_PASSWORD,
   ),
   'restart' , '/root/init-heat.sh',
 );

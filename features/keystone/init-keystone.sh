@@ -29,9 +29,9 @@ echo "[END] endpoints configuration"
 
 echo "[START] Project configuration"
 echo "  service project"
-$DEBUG_PROJECTS quattor_openstack_add_project.sh 'service' "Service Project" $OS_PROJECT_DOMAIN_ID
+$DEBUG_PROJECTS quattor_openstack_add_project.sh 'service' "Service Project" $OPENSTACK_PROJECT_DOMAIN_ID
 echo "  admin project"
-$DEBUG_PROJECTS quattor_openstack_add_project.sh 'admin' "Admin Project" $OS_PROJECT_DOMAIN_ID
+$DEBUG_PROJECTS quattor_openstack_add_project.sh 'admin' "Admin Project" $OPENSTACK_PROJECT_DOMAIN_ID
 echo "[END] Project configuration"
 
 echo "[START] Role configuration"
@@ -43,7 +43,7 @@ echo "[END] Role configuration"
 
 echo "[START] User configuration"
 echo "  admin user [$ADMIN_USERNAME]"
-$DEBUG_USERS quattor_openstack_add_user.sh $ADMIN_USERNAME $ADMIN_PASSWORD $OS_PROJECT_DOMAIN_ID
+$DEBUG_USERS quattor_openstack_add_user.sh $ADMIN_USERNAME $ADMIN_PASSWORD $OPENSTACK_PROJECT_DOMAIN_ID
 echo "[END] User configuration"
 
 echo "[START] Role configuration"

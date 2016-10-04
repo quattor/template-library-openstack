@@ -20,10 +20,10 @@ include 'features/neutron/controller/rpms/config';
 #include 'features/memcache/config';
 
 # Include variables needed to configure neutron
-include 'features/neutron/variables/' + OS_NEUTRON_MECHANISM + '/' + OS_NEUTRON_NETWORK_TYPE;
+include 'features/neutron/variables/' + OPENSTACK_NEUTRON_MECHANISM + '/' + OPENSTACK_NEUTRON_NETWORK_TYPE;
 
 # network driver configuration
-include 'features/neutron/controller/mechanism/' + OS_NEUTRON_MECHANISM;
+include 'features/neutron/controller/mechanism/' + OPENSTACK_NEUTRON_MECHANISM;
 
 # Include some common configuration
 include 'features/neutron/common/config';
@@ -37,66 +37,66 @@ include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 'module' = 'tiny';
 # [DEFAULT]
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 'contents/DEFAULT/core_plugin' = 'ml2';
 'contents/DEFAULT/service_plugins' = 'router';
 'contents/DEFAULT/allow_overlapping_ips' = 'True';
 'contents/DEFAULT/rpc_backend' = 'rabbit';
 'contents/DEFAULT/notify_nova_on_port_status_changes' = 'True';
 'contents/DEFAULT/notify_nova_on_port_data_changes' = 'True';
-'contents/DEFAULT/nova_url' = OS_NOVA_CONTROLLER_PROTOCOL + '://' + OS_NOVA_CONTROLLER_HOST + ':8774/v2';
+'contents/DEFAULT/nova_url' = OPENSTACK_NOVA_CONTROLLER_PROTOCOL + '://' + OPENSTACK_NOVA_CONTROLLER_HOST + ':8774/v2';
 'contents/DEFAULT/auth_strategy' = 'keystone';
 'contents/DEFAULT/notification_driver' = 'messagingv2';
-'contents/DEFAULT/ssl_cert_file' = if ( OS_SSL ) {
-  OS_SSL_CERT;
+'contents/DEFAULT/ssl_cert_file' = if ( OPENSTACK_SSL ) {
+  OPENSTACK_SSL_CERT;
 } else {
   null;
 };
-'contents/DEFAULT/ssl_key_file' = if ( OS_SSL ) {
-  OS_SSL_KEY;
+'contents/DEFAULT/ssl_key_file' = if ( OPENSTACK_SSL ) {
+  OPENSTACK_SSL_KEY;
 } else {
   null;
 };
-'contents/DEFAULT/use_ssl' = if ( OS_SSL ) {
+'contents/DEFAULT/use_ssl' = if ( OPENSTACK_SSL ) {
   'True';
 } else {
   null;
 };
 
 # [keystone_authtoken]
-'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OS_NEUTRON_USERNAME;
-'contents/keystone_authtoken/password' = OS_NEUTRON_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OPENSTACK_NEUTRON_USERNAME;
+'contents/keystone_authtoken/password' = OPENSTACK_NEUTRON_PASSWORD;
 
 # [database]
 'contents/database/connection' = 'mysql://' +
-   OS_NEUTRON_DB_USERNAME + ':' +
-   OS_NEUTRON_DB_PASSWORD + '@' +
-   OS_NEUTRON_DB_HOST + '/neutron';
+   OPENSTACK_NEUTRON_DB_USERNAME + ':' +
+   OPENSTACK_NEUTRON_DB_PASSWORD + '@' +
+   OPENSTACK_NEUTRON_DB_HOST + '/neutron';
 
 # [nova]
-'contents/nova/auth_url' = OS_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OS_KEYSTONE_CONTROLLER_HOST + ':35357';
+'contents/nova/auth_url' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OPENSTACK_KEYSTONE_CONTROLLER_HOST + ':35357';
 'contents/nova/auth_plugin' = 'password';
 'contents/nova/auth_type' = 'password';
 'contents/nova/project_domain_name' = 'default';
 'contents/nova/user_domain_name' = 'default';
-'contents/nova/region_name' = OS_REGION_NAME;
+'contents/nova/region_name' = OPENSTACK_REGION_NAME;
 'contents/nova/project_name' = 'service';
-'contents/nova/username' = OS_NOVA_USERNAME;
-'contents/nova/password' = OS_NOVA_PASSWORD;
+'contents/nova/username' = OPENSTACK_NOVA_USERNAME;
+'contents/nova/password' = OPENSTACK_NOVA_PASSWORD;
 
 # [oslo_concurrency]
 'contents/oslo_concurrency/lock_path' = '/var/lib/neutron/tmp';
 #[oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
-include if (OS_HA) {
+include if (OPENSTACK_HA) {
     'features/neutron/controller/ha';
 } else {
     null;
 };
 
-variable OS_NEUTRON_INIT_SCRIPT = OS_INIT_SCRIPT_GENERAL + file_contents('defaults/openstack/init-network.sh');
+variable OPENSTACK_NEUTRON_INIT_SCRIPT = OPENSTACK_INIT_SCRIPT_GENERAL + file_contents('defaults/openstack/init-network.sh');
 
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
@@ -104,15 +104,15 @@ prefix '/software/components/filecopy/services';
   'perms' ,'755',
   'config', format(
     file_contents('features/neutron/controller/init-neutron.sh'),
-    OS_INIT_SCRIPT_GENERAL,
-    OS_NEUTRON_CONTROLLER_HOST,
-    OS_NEUTRON_USERNAME,
-    OS_NEUTRON_PASSWORD,
-    OS_NEUTRON_DEFAULT_NETWORKS,
-    OS_NEUTRON_DEFAULT_DHCP_POOL['start'],
-    OS_NEUTRON_DEFAULT_DHCP_POOL['end'],
-    OS_NEUTRON_DEFAULT_GATEWAY,
-    OS_NEUTRON_DEFAULT_NAMESERVER,
+    OPENSTACK_INIT_SCRIPT_GENERAL,
+    OPENSTACK_NEUTRON_CONTROLLER_HOST,
+    OPENSTACK_NEUTRON_USERNAME,
+    OPENSTACK_NEUTRON_PASSWORD,
+    OPENSTACK_NEUTRON_DEFAULT_NETWORKS,
+    OPENSTACK_NEUTRON_DEFAULT_DHCP_POOL['start'],
+    OPENSTACK_NEUTRON_DEFAULT_DHCP_POOL['end'],
+    OPENSTACK_NEUTRON_DEFAULT_GATEWAY,
+    OPENSTACK_NEUTRON_DEFAULT_NAMESERVER,
   ),
   'restart' , '/root/init-neutron.sh',
 );

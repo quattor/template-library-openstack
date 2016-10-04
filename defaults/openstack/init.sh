@@ -31,23 +31,23 @@ export HEAT_DOMAIN_ADMIN_PASSWORD=%s
 export CINDER_USER=%s
 export CINDER_PASSWORD=%s
 
-export OS_TOKEN=%s
+export OPENSTACK_TOKEN=%s
 export NEUTRON_DEFAULT_NETWORK=%s
 export NEUTRON_DEFAULT_DHCP_START=%s
 export NEUTRON_DEFAULT_DHPC_END=%s
 export NEUTRON_DEFAULT_GATEWAY=%s
 export NEUTRON_DEFAULT_NAMESERVER=%s
 #
-export OS_PROJECT_DOMAIN_ID=default
-export OS_USER_DOMAIN_ID=default
-export OS_PROJECT_NAME=admin
-export OS_TENANT_NAME=admin
-export OS_USERNAME=$ADMIN_USERNAME
-export OS_PASSWORD=$ADMIN_PASSWORD
-export OS_URL=$KEYSTONE_URL/v3
-export OS_AUTH_URL=$OS_URL
-export OS_IDENTITY_API_VERSION=3
-export OS_IMAGE_API_VERSION=2
+export OPENSTACK_PROJECT_DOMAIN_ID=default
+export OPENSTACK_USER_DOMAIN_ID=default
+export OPENSTACK_PROJECT_NAME=admin
+export OPENSTACK_TENANT_NAME=admin
+export OPENSTACK_USERNAME=$ADMIN_USERNAME
+export OPENSTACK_PASSWORD=$ADMIN_PASSWORD
+export OPENSTACK_URL=$KEYSTONE_URL/v3
+export OPENSTACK_AUTH_URL=$OPENSTACK_URL
+export OPENSTACK_IDENTITY_API_VERSION=3
+export OPENSTACK_IMAGE_API_VERSION=2
 
 
 export DEBUG_DOMAINS=$DEBUG
@@ -153,9 +153,9 @@ echo "[END] endpoints configuration"
 
 echo "[START] Project configuration"
 echo "  service project"
-$DEBUG_PROJECTS quattor_openstack_add_project.sh 'service' "Service Project" $OS_PROJECT_DOMAIN_ID
+$DEBUG_PROJECTS quattor_openstack_add_project.sh 'service' "Service Project" $OPENSTACK_PROJECT_DOMAIN_ID
 echo "  admin project"
-$DEBUG_PROJECTS quattor_openstack_add_project.sh 'admin' "Admin Project" $OS_PROJECT_DOMAIN_ID
+$DEBUG_PROJECTS quattor_openstack_add_project.sh 'admin' "Admin Project" $OPENSTACK_PROJECT_DOMAIN_ID
 echo "[END] Project configuration"
 
 echo "[START] Role configuration"
@@ -169,21 +169,21 @@ echo "[END] Role configuration"
 
 echo "[START] User configuration"
 echo "  admin user [$ADMIN_USERNAME]"
-$DEBUG_USERS quattor_openstack_add_user.sh $ADMIN_USERNAME $ADMIN_PASSWORD $OS_PROJECT_DOMAIN_ID
+$DEBUG_USERS quattor_openstack_add_user.sh $ADMIN_USERNAME $ADMIN_PASSWORD $OPENSTACK_PROJECT_DOMAIN_ID
 echo "  glance user [$GLANCE_USER]"
-$DEBUG_USERS quattor_openstack_add_user.sh $GLANCE_USER $GLANCE_PASSWORD $OS_PROJECT_DOMAIN_ID
+$DEBUG_USERS quattor_openstack_add_user.sh $GLANCE_USER $GLANCE_PASSWORD $OPENSTACK_PROJECT_DOMAIN_ID
 echo "  nova user [$NOVA_USER]"
-$DEBUG_USERS quattor_openstack_add_user.sh $NOVA_USER $NOVA_PASSWORD $OS_PROJECT_DOMAIN_ID
+$DEBUG_USERS quattor_openstack_add_user.sh $NOVA_USER $NOVA_PASSWORD $OPENSTACK_PROJECT_DOMAIN_ID
 echo "  neutron user [$NEUTRON_USER]"
-$DEBUG_USERS quattor_openstack_add_user.sh $NEUTRON_USER $NEUTRON_PASSWORD $OS_PROJECT_DOMAIN_ID
+$DEBUG_USERS quattor_openstack_add_user.sh $NEUTRON_USER $NEUTRON_PASSWORD $OPENSTACK_PROJECT_DOMAIN_ID
 echo "  heat user [$HEAT_USER]"
-$DEBUG_USERS quattor_openstack_add_user.sh $HEAT_USER $HEAT_PASSWORD $OS_PROJECT_DOMAIN_ID
+$DEBUG_USERS quattor_openstack_add_user.sh $HEAT_USER $HEAT_PASSWORD $OPENSTACK_PROJECT_DOMAIN_ID
 echo "  heat domain admin user [$HEAT_USER]"
 $DEBUG_USERS quattor_openstack_add_user.sh $HEAT_DOMAIN_ADMIN_USER $HEAT_DOMAIN_ADMIN_PASSWORD $HEAT_STACK_DOMAIN
 echo "  cinder user [$CINDER_USER]"
-$DEBUG_USERS quattor_openstack_add_user.sh $CINDER_USER $CINDER_PASSWORD $OS_PROJECT_DOMAIN_ID
+$DEBUG_USERS quattor_openstack_add_user.sh $CINDER_USER $CINDER_PASSWORD $OPENSTACK_PROJECT_DOMAIN_ID
 echo "  ceilometer user [$CEILOMETER_USER]"
-$DEBUG_USERS quattor_openstack_add_user.sh $CEILOMETER_USER $CEILOMETER_PASSWORD $OS_PROJECT_DOMAIN_ID
+$DEBUG_USERS quattor_openstack_add_user.sh $CEILOMETER_USER $CEILOMETER_PASSWORD $OPENSTACK_PROJECT_DOMAIN_ID
 echo "[END] User configuration"
 
 echo "[START] Role configuration"

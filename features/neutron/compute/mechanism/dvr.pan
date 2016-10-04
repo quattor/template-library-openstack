@@ -15,9 +15,9 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/l3_agent.ini}';
 'module' = 'tiny';
 # [DEFAULT]
 'contents/DEFAULT/agent_mode' = 'dvr';
-'contents/DEFAULT/interface_driver' = OS_NEUTRON_INTERFACE_DRIVER;
+'contents/DEFAULT/interface_driver' = OPENSTACK_NEUTRON_INTERFACE_DRIVER;
 'contents/DEFAULT/external_network_bridge' = '';
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 
 
 include 'components/chkconfig/config';

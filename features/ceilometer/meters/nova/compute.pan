@@ -25,23 +25,23 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 # [DEFAULT] section
 'contents/DEFAULT/rpc_backend' = 'rabbit';
 'contents/DEFAULT/auth_strategy' = 'keystone';
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 
 # [oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [keystone_authtoken] section
-'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OS_CEILOMETER_USERNAME;
-'contents/keystone_authtoken/password' = OS_CEILOMETER_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OPENSTACK_CEILOMETER_USERNAME;
+'contents/keystone_authtoken/password' = OPENSTACK_CEILOMETER_PASSWORD;
 
 # [service_credentials] section
-'contents/service_credentials/os_auth_url' = OS_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OS_KEYSTONE_CONTROLLER_HOST + ':5000/v2.0';
-'contents/service_credentials/username' = OS_CEILOMETER_USERNAME;
+'contents/service_credentials/os_auth_url' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OPENSTACK_KEYSTONE_CONTROLLER_HOST + ':5000/v2.0';
+'contents/service_credentials/username' = OPENSTACK_CEILOMETER_USERNAME;
 'contents/service_credentials/os_tenant_name' = 'service';
-'contents/service_credentials/os_password' = OS_CEILOMETER_PASSWORD;
+'contents/service_credentials/os_password' = OPENSTACK_CEILOMETER_PASSWORD;
 'contents/service_credentials/os_endpoint_type' = 'internalURL';
-'contents/service_credentials/os_region_name' = OS_REGION_NAME;
+'contents/service_credentials/os_region_name' = OPENSTACK_REGION_NAME;
 
 prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'module' = 'tiny';

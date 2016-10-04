@@ -35,7 +35,7 @@ echo "[END] endpoints configuration"
 
 echo "[START] User configuration"
 echo "  ceilometer user [$CEILOMETER_USER]"
-$DEBUG_USERS quattor_openstack_add_user.sh $CEILOMETER_USER $CEILOMETER_PASSWORD $OS_PROJECT_DOMAIN_ID
+$DEBUG_USERS quattor_openstack_add_user.sh $CEILOMETER_USER $CEILOMETER_PASSWORD $OPENSTACK_PROJECT_DOMAIN_ID
 echo "[END] User configuration"
 
 echo "[START] Role configuration"

@@ -21,27 +21,27 @@ prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local
 
 'daemons/httpd' = 'restart';
 
-'contents/allowed' = OS_HORIZON_ALLOWED_HOSTS;
-'contents/host' = OS_HORIZON_HOST;
-'contents/role' = OS_HORIZON_DEFAULT_ROLE;
-'contents/multidomain' = OS_HORIZON_MULTIDOMAIN_ENABLED;
-'contents/default_domain'= OS_HORIZON_DEFAULT_DOMAIN;
-'contents/keystone/protocol' = OS_KEYSTONE_CONTROLLER_PROTOCOL;
-'contents/keystone/host' = OS_KEYSTONE_CONTROLLER_HOST;
-'contents/keystone/api_version' = OS_HORIZON_KEYSTONE_API_VERSION;
+'contents/allowed' = OPENSTACK_HORIZON_ALLOWED_HOSTS;
+'contents/host' = OPENSTACK_HORIZON_HOST;
+'contents/role' = OPENSTACK_HORIZON_DEFAULT_ROLE;
+'contents/multidomain' = OPENSTACK_HORIZON_MULTIDOMAIN_ENABLED;
+'contents/default_domain'= OPENSTACK_HORIZON_DEFAULT_DOMAIN;
+'contents/keystone/protocol' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL;
+'contents/keystone/host' = OPENSTACK_KEYSTONE_CONTROLLER_HOST;
+'contents/keystone/api_version' = OPENSTACK_HORIZON_KEYSTONE_API_VERSION;
 'contents/keystone/port' = 5000;
-'contents/secret_key' = OS_HORIZON_SECRET_KEY;
+'contents/secret_key' = OPENSTACK_HORIZON_SECRET_KEY;
 'contents/memcacheservers' = '127.0.0.1:11211';
 
 'contents/enable_distributed_router' =  {
-  if (exists(OS_NEUTRON_DVR_ENABLED) && OS_NEUTRON_DVR_ENABLED) {
+  if (exists(OPENSTACK_NEUTRON_DVR_ENABLED) && OPENSTACK_NEUTRON_DVR_ENABLED) {
     'True';
   } else {
     'False';
   };
 };
 
-include if (OS_HA) {
+include if (OPENSTACK_HA) {
     'features/dashboard/ha';
 } else {
     null;
