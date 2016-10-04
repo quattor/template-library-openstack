@@ -6,3 +6,4 @@ prefix '/software/packages';
 '{openstack-selinux}' ?= dict();
 '{openstack-packstack}' ?= dict();
 '{python-openstackclient}' ?= dict();
+'python-memcached' ?= dict();

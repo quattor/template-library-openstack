@@ -1,6 +1,5 @@
 unique template features/rabbitmq/config;
 
-
 include 'features/rabbitmq/rpms/config';
 
 include 'components/chkconfig/config';

@@ -13,9 +13,8 @@ foreach(k;v;OS_MEMCACHE_HOSTS) {
         } else {
             hosts = v + ':11211';
         };
-
-        hosts;
     };
+    hosts;
 };
 
 # Configuration file for glance
@@ -30,7 +29,6 @@ foreach(k;v;OS_MEMCACHE_HOSTS) {
         } else {
             hosts = v + ':11211';
         };
-
-        hosts;
     };
+    hosts;
 };
