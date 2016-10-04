@@ -11,7 +11,7 @@ include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/neutron/dhcp_agent.ini}';
 'module' = 'tiny';
 # [DEFAULT] section
-'contents/DEFAULT/interface_driver' = 'neutron.agent.linux.interface.BridgeInterfaceDriver';
+'contents/DEFAULT/interface_driver' = OS_NEUTRON_INTERFACE_DRIVER;
 'contents/DEFAULT/dhcp_driver' = 'neutron.agent.linux.dhcp.Dnsmasq';
 'contents/DEFAULT/enable_isolated_metadata' = 'True';
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);

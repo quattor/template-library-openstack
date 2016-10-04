@@ -103,6 +103,8 @@ variable OS_KEYSTONE_IDENTITY_LDAP_PARAMS ?= dict();
 variable OS_KEYSTONE_PORT ?= 5000;
 variable OS_KEYSTONE_ADMIN_PORT ?= 35357;
 variable OS_KEYSTONE_PORTS ?= list(OS_KEYSTONE_PORT,OS_KEYSTONE_ADMIN_PORT);
+variable OS_KEYSTONE_TOKEN_PROVIDER ?= 'uuid';
+variable OS_KEYSTONE_TOKEN_DRIVER ?= 'memcache';
 
 #############################
 # Memcache specfic variable #
@@ -147,6 +149,7 @@ variable OS_NEUTRON_DB_USERNAME ?= 'neutron';
 variable OS_NEUTRON_DB_PASSWORD ?= 'NEUTRON_DBPASS';
 variable OS_NEUTRON_USERNAME ?= 'neutron';
 variable OS_NEUTRON_PASSWORD ?= 'NEUTRON_PASS';
+variable OS_NEUTRON_MECHANISM ?= 'linuxbridge';
 variable OS_NEUTRON_NETWORK_TYPE ?= 'provider-service';
 variable OS_NEUTRON_OVERLAY_IP ?= PRIMARY_IP;
 variable OS_NEUTRON_BASE_MAC ?= null;

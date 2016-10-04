@@ -10,6 +10,6 @@ include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/neutron/l3_agent.ini}';
 'module' = 'tiny';
 # [DEFAULT]
-'contents/DEFAULT/interface_driver' = 'neutron.agent.linux.interface.BridgeInterfaceDriver';
+'contents/DEFAULT/interface_driver' = OS_NEUTRON_INTERFACE_DRIVER;
 'contents/DEFAULT/external_network_bridge' = '';
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);

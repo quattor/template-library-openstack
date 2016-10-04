@@ -16,6 +16,7 @@ foreach(k;v;OS_MEMCACHE_HOSTS) {
     };
     hosts;
 };
+'contents/cache' = openstack_load_config('features/memcache/client/openstack');
 
 # Configuration file for glance
 include 'components/metaconfig/config';
@@ -32,3 +33,4 @@ foreach(k;v;OS_MEMCACHE_HOSTS) {
     };
     hosts;
 };
+'contents/cache' = openstack_load_config('features/memcache/client/openstack');
