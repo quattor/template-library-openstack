@@ -25,3 +25,9 @@ prefix '/software/components/mysql/databases';
   SELF['users'] = usersdict;
   SELF;
 };
+'nova_api' = {
+  SELF['createDb'] = true;
+  SELF['server'] = OS_NOVA_DB_HOST;
+  SELF['users'] = usersdict;
+  SELF;
+};

@@ -88,6 +88,11 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
   OS_NOVA_DB_USERNAME + ':' +
   OS_NOVA_DB_PASSWORD + '@' +
   OS_NOVA_DB_HOST + '/nova';
+  # [api_database] section
+  'contents/api_database/connection' = 'mysql://' +
+    OS_NOVA_DB_USERNAME + ':' +
+    OS_NOVA_DB_PASSWORD + '@' +
+    OS_NOVA_DB_HOST + '/nova_api';
 
 # [glance] section
 #'contents/glance/host' = OS_GLANCE_CONTROLLER_HOST;
