@@ -12,9 +12,8 @@ foreach(k;v;OS_MEMCACHE_HOSTS) {
         } else {
             hosts = v + ':11211';
         };
-
-        hosts;
     };
+    hosts;
 };
 
 # [vnc] section
