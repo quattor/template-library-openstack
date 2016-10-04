@@ -9,6 +9,9 @@ include 'defaults/openstack/config';
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
+# Include utils
+include 'defaults/openstack/utils';
+
 include 'features/ceilometer/rpms/config';
 
 include 'components/chkconfig/config';
@@ -25,9 +28,6 @@ prefix '/software/components/chkconfig/service';
 'openstack-ceilometer-alarm-notifier/startstop' = true;
 'openstack-ceilometer-alarm-evaluator/on' = '';
 'openstack-ceilometer-alarm-evaluator/startstop' = true;
-
-
-
 
 # Configuration file for ceilometer
 include 'components/metaconfig/config';
@@ -71,3 +71,26 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 'contents/service_credentials/os_password' = OS_CEILOMETER_PASSWORD;
 'contents/service_credentials/os_endpoint_type' = 'internalURL';
 'contents/service_credentials/os_region_name' = OS_REGION_NAME;
+
+include if (OS_HA) {
+    'features/ceilometer/ha';
+} else {
+    null;
+};
+
+include 'components/filecopy/config';
+prefix '/software/components/filecopy/services';
+'{/root/init-ceilometer.sh}' = dict(
+  'perms' ,'755',
+  'config', format(
+    file_contents('features/ceilometer/init-ceilometer.sh'),
+    OS_INIT_SCRIPT_GENERAL,
+    OS_CEILOMETER_CONTROLLER_HOST,
+    OS_CEILOMETER_DB_HOST,
+    OS_CEILOMETER_DB_USERNAME,
+    OS_CEILOMETER_DB_PASSWORD,
+    OS_CEILOMETER_USERNAME,
+    OS_CEILOMETER_PASSWORD,
+  ),
+  'restart' , '/root/init-ceilometer.sh',
+);

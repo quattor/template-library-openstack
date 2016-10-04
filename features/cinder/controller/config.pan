@@ -9,6 +9,9 @@ include 'defaults/openstack/config';
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
+# Include utils
+include 'defaults/openstack/utils';
+
 include 'features/cinder/controller/rpms/config';
 
 include 'components/chkconfig/config';
@@ -56,3 +59,25 @@ prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}';
 'contents/oslo_concurrency/lock_path' = '/var/lib/cinder/tmp';
 #[oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+
+
+include if (OS_HA) {
+    'features/cinder/controller/ha';
+} else {
+    null;
+};
+
+include 'components/filecopy/config';
+prefix '/software/components/filecopy/services';
+'{/root/init-cinder.sh}' = dict(
+  'perms' ,'755',
+  'config', format(
+    file_contents('features/cinder/controller/init-cinder.sh'),
+    OS_INIT_SCRIPT_GENERAL,
+    OS_CINDER_CONTROLLER_HOST,
+    OS_CINDER_CONTROLLER_HOST,
+    OS_CINDER_USERNAME,
+    OS_CINDER_PASSWORD,
+  ),
+  'restart' , '/root/init-cinder.sh',
+);

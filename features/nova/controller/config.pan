@@ -6,6 +6,9 @@ include 'defaults/openstack/functions';
 # Include general openstack variables
 include 'defaults/openstack/config';
 
+# Include utils
+include 'defaults/openstack/utils';
+
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
@@ -117,3 +120,23 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 # [vnc] section
 'contents/vnc/vncserver_listen' = '$my_ip';
 'contents/vnc/vncserver_proxyclient_address' = '$my_ip';
+
+include if (OS_HA) {
+    'features/nova/controller/ha';
+} else {
+    null;
+};
+
+include 'components/filecopy/config';
+prefix '/software/components/filecopy/services';
+'{/root/init-nova.sh}' = dict(
+  'perms' ,'755',
+  'config', format(
+    file_contents('features/nova/controller/init-nova.sh'),
+    OS_INIT_SCRIPT_GENERAL,
+    OS_NOVA_CONTROLLER_HOST,
+    OS_NOVA_USERNAME,
+    OS_NOVA_PASSWORD,
+  ),
+  'restart' , '/root/init-nova.sh',
+);

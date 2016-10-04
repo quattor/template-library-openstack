@@ -10,6 +10,9 @@ include 'defaults/openstack/config';
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
+# Include utils
+include 'defaults/openstack/utils';
+
 include 'features/keystone/rpms/config';
 
 # Include some useful configuration
@@ -33,8 +36,18 @@ prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
   OS_KEYSTONE_DB_HOST +
   '/keystone';
 
+
 # [memcache] section
-'contents/memcache/servers' = OS_MEMCACHE_HOST + ':11211';
+'contents/memcache/servers' = { hosts = '';
+foreach(k;v;OS_MEMCACHE_HOSTS) {
+        if ( hosts != '') {
+            hosts = hosts + ',' + v + ':11211';
+        } else {
+            hosts = v + ':11211';
+        };
+    };
+    hosts;
+};
 
 # [revoke] section
 'contents/revoke/driver' = 'sql';
@@ -48,3 +61,15 @@ prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
 
 # Configure identity backend
 include 'features/keystone/identity/' + OS_KEYSTONE_IDENTITY_DRIVER;
+
+include 'components/filecopy/config';
+prefix '/software/components/filecopy/services';
+'{/root/init-keystone.sh}' = dict(
+  'perms' ,'755',
+  'config', format(
+    file_contents('features/keystone/init-keystone.sh'),
+    OS_INIT_SCRIPT_GENERAL,
+    
+  ),
+  'restart' , '/root/init-keystone.sh',
+);

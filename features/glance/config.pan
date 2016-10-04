@@ -9,6 +9,9 @@ include 'defaults/openstack/config';
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
+# Include utils
+include 'defaults/openstack/utils';
+
 include 'features/glance/rpms/config';
 
 include 'components/chkconfig/config';
@@ -97,3 +100,23 @@ include if (OS_CEPH) {
 } else {
     'features/glance/file';
 };
+
+include if (OS_HA) {
+    'features/glance/ha';
+} else {
+    null;
+};
+
+include 'components/filecopy/config';
+prefix '/software/components/filecopy/services';
+'{/root/init-glance.sh}' = dict(
+  'perms' ,'755',
+  'config', format(
+    file_contents('features/glance/init-glance.sh'),
+    OS_INIT_SCRIPT_GENERAL,
+    OS_GLANCE_CONTROLLER_HOST,
+    OS_GLANCE_USERNAME,
+    OS_GLANCE_PASSWORD,
+  ),
+  'restart' , '/root/init-glance.sh',
+);
