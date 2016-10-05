@@ -107,7 +107,7 @@ variable OS_KEYSTONE_PORTS ?= list(OS_KEYSTONE_PORT,OS_KEYSTONE_ADMIN_PORT);
 #############################
 # Memcache specfic variable #
 #############################
-variable OS_MEMCACHE_HOSTs ?= list('localhost');
+variable OS_MEMCACHE_HOSTS ?= list('localhost');
 
 #############################
 # MongoDB specfic variable #
