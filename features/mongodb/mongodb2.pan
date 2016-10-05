@@ -5,7 +5,7 @@ include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/mongod.conf}';
 'module' = 'tiny';
 'daemons/mongod' = 'restart';
-'contents/bind_ip' = '127.0.0.1, ' + PRIMARY_IP;
+'contents/bind_ip' = '127.0.0.1,' + PRIMARY_IP;
 'contents/dbpath' = OS_MONGODB_DBPATH;
 'contents/logpath' = '/var/log/mongodb/mongod.log';
 'contents/fork' = 'true';

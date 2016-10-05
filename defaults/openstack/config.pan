@@ -114,6 +114,15 @@ variable OS_MEMCACHE_HOSTS ?= list('localhost');
 #############################
 variable OS_MONGODB_VERSION ?= 2;
 variable OS_MONGODB_DBPATH ?= '/var/mongodb';
+@use {
+  type = string
+  note = Default value depend of mongodb version. Set the unix username of mongod daemon.
+}
+variable OS_MONGODB_USER ?= if (OS_MONGODB_VERSION == 2) {
+  'mongodb';
+} else {
+  'mongod';
+};
 
 ##########################
 # Nova specific variable #
