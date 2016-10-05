@@ -95,7 +95,7 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.co
 # [paste_deploy] section
 'contents/paste_deploy/flavor' = 'keystone';
 
-include if (OPENSTACK_CEPH) {
+include if (OPENSTACK_CEPH_GLANCE) {
     'features/glance/ceph';
 } else {
     'features/glance/file';
