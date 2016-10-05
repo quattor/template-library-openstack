@@ -29,7 +29,7 @@ function openstack_list_to_string = {
   if (is_list(ARGV[0])) {
     config = ARGV[0];
   } else  {
-    error('openstack_list_to_string need a list as argument');
+    error('openstack_list_to_string need a list as an argument');
   };
 
   result = '';
@@ -43,4 +43,44 @@ function openstack_list_to_string = {
 
     result;
   };
+};
+
+function openstack_dict_to_hostport_string = {
+  if (ARGC != 1) {
+     error('openstack_dict_to_hostport_string needs an argument');
+  };
+
+  if (is_dict(ARGV[0])) {
+    config = ARGV[0];
+  } else {
+    error('openstack_dict_to_hostport_string needs a dict as an argument');
+  };
+
+  foreach(k;v;config) {
+    if (result != '') {
+      result = result + ',' + k + ':' + v;
+    } else {
+      result = k + ':' + v;
+    };
+
+    result;
+  };
+};
+
+function openstack_dict_to_connection_string = {
+  if (ARGC != 1) {
+     error('openstack_dict_to_connection_string needs an argument');
+  };
+
+  if (is_dict(ARGV[0])) {
+    config = ARGV[0];
+  } else {
+    error('openstack_dict_to_connection_string needs a dict as an argument');
+  };
+  result = config['dbprotocol']
+    + '://' + config['dbuser']
+    + ':' + config['dbpassword']
+    + '@' + config['dbhost']
+    + ':' + config['dbport']
+    + '/' + config['dbname'];
 };

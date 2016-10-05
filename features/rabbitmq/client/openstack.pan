@@ -1,16 +1,8 @@
 structure template features/rabbitmq/client/openstack;
 
 'rabbit_host' = if (!OPENSTACK_HA) {OPENSTACK_RABBITMQ_HOST;} else {null;};
-'rabbit_hosts' = if (OPENSTACK_HA) {hosts = '';
-foreach(k;v;OPENSTACK_RABBITMQ_HOSTS) {
-        if ( hosts != '') {
-            hosts = hosts +  "," + v + ":5672" ;
-        } else {
-            hosts = v + ":5672";
-        };
-
-        hosts;
-    };
+'rabbit_hosts' = if (OPENSTACK_HA) {
+    openstack_dict_to_hostport_string(OPENSTACK_RABBITMQ_HOSTS);
 } else {
     null;
 };

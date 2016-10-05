@@ -31,7 +31,7 @@ prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local
 'contents/keystone/api_version' = OPENSTACK_HORIZON_KEYSTONE_API_VERSION;
 'contents/keystone/port' = 5000;
 'contents/secret_key' = OPENSTACK_HORIZON_SECRET_KEY;
-'contents/memcacheservers' = '127.0.0.1:11211';
+'contents/memcacheservers' = openstack_dict_to_hostport_string(OPENSTACK_MEMCACHE_HOSTS);
 
 'contents/enable_distributed_router' =  {
   if (exists(OPENSTACK_NEUTRON_DVR_ENABLED) && OPENSTACK_NEUTRON_DVR_ENABLED) {

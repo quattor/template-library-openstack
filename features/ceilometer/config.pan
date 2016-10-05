@@ -55,6 +55,7 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 };
 
 # [database] section
+'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_KEYSTONE_DB);
 'contents/database/connection'='mongodb://'+ OPENSTACK_CEILOMETER_DB_USERNAME + ':' + OPENSTACK_CEILOMETER_DB_PASSWORD + '@' + OPENSTACK_CEILOMETER_DB_HOST + ':27017/ceilometer';
 
 # [oslo_messaging_rabbit] section

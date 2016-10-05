@@ -5,26 +5,8 @@ include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'module' = 'tiny';
 # [DEFAULT] section
-'contents/DEFAULT/memcached_servers' = { hosts = '';
-foreach(k;v;OPENSTACK_MEMCACHE_HOSTS) {
-        if ( hosts != '') {
-            hosts = hosts + ',' + v + ':11211';
-        } else {
-            hosts = v + ':11211';
-        };
-    };
-    hosts;
-};
-'contents/keystone_authtoken/memcached_servers' = { hosts = '';
-foreach(k;v;OPENSTACK_MEMCACHE_HOSTS) {
-        if ( hosts != '') {
-            hosts = hosts + ',' + v + ':11211';
-        } else {
-            hosts = v + ':11211';
-        };
-    };
-    hosts;
-};
+'contents/DEFAULT/memcached_servers' = openstack_dict_to_hostport_string(OPENSTACK_MEMCACHE_HOSTS);
+'contents/keystone_authtoken/memcached_servers' = openstack_dict_to_hostport_string(OPENSTACK_MEMCACHE_HOSTS);
 
 # [vnc] section
 'contents/vnc/vncserver_listen' = '*';
