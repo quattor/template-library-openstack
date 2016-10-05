@@ -9,9 +9,17 @@ include 'defaults/openstack/config';
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
-
 # Include RPMS for nova hypervisor configuration
 include 'features/nova/compute/rpms/config';
+
+# Include policy.json file
+include {
+  if (OS_NOVA_OVERWRITE_DEFAULT_POLICY) {
+    'features/nova/compute/policy';
+  } else {
+    null;
+  };
+};
 
 
 # Restart nova specific daemon
@@ -38,6 +46,8 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/DEFAULT/security_group_api' = 'neutron';
 'contents/DEFAULT/linuxnet_interface_driver' = 'nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver';
 'contents/DEFAULT/firewall_driver' = 'nova.virt.firewall.NoopFirewallDriver';
+'contents/DEFAULT/cpu_allocation_ratio' = OS_NOVA_CPU_RATIO;
+'contents/DEFAULT/ram_allocation_ratio' = OS_NOVA_RAM_RATIO;
 
 # [glance] section
 #'contents/glance/host' = OS_GLANCE_CONTROLLER_HOST;

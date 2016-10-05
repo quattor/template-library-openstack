@@ -107,7 +107,7 @@ variable OS_KEYSTONE_PORTS ?= list(OS_KEYSTONE_PORT,OS_KEYSTONE_ADMIN_PORT);
 #############################
 # Memcache specfic variable #
 #############################
-variable OS_MEMCACHE_HOSTs ?= list('localhost');
+variable OS_MEMCACHE_HOSTS ?= list('localhost');
 
 #############################
 # MongoDB specfic variable #
@@ -122,8 +122,9 @@ variable OS_NOVA_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
 variable OS_NOVA_VNC_HOST ?= OS_NOVA_CONTROLLER_HOST;
 variable OS_NOVA_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
 variable OS_NOVA_VNC_PROTOCOL ?= OS_NOVA_CONTROLLER_PROTOCOL;
-variable OS_NOVA_CPU_RATIO ?= 1.0;
-variable OS_NOVA_RAM_RATIO ?= 1.0;
+variable OS_NOVA_OVERWRITE_DEFAULT_POLICY ?= false;
+variable OS_NOVA_CPU_RATIO ?= '1.0';
+variable OS_NOVA_RAM_RATIO ?= '1.0';
 variable OS_NOVA_VIRT_TYPE ?= 'kvm';
 variable OS_NOVA_DB_HOST ?= OS_DB_HOST;
 variable OS_NOVA_DB_USERNAME ?= 'nova';

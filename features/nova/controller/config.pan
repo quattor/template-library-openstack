@@ -80,8 +80,8 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 } else {
   null;
 };
-'contents/DEFAULT/cpu_allocation_ratio' = OS_NOVA_CPU_RATIO;
-'contents/DEFAULT/ram_allocation_ratio' = OS_NOVA_RAM_RATIO;
+#'contents/DEFAULT/cpu_allocation_ratio' = OS_NOVA_CPU_RATIO;
+#'contents/DEFAULT/ram_allocation_ratio' = OS_NOVA_RAM_RATIO;
 
 # [database] section
 'contents/database/connection' = 'mysql://' +
