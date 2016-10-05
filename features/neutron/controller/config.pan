@@ -1,5 +1,7 @@
 unique template features/neutron/controller/config;
 
+include 'defaults/openstack/schema/schema';
+
 # Load some useful functions
 include 'defaults/openstack/functions';
 
@@ -32,6 +34,8 @@ include 'components/chkconfig/config';
 prefix '/software/components/chkconfig/service';
 'neutron-server/on' = '';
 'neutron-server/startstop' = true;
+
+bind '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}/contents' = openstack_neutron_config;
 
 include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
@@ -69,10 +73,7 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 'contents/keystone_authtoken/password' = OPENSTACK_NEUTRON_PASSWORD;
 
 # [database]
-'contents/database/connection' = 'mysql://' +
-   OPENSTACK_NEUTRON_DB_USERNAME + ':' +
-   OPENSTACK_NEUTRON_DB_PASSWORD + '@' +
-   OPENSTACK_NEUTRON_DB_HOST + '/neutron';
+'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_NEUTRON_DB);
 
 # [nova]
 'contents/nova/auth_url' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OPENSTACK_KEYSTONE_CONTROLLER_HOST + ':35357';

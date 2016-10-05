@@ -55,12 +55,16 @@ function openstack_dict_to_hostport_string = {
   } else {
     error('openstack_dict_to_hostport_string needs a dict as an argument');
   };
-
+  result = '';
   foreach(k;v;config) {
     if (result != '') {
       result = result + ',' + k + ':' + v;
     } else {
-      result = k + ':' + v;
+      result = format(
+        '%s:%d',
+        k,
+        v
+      );
     };
 
     result;
@@ -77,10 +81,14 @@ function openstack_dict_to_connection_string = {
   } else {
     error('openstack_dict_to_connection_string needs a dict as an argument');
   };
-  result = config['dbprotocol']
-    + '://' + config['dbuser']
-    + ':' + config['dbpassword']
-    + '@' + config['dbhost']
-    + ':' + config['dbport']
-    + '/' + config['dbname'];
+  result = format(
+    '%s://%s:%s@%s:%d/%s',
+    config['dbprotocol'],
+    config['dbuser'],
+    config['dbpassword'],
+    config['dbhost'],
+    config['dbport'],
+    config['dbname']
+  );
+  result;
 };

@@ -1,5 +1,7 @@
 unique template features/neutron/network/config;
 
+include 'defaults/openstack/schema/schema';
+
 # Load some useful functions
 include 'defaults/openstack/functions';
 
@@ -33,6 +35,8 @@ prefix '/software/components/chkconfig/service';
 'neutron-server/startstop' = true;
 
 include 'components/metaconfig/config';
+
+bind '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}/contents' = openstack_neutron_config;
 
 prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 'module' = 'tiny';

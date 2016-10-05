@@ -1,7 +1,7 @@
 
 unique template features/keystone/config;
 
-include 'features/keystone/schema';
+include 'defaults/openstack/schema/schema';
 
 # Load some useful functions
 include 'defaults/openstack/functions';
@@ -24,7 +24,7 @@ include 'features/memcache/config';
 # Configuration file for keystone
 include 'components/metaconfig/config';
 
-bind '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}' = keystone_config;
+bind '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}/contents' = openstack_keystone_config;
 
 prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
 'module' = 'tiny';
