@@ -109,7 +109,7 @@ variable OPENSTACK_KEYSTONE_TOKEN_DRIVER ?= 'memcache';
 #############################
 # Memcache specfic variable #
 #############################
-variable OPENSTACK_MEMCACHE_HOSTs ?= list('localhost');
+variable OPENSTACK_MEMCACHE_HOSTS ?= list('localhost');
 
 #############################
 # MongoDB specfic variable #
