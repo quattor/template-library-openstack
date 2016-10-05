@@ -47,6 +47,3 @@ prefix '/software/components/accounts';
 # MongoDB user
 'kept_users/mongod' = '';
 'kept_groups/mongod' = '';
-'kept_users/mongodb' = '';
-'kept_groups/mongodb' = '';
-
