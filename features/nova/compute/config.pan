@@ -90,7 +90,7 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
   };
 };
 
-include if (OS_CEPH) {
+include if (OS_CEPH_NOVA) {
     'features/nova/compute/ceph';
 } else {
     null;

@@ -237,6 +237,8 @@ variable OS_METADATA_HOST ?= OS_NOVA_CONTROLLER_HOST;
 # CEPH Specific Variables #
 ###########################
 variable OS_CEPH ?= false;
+variable OS_CEPH_NOVA ?= OS_CEPH;
+variable OS_CEPH_GLANCE ?= OS_CEPH;
 variable OS_CEPH_GLANCE_POOL ?= 'images';
 variable OS_CEPH_GLANCE_USER ?= 'glance';
 variable OS_CEPH_GLANCE_CEPH_CONF ?= '/etc/ceph/ceph.conf';
