@@ -171,6 +171,12 @@ variable OS_NEUTRON_DEFAULT_DHCP_POOL ?= dict(
 );
 variable OS_NEUTRON_DEFAULT_GATEWAY ?= '192.168.0.1';
 variable OS_NEUTRON_DEFAULT_NAMESERVER ?= '192.168.0.1';
+@use {
+  type = string
+  default = openstacklocal
+  note = Set the domain name that will be give to virtual machine
+}
+variable OS_NEUTRON_DNS_DOMAIN ?= 'openstacklocal';
 
 
 ############################
