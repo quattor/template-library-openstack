@@ -36,7 +36,11 @@ function openstack_list_to_string = {
 
   foreach(k;v;config) {
     if (result != '') {
-      result = result + ',' + v;
+      result = format(
+        '%s,%s',
+        result,
+        v
+      );
     } else {
       result = v;
     };
@@ -58,7 +62,12 @@ function openstack_dict_to_hostport_string = {
   result = '';
   foreach(k;v;config) {
     if (result != '') {
-      result = result + ',' + k + ':' + v;
+      result = format(
+        '%s,%s:%d',
+        result,
+        k,
+        v
+      );
     } else {
       result = format(
         '%s:%d',
