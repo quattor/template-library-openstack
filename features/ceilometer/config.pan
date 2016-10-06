@@ -12,6 +12,9 @@ include 'features/accounts/config';
 # Include utils
 include 'defaults/openstack/utils';
 
+# Include mongodb configuration
+include 'features/mongodb/config';
+
 include 'features/ceilometer/rpms/config';
 
 include 'components/chkconfig/config';

@@ -7,7 +7,7 @@ prefix '/software/components/dirperm';
 'paths' = {
   SELF[length(SELF)] = dict(
     'path', OS_MONGODB_DBPATH,
-    'owner', 'mongod:root',
+    'owner', format('%s:root', OS_MONGODB_USER),
     'type', 'd',
     'perm', '0755',
   );
