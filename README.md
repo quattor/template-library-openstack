@@ -1,8 +1,8 @@
-# openstack-liberty
+# openstack-mitaka
 
 ## Installation
-* Install repository under cfg/openstack-liberty
-* Add cfg/openstack-liberty into cluster.build.properties
+* Install repository under cfg/openstack-mitaka
+* Add cfg/openstack-mitaka into cluster.build.properties
 
 ## Usage
 * Create a template site/openstack/config
@@ -16,14 +16,18 @@ available officialy
 
 ## Supported services
 * Keystone: Apache configuration of keystone. sql or ldap backend is supported for user.
-* Glance: Filesystem based glance is supported
+* Glance: Filesystem or ceph based glance are supported
 * Nova
-* Neutron: "self-service" or "provider" configuration is supported
+* Neutron: "self-service" or "provider" configuration is supported with either linuxbridge or OpenVSwitch networking. Distributed Virtual Routing is also supported with OpenVSwitch
 * Cinder: "lvm" based backend is supported
 * Ceilometer
 * Heat
 
+## High Availability
+* Some configuration is provided for running services behind HAProxy with keepalived
+* Configuration to run MongoDB (Version 3 onwards), memcached and rabbitmq in high availability modes
+
 ## TODO
-* metaconfig is NOT typed yet
+* metaconfig is now PARTIALLY typed
 * Database is not populate
-  * a init.sh script is created but not sure it work well (with fileconfig)
+  * an init script is created and run automatically for each component to add appropriate objects within OpenStack (user, domain, role, project, service, endpoints) and to run the database initialisation. This currently does not deal with updating the database when upgrading
