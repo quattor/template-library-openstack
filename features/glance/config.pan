@@ -1,5 +1,7 @@
 unique template features/glance/config;
 
+include 'defaults/openstack/schema/schema';
+
 # Load some useful functions
 include 'defaults/openstack/functions';
 
@@ -20,6 +22,8 @@ prefix '/software/components/chkconfig/service';
 'openstack-glance-api/startstop' = true;
 'openstack-glance-registry/on' = '';
 'openstack-glance-registry/startstop' = true;
+
+bind '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}/contents' = openstack_glance_config;
 
 # Configuration file for glance
 include 'components/metaconfig/config';
@@ -46,10 +50,7 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}';
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [database] section
-'contents/database/connection' = 'mysql://' +
-  OPENSTACK_GLANCE_DB_USERNAME + ':' +
-  OPENSTACK_GLANCE_DB_PASSWORD + '@' +
-  OPENSTACK_GLANCE_DB_HOST + '/glance';
+'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_GLANCE_DB);
 
 'contents/glance_store/filesystem_store_datadir' = OPENSTACK_GLANCE_STORE_DIR;
 
@@ -60,6 +61,8 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}';
 
 # [paste_deploy] section
 'contents/paste_deploy/flavor' = 'keystone';
+
+bind '/software/components/metaconfig/services/{/etc/glance/glance-registry.conf}/contents' = openstack_glance_config;
 
 prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.conf}';
 'module' = 'tiny';
@@ -82,10 +85,7 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.co
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [database] section
-'contents/database/connection' = 'mysql://' +
-  OPENSTACK_GLANCE_DB_USERNAME + ':' +
-  OPENSTACK_GLANCE_DB_PASSWORD + '@' +
-  OPENSTACK_GLANCE_DB_HOST + '/glance';
+'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_GLANCE_DB);
 
 # [keystone_authtoken] section
 'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);

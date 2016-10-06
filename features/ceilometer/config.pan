@@ -1,5 +1,7 @@
 unique template features/ceilometer/config;
 
+include 'defaults/openstack/schema/schema';
+
 # Load some useful functions
 include 'defaults/openstack/functions';
 
@@ -29,6 +31,8 @@ prefix '/software/components/chkconfig/service';
 'openstack-ceilometer-alarm-evaluator/on' = '';
 'openstack-ceilometer-alarm-evaluator/startstop' = true;
 
+bind '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.conf}/contents' = openstack_ceilometer_config;
+
 # Configuration file for ceilometer
 include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.conf}';
@@ -55,7 +59,7 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 };
 
 # [database] section
-'contents/database/connection'='mongodb://'+ OPENSTACK_CEILOMETER_DB_USERNAME + ':' + OPENSTACK_CEILOMETER_DB_PASSWORD + '@' + OPENSTACK_CEILOMETER_DB_HOST + ':27017/ceilometer';
+'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_CEILOMETER_DB);
 
 # [oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');

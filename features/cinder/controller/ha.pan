@@ -6,14 +6,5 @@ include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}';
 'module' = 'tiny';
 # [DEFAULT] section
-'contents/DEFAULT/memcached_servers' = { hosts = '';
-foreach(k;v;OPENSTACK_MEMCACHE_HOSTS) {
-        if ( hosts != '') {
-            hosts = hosts + ',' + v + ':11211';
-        } else {
-            hosts = v + ':11211';
-        };
-    };
-    hosts;
-};
+'contents/DEFAULT/memcached_servers' = openstack_dict_to_hostport_string(OPENSTACK_MEMCACHE_HOSTS);
 'contents/cache' = openstack_load_config('features/memcache/client/openstack');

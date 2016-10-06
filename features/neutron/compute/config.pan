@@ -1,5 +1,7 @@
 unique template features/neutron/compute/config;
 
+include 'defaults/openstack/schema/schema';
+
 # Load some useful functions
 include 'defaults/openstack/functions';
 
@@ -20,6 +22,8 @@ include 'features/neutron/compute/mechanism/' + OPENSTACK_NEUTRON_MECHANISM;
 
 # Include some common configuration
 include 'features/neutron/common/config';
+
+bind '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}/contents' = openstack_neutron_config;
 
 # Configuration file for neutron
 include 'components/metaconfig/config';

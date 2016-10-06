@@ -1,4 +1,6 @@
-                                                                                                                                                                                                                                                                        unique template features/nova/controller/config;
+unique template features/nova/controller/config;
+
+include 'defaults/openstack/schema/schema';
 
 # Load some useful functions
 include 'defaults/openstack/functions';
@@ -29,6 +31,8 @@ prefix '/software/components/chkconfig/service';
 'openstack-nova-conductor/startstop' = true;
 'openstack-nova-novncproxy/on' = '';
 'openstack-nova-novncproxy/startstop' = true;
+
+bind '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents' = openstack_nova_config;
 
 include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
@@ -84,15 +88,9 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/DEFAULT/ram_allocation_ratio' = OPENSTACK_NOVA_RAM_RATIO;
 
 # [database] section
-'contents/database/connection' = 'mysql://' +
-  OPENSTACK_NOVA_DB_USERNAME + ':' +
-  OPENSTACK_NOVA_DB_PASSWORD + '@' +
-  OPENSTACK_NOVA_DB_HOST + '/nova';
-  # [api_database] section
-  'contents/api_database/connection' = 'mysql://' +
-    OPENSTACK_NOVA_DB_USERNAME + ':' +
-    OPENSTACK_NOVA_DB_PASSWORD + '@' +
-    OPENSTACK_NOVA_DB_HOST + '/nova_api';
+'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_NOVA_DB);
+# [api_database] section
+'contents/api_database/connection' = openstack_dict_to_connection_string(OPENSTACK_NOVA_API_DB);
 
 # [glance] section
 #'contents/glance/host' = OPENSTACK_GLANCE_CONTROLLER_HOST;

@@ -1,5 +1,7 @@
 unique template features/nova/compute/config;
 
+include 'defaults/openstack/schema/schema';
+
 # Load some useful functions
 include 'defaults/openstack/functions';
 
@@ -21,6 +23,8 @@ prefix '/software/components/chkconfig/service';
 'libvirtd/startstop' = true;
 'openstack-nova-compute/on' = '';
 'openstack-nova-compute/startstop' = true;
+
+bind '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents' = openstack_nova_config;
 
 # Configuration file for nova
 include 'components/metaconfig/config';

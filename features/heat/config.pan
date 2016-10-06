@@ -1,5 +1,7 @@
 unique template features/heat/config;
 
+include 'defaults/openstack/schema/schema';
+
 # Load some useful functions
 include 'defaults/openstack/functions';
 
@@ -22,6 +24,8 @@ prefix '/software/components/chkconfig/service';
 'openstack-heat-api-cfn/startstop' = true;
 'openstack-heat-engine/on' = '';
 'openstack-heat-engine/startstop' = true;
+
+bind '/software/components/metaconfig/services/{/etc/heat/heat.conf}/contents' = openstack_heat_config;
 
 # Configuration file for heat
 include 'components/metaconfig/config';
@@ -64,10 +68,7 @@ prefix '/software/components/metaconfig/services/{/etc/heat/heat.conf}';
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [database] section
-'contents/database/connection' = 'mysql://' +
-  OPENSTACK_HEAT_DB_USERNAME + ':' +
-  OPENSTACK_HEAT_DB_PASSWORD + '@' +
-  OPENSTACK_HEAT_DB_HOST + '/heat';
+'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_HEAT_DB);
 
 # [keystone_authtoken] section
 'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);

@@ -1,5 +1,7 @@
 unique template features/cinder/controller/config;
 
+include 'defaults/openstack/schema/schema';
+
 # Load some useful functions
 include 'defaults/openstack/functions';
 
@@ -20,6 +22,8 @@ prefix '/software/components/chkconfig/service';
 'openstack-cinder-api/startstop' = true;
 'openstack-cinder-scheduler/on' = '';
 'openstack-cinder-scheduler/startstop' = true;
+
+bind '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}/contents' = openstack_cinder_config;
 
 # Configuration file for cinder
 include 'components/metaconfig/config';
@@ -50,10 +54,7 @@ prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}';
 'contents/keystone_authtoken/password' = OPENSTACK_CINDER_PASSWORD;
 
 # [database] section
-'contents/database/connection' = 'mysql://' +
-  OPENSTACK_CINDER_DB_USERNAME + ':' +
-  OPENSTACK_CINDER_DB_PASSWORD + '@' +
-  OPENSTACK_CINDER_DB_HOST + '/cinder';
+'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_CINDER_DB);
 
 # [oslo_concurrency]
 'contents/oslo_concurrency/lock_path' = '/var/lib/cinder/tmp';

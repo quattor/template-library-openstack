@@ -1,6 +1,8 @@
 
 unique template features/keystone/config;
 
+include 'defaults/openstack/schema/schema';
+
 # Load some useful functions
 include 'defaults/openstack/functions';
 
@@ -21,6 +23,9 @@ include 'features/memcache/config';
 
 # Configuration file for keystone
 include 'components/metaconfig/config';
+
+bind '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}/contents' = openstack_keystone_config;
+
 prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
 'module' = 'tiny';
 
@@ -30,24 +35,10 @@ prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 
 # [database] section
-'contents/database/connection' = 'mysql://' +
-  OPENSTACK_KEYSTONE_DB_USERNAME + ':' +
-  OPENSTACK_KEYSTONE_DB_PASSWORD + '@' +
-  OPENSTACK_KEYSTONE_DB_HOST +
-  '/keystone';
-
+'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_KEYSTONE_DB);
 
 # [memcache] section
-'contents/memcache/servers' = { hosts = '';
-foreach(k;v;OPENSTACK_MEMCACHE_HOSTS) {
-        if ( hosts != '') {
-            hosts = hosts + ',' + v + ':11211';
-        } else {
-            hosts = v + ':11211';
-        };
-    };
-    hosts;
-};
+'contents/memcache/servers' = openstack_dict_to_hostport_string(OPENSTACK_MEMCACHE_HOSTS);
 
 # [revoke] section
 'contents/revoke/driver' = 'sql';
