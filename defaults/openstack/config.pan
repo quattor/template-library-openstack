@@ -25,6 +25,12 @@ variable OPENSTACK_HA ?= false;
 }
 variable OPENSTACK_SERVERS ?= error('OPENSTACK_SERVERS must be set');
 
+@use{
+  type = dict
+  note = A dictionary of Openstack Servers and IP Addresses
+}
+final variable OPENSTACK_SERVERS ?= error('OPENSTACK_SERVERS must be set');
+
 ############################
 # Active SSL configuration #
 ############################
