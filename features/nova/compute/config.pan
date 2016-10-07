@@ -24,7 +24,7 @@ prefix '/software/components/chkconfig/service';
 'openstack-nova-compute/on' = '';
 'openstack-nova-compute/startstop' = true;
 
-bind '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents' = openstack_nova_config;
+bind '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents' = openstack_nova_compute_config;
 
 # Configuration file for nova
 include 'components/metaconfig/config';
@@ -42,16 +42,20 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/DEFAULT/security_group_api' = 'neutron';
 'contents/DEFAULT/linuxnet_interface_driver' = 'nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver';
 'contents/DEFAULT/firewall_driver' = 'nova.virt.firewall.NoopFirewallDriver';
-'contents/DEFAULT/resume_guests_state_on_host_boot' = if (OS_NOVA_RESUME_VM_ON_BOOT) {
+'contents/DEFAULT/resume_guests_state_on_host_boot' = if (OPENSTACK_NOVA_RESUME_VM_ON_BOOT) {
   'True';
 } else {
   null;
 };
 
 # [glance] section
-#'contents/glance/host' = OPENSTACK_GLANCE_CONTROLLER_HOST;
+#'contents/glance/host' = openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS);
 #'contents/glance/protocol' = OPENSTACK_GLANCE_CONTROLLER_PROTOCOL;
-'contents/glance/api_servers' = OPENSTACK_GLANCE_CONTROLLER_PROTOCOL+'://'+OPENSTACK_GLANCE_CONTROLLER_HOST+':9292';
+'contents/glance/api_servers' = openstack_generate_uri(
+  OPENSTACK_GLANCE_CONTROLLER_PROTOCOL,
+  OPENSTACK_GLANCE_SERVERS,
+  9292
+);
 
 # [keystone_authtoken] section
 'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
@@ -62,8 +66,16 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/libvirt/virt_type' = OPENSTACK_NOVA_VIRT_TYPE;
 
 # [neutron] section
-'contents/neutron/url' = OPENSTACK_NEUTRON_CONTROLLER_PROTOCOL + '://' + OPENSTACK_NEUTRON_CONTROLLER_HOST + ':9696';
-'contents/neutron/auth_url' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OPENSTACK_KEYSTONE_CONTROLLER_HOST + ':35357';
+'contents/neutron/url' = openstack_generate_uri(
+  OPENSTACK_NEUTRON_CONTROLLER_PROTOCOL,
+  OPENSTACK_NEUTRON_SERVERS,
+  9696
+);
+'contents/neutron/auth_url' = openstack_generate_uri(
+  OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
+  OPENSTACK_KEYSTONE_SERVERS,
+  OPENSTACK_KEYSTONE_ADMIN_PORT
+);
 'contents/neutron/auth_plugin' = 'password';
 'contents/neutron/auth_type' = 'password';
 'contents/neutron/project_domain_name' = 'default';
@@ -82,8 +94,24 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/vnc/enabled' = 'True';
 'contents/vnc/vncserver_listen' = '0.0.0.0';
 'contents/vnc/vncserver_proxyclient_address' = '$my_ip';
-'contents/vnc/novncproxy_base_url' = OPENSTACK_NOVA_VNC_PROTOCOL + '://' + OPENSTACK_NOVA_VNC_HOST + ':6080/vnc_auto.html';
-'contents/vnc/xvpvncproxy_base_url' = OPENSTACK_NOVA_VNC_PROTOCOL + '://' + OPENSTACK_NOVA_VNC_HOST + ':6081/console';
+'contents/vnc/novncproxy_base_url' = format(
+  '%s/%s',
+  openstack_generate_uri(
+    OPENSTACK_NOVA_VNC_PROTOCOL,
+    OPENSTACK_NOVA_SERVERS ,
+    6080
+  ),
+  'vnc_auto.html'
+);
+'contents/vnc/xvpvncproxy_base_url' = format(
+  '%s/%s',
+  openstack_generate_uri(
+    OPENSTACK_NOVA_VNC_PROTOCOL,
+    OPENSTACK_NOVA_SERVERS,
+    6081
+  ),
+  'console'
+);
 
 # [cinder] section
 'contents/cinder' = {

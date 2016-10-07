@@ -2,6 +2,9 @@ unique template features/rabbitmq/config;
 
 include 'features/rabbitmq/rpms/config';
 
+# Load some useful functions
+include 'defaults/openstack/functions';
+
 include 'components/chkconfig/config';
 prefix '/software/components/chkconfig/service';
 'rabbitmq-server/on' = '';

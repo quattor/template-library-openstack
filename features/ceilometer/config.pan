@@ -69,7 +69,15 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 'contents/keystone_authtoken/username' = OPENSTACK_CEILOMETER_USERNAME;
 'contents/keystone_authtoken/password' = OPENSTACK_CEILOMETER_PASSWORD;
 
-'contents/service_credentials/os_auth_url' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OPENSTACK_KEYSTONE_CONTROLLER_HOST + ':5000/v2.0';
+'contents/service_credentials/os_auth_url' = format(
+  '%s/%s',
+  openstack_generate_uri(
+    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
+    OPENSTACK_KEYSTONE_SERVERS,
+    OPENSTACK_KEYSTONE_PORT
+    ),
+  'v2.0'
+);
 'contents/service_credentials/username' = OPENSTACK_CEILOMETER_USERNAME;
 'contents/service_credentials/os_tenant_name' = 'service';
 'contents/service_credentials/os_password' = OPENSTACK_CEILOMETER_PASSWORD;
@@ -89,7 +97,7 @@ prefix '/software/components/filecopy/services';
   'config', format(
     file_contents('features/ceilometer/init-ceilometer.sh'),
     OPENSTACK_INIT_SCRIPT_GENERAL,
-    OPENSTACK_CEILOMETER_CONTROLLER_HOST,
+    openstack_get_controller_host(OPENSTACK_CEILOMETER_SERVERS),
     OPENSTACK_CEILOMETER_DB_HOST,
     OPENSTACK_CEILOMETER_DB_USERNAME,
     OPENSTACK_CEILOMETER_DB_PASSWORD,
