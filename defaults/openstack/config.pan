@@ -25,6 +25,12 @@ variable OPENSTACK_HA ?= false;
 }
 variable OPENSTACK_SERVERS ?= error('OPENSTACK_SERVERS must be set');
 
+@use{
+  type = dict
+  note = A dictionary of Openstack Servers and IP Addresses
+}
+final variable OPENSTACK_SERVERS ?= error('OPENSTACK_SERVERS must be set');
+
 ############################
 # Active SSL configuration #
 ############################
@@ -228,6 +234,7 @@ variable OPENSTACK_GLANCE_PORT ?= 9292;
   type = dict
   note = A dictionary with the hostname as the key and the IP address as the value to be used by HAProxy for Heat
 }
+
 variable OPENSTACK_HEAT_SERVERS ?= OPENSTACK_SERVERS;
 @use{
   type = string
