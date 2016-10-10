@@ -29,7 +29,7 @@ variable OPENSTACK_SERVERS ?= error('OPENSTACK_SERVERS must be set');
   type = dict
   note = A dictionary of Openstack Servers and IP Addresses
 }
-final variable OPENSTACK_SERVERS ?= error('OPENSTACK_SERVERS must be set');
+variable OPENSTACK_SERVERS ?= error('OPENSTACK_SERVERS must be set');
 
 ############################
 # Active SSL configuration #
@@ -234,7 +234,6 @@ variable OPENSTACK_GLANCE_PORT ?= 9292;
   type = dict
   note = A dictionary with the hostname as the key and the IP address as the value to be used by HAProxy for Heat
 }
-
 variable OPENSTACK_HEAT_SERVERS ?= OPENSTACK_SERVERS;
 @use{
   type = string
@@ -464,7 +463,7 @@ variable OPENSTACK_NOVA_RESUME_VM_ON_BOOT ?= false;
   default = false
   note = Whether Nova resumes VMs
 }
-final variable OPENSTACK_NOVA_RESUME_VM_ON_BOOT ?= false;
+variable OPENSTACK_NOVA_RESUME_VM_ON_BOOT ?= false;
 @use{
   type = hostname
   default = OPENSTACK_DB_HOST
@@ -807,7 +806,7 @@ variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost',OPENSTACK_RABBITMQ_PORT);
   default = OPENSTACK_RABBITMQ_HOST
   note = This is a list of hosts to be used for RabbitMQ
 }
-final variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost',OPENSTACK_RABBITMQ_PORT);
+variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost',OPENSTACK_RABBITMQ_PORT);
 @use{
   type = string
   default = openstack
@@ -966,19 +965,19 @@ variable OPENSTACK_CEPH_CINDER ?= OPENSTACK_CEPH;
   default = false
   note = Whether to enable ceph for glance or not
 }
-final variable OPENSTACK_CEPH_GLANCE ?= OPENSTACK_CEPH;
+variable OPENSTACK_CEPH_GLANCE ?= OPENSTACK_CEPH;
 @use{
   type = boolean
   default = false
   note = Whether to enable ceph for nova or not
 }
-final variable OPENSTACK_CEPH_NOVA ?= OPENSTACK_CEPH;
+variable OPENSTACK_CEPH_NOVA ?= OPENSTACK_CEPH;
 @use{
   type = boolean
   default = false
   note = Whether to enable ceph for cinder or not
 }
-final variable OPENSTACK_CEPH_CINDER ?= OPENSTACK_CEPH;
+variable OPENSTACK_CEPH_CINDER ?= OPENSTACK_CEPH;
 @use{
   type = string
   default = images
