@@ -98,7 +98,7 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
   '%s:%s',
   openstack_generate_uri(
     OPENSTACK_NOVA_VNC_PROTOCOL,
-    openstack_get_controller_host(OPENSTACK_NOVA_SERVERS) ,
+    OPENSTACK_NOVA_SERVERS ,
     6080
   ),
   'vnc_auto.html'
@@ -107,7 +107,7 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
   '%s:%s',
   openstack_generate_uri(
     OPENSTACK_NOVA_VNC_PROTOCOL,
-    openstack_get_controller_host(OPENSTACK_NOVA_SERVERS),
+    OPENSTACK_NOVA_SERVERS,
     6081
   ),
   'console'
