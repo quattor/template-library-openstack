@@ -460,6 +460,12 @@ variable OPENSTACK_NOVA_VIRT_TYPE ?= 'kvm';
 }
 variable OPENSTACK_NOVA_RESUME_VM_ON_BOOT ?= false;
 @use{
+  type = string
+  default = True
+  note = Whether Nova resumes VMs
+}
+final variable OPENSTACK_NOVA_RESUME_VM_ON_BOOT ?= 'True';
+@use{
   type = hostname
   default = OPENSTACK_DB_HOST
   note = The host used for the Nova database
@@ -931,6 +937,18 @@ variable OPENSTACK_CEPH_NOVA ?= OPENSTACK_CEPH;
   note = Whether to enable ceph for cinder or not
 }
 variable OPENSTACK_CEPH_CINDER ?= OPENSTACK_CEPH;
+@use{
+  type = boolean
+  default = false
+  note = Whether to enable ceph for glance or not
+}
+final variable OPENSTACK_CEPH_GLANCE ?= OPENSTACK_CEPH;
+@use{
+  type = boolean
+  default = false
+  note = Whether to enable ceph for cinder or not
+}
+final variable OPENSTACK_CEPH_CINDER ?= OPENSTACK_CEPH;
 @use{
   type = string
   default = images
