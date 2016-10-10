@@ -25,12 +25,6 @@ variable OPENSTACK_HA ?= false;
 }
 variable OPENSTACK_SERVERS ?= error('OPENSTACK_SERVERS must be set');
 
-@use{
-  type = dict
-  note = A dictionary of Openstack Servers and IP Addresses
-}
-final variable OPENSTACK_SERVERS ?= error('OPENSTACK_SERVERS must be set');
-
 ############################
 # Active SSL configuration #
 ############################
@@ -460,12 +454,6 @@ variable OPENSTACK_NOVA_VIRT_TYPE ?= 'kvm';
 }
 variable OPENSTACK_NOVA_RESUME_VM_ON_BOOT ?= false;
 @use{
-  type = boolean
-  default = false
-  note = Whether Nova resumes VMs
-}
-final variable OPENSTACK_NOVA_RESUME_VM_ON_BOOT ?= false;
-@use{
   type = hostname
   default = OPENSTACK_DB_HOST
   note = The host used for the Nova database
@@ -803,12 +791,6 @@ variable OPENSTACK_RABBITMQ_PORT ?= 5672;
 }
 variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost',OPENSTACK_RABBITMQ_PORT);
 @use{
-  type = list
-  default = OPENSTACK_RABBITMQ_HOST
-  note = This is a list of hosts to be used for RabbitMQ
-}
-final variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost',OPENSTACK_RABBITMQ_PORT);
-@use{
   type = string
   default = openstack
   note = The user to be used to connect to rabbitmq
@@ -937,24 +919,6 @@ variable OPENSTACK_CEPH_NOVA ?= OPENSTACK_CEPH;
   note = Whether to enable ceph for cinder or not
 }
 variable OPENSTACK_CEPH_CINDER ?= OPENSTACK_CEPH;
-@use{
-  type = boolean
-  default = false
-  note = Whether to enable ceph for glance or not
-}
-final variable OPENSTACK_CEPH_GLANCE ?= OPENSTACK_CEPH;
-@use{
-  type = boolean
-  default = false
-  note = Whether to enable ceph for nova or not
-}
-final variable OPENSTACK_CEPH_NOVA ?= OPENSTACK_CEPH;
-@use{
-  type = boolean
-  default = false
-  note = Whether to enable ceph for cinder or not
-}
-final variable OPENSTACK_CEPH_CINDER ?= OPENSTACK_CEPH;
 @use{
   type = string
   default = images
