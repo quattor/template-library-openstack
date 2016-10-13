@@ -47,6 +47,7 @@ prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local
   };
 };
 
+
 include if (OPENSTACK_HA) {
     'features/dashboard/ha';
 } else {
