@@ -28,6 +28,7 @@ OPENSTACK_KEYSTONE_DEFAULT_ROLE = "[% role %]"
 
 WEBROOT = '/dashboard/'
 LOCAL_PATH = '/tmp'
+FILE_UPLOAD_TEMP_DIR = "[% upload_dir %]"
 
 SECRET_KEY='[% secret_key %]'
 

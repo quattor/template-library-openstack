@@ -241,6 +241,7 @@ variable OS_HORIZON_MULTIDOMAIN_ENABLED ?= {
     true;
   };
 };
+variable OS_HORIZON_UPLOAD_DIR ?= '/tmp';
 
 
 ##############################
