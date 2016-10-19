@@ -1035,12 +1035,12 @@ variable OPENSTACK_SNMPD_IP ?= PRIMARY_IP;
   type = ipaddress
   note = The floating ip address to use for keepalived
 }
-variable OPENSTACK_FLOATING_IP ?= if (OPENSTACK_HA) {error('OPENSTACK_FLOATING_IP must be set for high availability');} else {null;};
+variable OPENSTACK_KEEPALIVED_FLOATING_IP ?= if (OPENSTACK_HA) {error('OPENSTACK_KEEPALIVED_FLOATING_IP must be set for high availability');} else {null;};
 @use{
   type = long
   note = The router id to be used for keepalived. Must be unique within broadcast domains.
 }
-variable OPENSTACK_KEEPALIVED_ROUTER_ID ?= if (OPENSTACK_HA) {error('OPENSTACK_FLOATING_IP must be set for high availability');} else {null;};
+variable OPENSTACK_KEEPALIVED_ROUTER_ID ?= if (OPENSTACK_HA) {error('OPENSTACK_KEEPALIVED_FLOATING_IP must be set for high availability');} else {null;};
 @use{
   type = hostname
   note = The host to use as the master loadbalancer in active passive modes
