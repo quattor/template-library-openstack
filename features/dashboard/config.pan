@@ -32,7 +32,7 @@ prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local
 'contents/keystone/port' = 5000;
 'contents/secret_key' = OS_HORIZON_SECRET_KEY;
 'contents/memcacheservers' = '127.0.0.1:11211';
-
+'contents/upload_dir' = OS_HORIZON_UPLOAD_DIR;
 include if (OS_HA) {
     'features/dashboard/ha';
 } else {
