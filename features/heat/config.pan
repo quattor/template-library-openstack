@@ -55,10 +55,10 @@ prefix '/software/components/metaconfig/services/{/etc/heat/heat.conf}';
 'contents/trustee/user_domain_id'='default';
 
 # [clients_keystone] section
-'contents/clients_keystone/auth_url'=OS_HEAT_CONTROLLER_PROTOCOL + '://' + OS_HEAT_CONTROLLER_HOST + ':5000';
+'contents/clients_keystone/auth_uri'=OS_HEAT_CONTROLLER_PROTOCOL + '://' + OS_HEAT_CONTROLLER_HOST + ':5000';
 
 # [ec2authtoken] section
-'contents/trustee/auth_url'=OS_HEAT_CONTROLLER_PROTOCOL + '://' + OS_HEAT_CONTROLLER_HOST + ':5000';
+'contents/ec2authtoken/auth_uri'=OS_HEAT_CONTROLLER_PROTOCOL + '://' + OS_HEAT_CONTROLLER_HOST + ':5000/v3';
 
 # [oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
@@ -71,8 +71,8 @@ prefix '/software/components/metaconfig/services/{/etc/heat/heat.conf}';
 
 # [keystone_authtoken] section
 'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OS_GLANCE_USERNAME;
-'contents/keystone_authtoken/password' = OS_GLANCE_PASSWORD;
+'contents/keystone_authtoken/username' = OS_HEAT_USERNAME;
+'contents/keystone_authtoken/password' = OS_HEAT_PASSWORD;
 
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
