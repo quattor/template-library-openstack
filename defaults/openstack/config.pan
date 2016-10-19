@@ -1054,13 +1054,4 @@ variable OPENSTACK_KEEPALIVED_ROUTER_ID ?= if (OPENSTACK_HA) {error('OPENSTACK_K
 }
 variable OPENSTACK_LOADBALANCER_MASTER ?= if (OPENSTACK_HA) {error('OPENSTACK_LOADBALANCER_MASTER must be set for high availability');} else {null;};
 
-
-
-
-
-
-
-
-
-
 include 'defaults/openstack/dicts';
