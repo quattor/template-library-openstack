@@ -118,6 +118,22 @@ variable OPENSTACK_NODE_TYPE ?= 'compute';
 variable OPENSTACK_LOGGING_TYPE ?= 'file';
 @use{
   type = string
+  default = True
+  note = Whether to use verbose logging
+}
+variable OPENSTACK_LOGGING_VERBOSE ?= if (OPENSTACK_LOGGING_TYPE == 'syslog') {
+    'False';
+} else {
+    'True';
+};
+@use{
+  type = string
+  default = False
+  note = Whether to use debug logging
+}
+variable OPENSTACK_LOGGING_DEBUG ?= 'False';
+@use{
+  type = string
   default =
   note = The file to use for the Keystone Client Authentication schema
 }
