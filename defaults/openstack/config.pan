@@ -852,6 +852,30 @@ variable OPENSTACK_HORIZON_SECRET_KEY ?= error('OPENSTACK_HORIZON_SECRET_KEY mus
 }
 variable OPENSTACK_HORIZON_DEFAULT_DOMAIN ?= 'default';
 @use{
+  type = string
+  default = /dashboard/
+  note = The webroot for Horizon to use.
+}
+variable OPENSTACK_HORIZON_WEBROOT ?= '/dashboard/';
+@use{
+  type = string
+  default = null
+  note = The slug to use as the default dashboard and panel
+}
+variable OPENSTACK_HORIZON_DEFAULT_DASHBOARD ?= null;
+@use{
+  type = list
+  default = null
+  note = a list of dictionaries of available themes
+}
+variable OPENSTACK_HORIZON_AVAILABLE_THEMES ?= null;
+@use{
+  type = string
+  default = null
+  note = The theme to use as the default
+}
+variable OPENSTACK_HORIZON_DEFAULT_THEME ?= null;
+@use{
   type = long
   default = 3
   note = The Version of the Keystone Identity api for Horizon to use.
