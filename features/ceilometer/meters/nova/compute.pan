@@ -36,7 +36,15 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 'contents/keystone_authtoken/password' = OPENSTACK_CEILOMETER_PASSWORD;
 
 # [service_credentials] section
-'contents/service_credentials/os_auth_url' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OPENSTACK_KEYSTONE_CONTROLLER_HOST + ':5000/v2.0';
+'contents/service_credentials/os_auth_url' = format(
+  '%s/%s',
+  openstack_generate_uri(
+    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
+    OPENSTACK_KEYSTONE_SERVERS,
+    OPENSTACK_KEYSTONE_PORT
+    ),
+  'v2.0'
+);
 'contents/service_credentials/username' = OPENSTACK_CEILOMETER_USERNAME;
 'contents/service_credentials/os_tenant_name' = 'service';
 'contents/service_credentials/os_password' = OPENSTACK_CEILOMETER_PASSWORD;

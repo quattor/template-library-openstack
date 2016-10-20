@@ -23,7 +23,7 @@ include 'features/neutron/compute/mechanism/' + OPENSTACK_NEUTRON_MECHANISM;
 # Include some common configuration
 include 'features/neutron/common/config';
 
-bind '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}/contents' = openstack_neutron_config;
+bind '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}/contents' = openstack_neutron_compute_config;
 
 # Configuration file for neutron
 include 'components/metaconfig/config';

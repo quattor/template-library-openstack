@@ -101,3 +101,60 @@ function openstack_dict_to_connection_string = {
   );
   result;
 };
+
+
+function openstack_generate_uri = {
+  if (ARGC != 3) {
+    error('openstack_generate_uri needs an argument');
+  };
+
+  if (is_dict(ARGV[1])) {
+    dict_of_hosts = ARGV[1];
+  } else {
+    error('openstack_generate_uri needs a dict as an argument');
+  };
+  protocol = ARGV[0];
+  port = ARGV[2];
+
+
+  if (length(dict_of_hosts) == 1) {
+    result = foreach (k;v;dict_of_hosts[0]) {
+      format(
+        '%s://%s:%d',
+        protocol,
+        k,
+        port
+      );
+    };
+  } else {
+    result = format(
+      '%s://%s:%d',
+      protocol,
+      OPENSTACK_CONTROLLER_HOST,
+      port
+    );
+  };
+  result;
+};
+
+function openstack_get_controller_host = {
+  if (ARGC != 1) {
+    error('openstack_get_controller_host needs an argument');
+  };
+
+  if (is_dict(ARGV[0])) {
+    dict_of_hosts = ARGV[0];
+  } else {
+    error('openstack_get_controller_host needs a list as an argument');
+  };
+
+  if (length(dict_of_hosts) == 1) {
+    result = foreach (k;v;dict_of_hosts[0]) {
+      k;
+    };
+  } else {
+    result = OPENSTACK_CONTROLLER_HOST;
+  };
+  result;
+
+};

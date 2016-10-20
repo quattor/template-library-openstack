@@ -75,8 +75,8 @@ prefix '/software/components/filecopy/services';
   'config', format(
     file_contents('features/cinder/controller/init-cinder.sh'),
     OPENSTACK_INIT_SCRIPT_GENERAL,
-    OPENSTACK_CINDER_CONTROLLER_HOST,
-    OPENSTACK_CINDER_CONTROLLER_HOST,
+    openstack_get_controller_host(OPENSTACK_CINDER_SERVERS),
+    openstack_get_controller_host(OPENSTACK_CINDER_SERVERS),
     OPENSTACK_CINDER_USERNAME,
     OPENSTACK_CINDER_PASSWORD,
   ),

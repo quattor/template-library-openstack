@@ -12,7 +12,7 @@ prefix '/software/components/metaconfig/services/{/etc/httpd/conf.d/01-servernam
 'module' = 'general';
 'daemons/httpd' = 'restart';
 
-'contents/ServerName' = OPENSTACK_KEYSTONE_CONTROLLER_HOST;
+'contents/ServerName' = openstack_get_controller_host(OPENSTACK_KEYSTONE_SERVERS);
 
 prefix '/software/components/metaconfig/services/{/etc/httpd/conf.d/wsgi-keystone.conf}';
 'module' = 'openstack/wsgi-keystone';

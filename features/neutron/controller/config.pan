@@ -48,7 +48,15 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 'contents/DEFAULT/rpc_backend' = 'rabbit';
 'contents/DEFAULT/notify_nova_on_port_status_changes' = 'True';
 'contents/DEFAULT/notify_nova_on_port_data_changes' = 'True';
-'contents/DEFAULT/nova_url' = OPENSTACK_NOVA_CONTROLLER_PROTOCOL + '://' + OPENSTACK_NOVA_CONTROLLER_HOST + ':8774/v2';
+'contents/DEFAULT/nova_url' = format(
+  '%s/%s',
+  openstack_generate_uri(
+    OPENSTACK_NOVA_CONTROLLER_PROTOCOL,
+    OPENSTACK_NOVA_SERVERS,
+    8774
+  ),
+  'v2',
+);
 'contents/DEFAULT/auth_strategy' = 'keystone';
 'contents/DEFAULT/notification_driver' = 'messagingv2';
 'contents/DEFAULT/ssl_cert_file' = if ( OPENSTACK_SSL ) {
@@ -76,7 +84,11 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_NEUTRON_DB);
 
 # [nova]
-'contents/nova/auth_url' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OPENSTACK_KEYSTONE_CONTROLLER_HOST + ':35357';
+'contents/nova/auth_url' = openstack_generate_uri(
+  OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
+  OPENSTACK_KEYSTONE_SERVERS,
+  OPENSTACK_KEYSTONE_ADMIN_PORT
+);
 'contents/nova/auth_plugin' = 'password';
 'contents/nova/auth_type' = 'password';
 'contents/nova/project_domain_name' = 'default';
@@ -106,7 +118,7 @@ prefix '/software/components/filecopy/services';
   'config', format(
     file_contents('features/neutron/controller/init-neutron.sh'),
     OPENSTACK_INIT_SCRIPT_GENERAL,
-    OPENSTACK_NEUTRON_CONTROLLER_HOST,
+    openstack_get_controller_host(OPENSTACK_NEUTRON_SERVERS),
     OPENSTACK_NEUTRON_USERNAME,
     OPENSTACK_NEUTRON_PASSWORD,
     OPENSTACK_NEUTRON_DEFAULT_NETWORKS,

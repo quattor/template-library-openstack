@@ -93,9 +93,13 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/api_database/connection' = openstack_dict_to_connection_string(OPENSTACK_NOVA_API_DB);
 
 # [glance] section
-#'contents/glance/host' = OPENSTACK_GLANCE_CONTROLLER_HOST;
+#'contents/glance/host' = openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS);
 #'contents/glance/protocol' = OPENSTACK_GLANCE_CONTROLLER_PROTOCOL;
-'contents/glance/api_servers' = OPENSTACK_GLANCE_CONTROLLER_PROTOCOL+'://'+OPENSTACK_GLANCE_CONTROLLER_HOST+':9292';
+'contents/glance/api_servers' = openstack_generate_uri(
+  OPENSTACK_GLANCE_CONTROLLER_PROTOCOL,
+  OPENSTACK_GLANCE_SERVERS,
+  9292
+);
 
 # [keystone_authtoken] section
 'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
@@ -103,8 +107,16 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/keystone_authtoken/password' = OPENSTACK_NOVA_PASSWORD;
 
 # [neutron] section
-'contents/neutron/url' = OPENSTACK_NEUTRON_CONTROLLER_PROTOCOL + '://' + OPENSTACK_NEUTRON_CONTROLLER_HOST + ':9696';
-'contents/neutron/auth_url' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OPENSTACK_KEYSTONE_CONTROLLER_HOST + ':35357';
+'contents/neutron/url' = openstack_generate_uri(
+  OPENSTACK_NEUTRON_CONTROLLER_PROTOCOL,
+  OPENSTACK_NEUTRON_SERVERS,
+  9696
+);
+'contents/neutron/auth_url' = openstack_generate_uri(
+  OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
+  OPENSTACK_KEYSTONE_SERVERS,
+  OPENSTACK_KEYSTONE_ADMIN_PORT
+);
 'contents/neutron/auth_plugin' = 'password';
 'contents/neutron/auth_type' = 'password';
 'contents/neutron/project_domain_name' = 'default';
@@ -138,7 +150,7 @@ prefix '/software/components/filecopy/services';
   'config', format(
     file_contents('features/nova/controller/init-nova.sh'),
     OPENSTACK_INIT_SCRIPT_GENERAL,
-    OPENSTACK_NOVA_CONTROLLER_HOST,
+    openstack_get_controller_host(OPENSTACK_NOVA_SERVERS),
     OPENSTACK_NOVA_USERNAME,
     OPENSTACK_NOVA_PASSWORD,
   ),

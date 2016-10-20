@@ -22,16 +22,18 @@ prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local
 'daemons/httpd' = 'restart';
 
 'contents/allowed' = OPENSTACK_HORIZON_ALLOWED_HOSTS;
-'contents/host' = OPENSTACK_HORIZON_HOST;
+'contents/host' = openstack_get_controller_host(OPENSTACK_HORIZON_SERVERS);
 'contents/role' = OPENSTACK_HORIZON_DEFAULT_ROLE;
 'contents/multidomain' = OPENSTACK_HORIZON_MULTIDOMAIN_ENABLED;
 'contents/default_domain'= OPENSTACK_HORIZON_DEFAULT_DOMAIN;
 'contents/keystone/protocol' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL;
-'contents/keystone/host' = OPENSTACK_KEYSTONE_CONTROLLER_HOST;
+'contents/keystone/host' = openstack_get_controller_host(OPENSTACK_KEYSTONE_SERVERS);
 'contents/keystone/api_version' = OPENSTACK_HORIZON_KEYSTONE_API_VERSION;
 'contents/keystone/port' = 5000;
 'contents/secret_key' = OPENSTACK_HORIZON_SECRET_KEY;
 'contents/memcacheservers' = openstack_dict_to_hostport_string(OPENSTACK_MEMCACHE_HOSTS);
+'contents/openstack_hypervisor_features/requires_keypair' = OPENSTACK_HORIZON_REQUIRES_KEYPAIR;
+'contents/launch_instance_defaults/enable_config_drive' = OPENSTACK_HORIZON_ENABLE_CONFIG_DRIVE;
 
 'contents/enable_distributed_router' =  {
   if (exists(OPENSTACK_NEUTRON_DVR_ENABLED) && OPENSTACK_NEUTRON_DVR_ENABLED) {

@@ -114,7 +114,7 @@ prefix '/software/components/filecopy/services';
   'config', format(
     file_contents('features/glance/init-glance.sh'),
     OPENSTACK_INIT_SCRIPT_GENERAL,
-    OPENSTACK_GLANCE_CONTROLLER_HOST,
+    openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS),
     OPENSTACK_GLANCE_USERNAME,
     OPENSTACK_GLANCE_PASSWORD,
   ),
