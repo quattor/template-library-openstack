@@ -1,3 +1,4 @@
 structure template features/openstack/logging/file;
 
-'verbose' = 'True';
+'verbose' = OPENSTACK_LOGGING_VERBOSE;
+'debug' = OPENSTACK_LOGGING_DEBUG;

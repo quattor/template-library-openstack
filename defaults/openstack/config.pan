@@ -25,6 +25,12 @@ variable OPENSTACK_HA ?= false;
 }
 variable OPENSTACK_SERVERS ?= error('OPENSTACK_SERVERS must be set');
 
+@use{
+  type = dict
+  note = A dictionary of Openstack Servers and IP Addresses
+}
+variable OPENSTACK_SERVERS ?= error('OPENSTACK_SERVERS must be set');
+
 ############################
 # Active SSL configuration #
 ############################
@@ -110,6 +116,22 @@ variable OPENSTACK_NODE_TYPE ?= 'compute';
   note = The type of logging used by OpenStack
 }
 variable OPENSTACK_LOGGING_TYPE ?= 'file';
+@use{
+  type = string
+  default = True
+  note = Whether to use verbose logging
+}
+variable OPENSTACK_LOGGING_VERBOSE ?= if (OPENSTACK_LOGGING_TYPE == 'syslog') {
+    'False';
+} else {
+    'True';
+};
+@use{
+  type = string
+  default = False
+  note = Whether to use debug logging
+}
+variable OPENSTACK_LOGGING_DEBUG ?= 'False';
 @use{
   type = string
   default =
@@ -446,6 +468,12 @@ variable OPENSTACK_NOVA_RAM_RATIO ?= 1.0;
   note = The type of virtualisation to use
 }
 variable OPENSTACK_NOVA_VIRT_TYPE ?= 'kvm';
+@use{
+  type = boolean
+  default = false
+  note = Whether Nova resumes VMs
+}
+variable OPENSTACK_NOVA_RESUME_VM_ON_BOOT ?= false;
 @use{
   type = boolean
   default = false
@@ -790,6 +818,12 @@ variable OPENSTACK_RABBITMQ_PORT ?= 5672;
 }
 variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost',OPENSTACK_RABBITMQ_PORT);
 @use{
+  type = list
+  default = OPENSTACK_RABBITMQ_HOST
+  note = This is a list of hosts to be used for RabbitMQ
+}
+variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost',OPENSTACK_RABBITMQ_PORT);
+@use{
   type = string
   default = openstack
   note = The user to be used to connect to rabbitmq
@@ -851,6 +885,30 @@ variable OPENSTACK_HORIZON_SECRET_KEY ?= error('OPENSTACK_HORIZON_SECRET_KEY mus
 }
 variable OPENSTACK_HORIZON_DEFAULT_DOMAIN ?= 'default';
 @use{
+  type = string
+  default = /dashboard/
+  note = The webroot for Horizon to use.
+}
+variable OPENSTACK_HORIZON_WEBROOT ?= '/dashboard/';
+@use{
+  type = string
+  default = null
+  note = The slug to use as the default dashboard and panel
+}
+variable OPENSTACK_HORIZON_DEFAULT_DASHBOARD ?= null;
+@use{
+  type = list
+  default = null
+  note = a list of dictionaries of available themes
+}
+variable OPENSTACK_HORIZON_AVAILABLE_THEMES ?= null;
+@use{
+  type = string
+  default = null
+  note = The theme to use as the default
+}
+variable OPENSTACK_HORIZON_DEFAULT_THEME ?= null;
+@use{
   type = long
   default = 3
   note = The Version of the Keystone Identity api for Horizon to use.
@@ -900,6 +958,24 @@ variable OPENSTACK_METADATA_HOST ?= openstack_get_controller_host(OPENSTACK_NOVA
   note = Whether to enable ceph or not
 }
 variable OPENSTACK_CEPH ?= false;
+@use{
+  type = boolean
+  default = false
+  note = Whether to enable ceph for glance or not
+}
+variable OPENSTACK_CEPH_GLANCE ?= OPENSTACK_CEPH;
+@use{
+  type = boolean
+  default = false
+  note = Whether to enable ceph for nova or not
+}
+variable OPENSTACK_CEPH_NOVA ?= OPENSTACK_CEPH;
+@use{
+  type = boolean
+  default = false
+  note = Whether to enable ceph for cinder or not
+}
+variable OPENSTACK_CEPH_CINDER ?= OPENSTACK_CEPH;
 @use{
   type = boolean
   default = false
@@ -1046,14 +1122,6 @@ variable OPENSTACK_KEEPALIVED_ROUTER_ID ?= if (OPENSTACK_HA) {error('OPENSTACK_K
   note = The host to use as the master loadbalancer in active passive modes
 }
 variable OPENSTACK_LOADBALANCER_MASTER ?= if (OPENSTACK_HA) {error('OPENSTACK_LOADBALANCER_MASTER must be set for high availability');} else {null;};
-
-
-
-
-
-
-
-
 
 
 include 'defaults/openstack/dicts';

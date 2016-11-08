@@ -26,8 +26,26 @@ OPENSTACK_HOST = "[% host %]"
 OPENSTACK_KEYSTONE_URL = "[% keystone.protocol %]://[% keystone.host %]:[% keystone.port %]/v[% keystone.api_version %]"
 OPENSTACK_KEYSTONE_DEFAULT_ROLE = "[% role %]"
 
-WEBROOT = '/dashboard/'
+WEBROOT = '[% webroot %]'
 LOCAL_PATH = '/tmp'
+
+[% IF available_themes != null %]
+AVAILABLE_THEMES = [
+    [% FOREACH theme IN available_themes %]
+    (
+         '[% theme.name %]' , '[% theme.label %]' , '[% theme.path %]'
+    ),
+    [% END %]
+]
+[% END %]
+
+[% IF default_theme != null %]
+DEFAULT_THEME = '[% default_theme %]'
+[% END %]
+
+[% IF default_dashboard != null %]
+HORIZON_CONFIG["user_home"] = "[% default_dashboard %]"
+[% END %]
 
 SECRET_KEY='[% secret_key %]'
 

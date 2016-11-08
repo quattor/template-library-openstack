@@ -75,14 +75,14 @@ prefix '/software/components/metaconfig/services/{/etc/heat/heat.conf}';
 'contents/trustee/user_domain_id'='default';
 
 # [clients_keystone] section
-'contents/clients_keystone/auth_url'=openstack_generate_uri(
+'contents/clients_keystone/auth_uri' = openstack_generate_uri(
   OPENSTACK_HEAT_CONTROLLER_PROTOCOL,
   OPENSTACK_HEAT_SERVERS,
   5000
 );
 
 # [ec2authtoken] section
-'contents/trustee/auth_url' = openstack_generate_uri(
+'contents/trustee/auth_uri' = openstack_generate_uri(
   OPENSTACK_HEAT_CONTROLLER_PROTOCOL,
   OPENSTACK_HEAT_SERVERS,
   5000
@@ -96,8 +96,8 @@ prefix '/software/components/metaconfig/services/{/etc/heat/heat.conf}';
 
 # [keystone_authtoken] section
 'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
-'contents/keystone_authtoken/username' = OPENSTACK_GLANCE_USERNAME;
-'contents/keystone_authtoken/password' = OPENSTACK_GLANCE_PASSWORD;
+'contents/keystone_authtoken/username' = OPENSTACK_HEAT_USERNAME;
+'contents/keystone_authtoken/password' = OPENSTACK_HEAT_PASSWORD;
 
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
