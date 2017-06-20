@@ -16,11 +16,7 @@ prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
 # All ldap configuration is put on /etc/keystone/domains/keystone.DOMAIN_NAME.conf
 prefix '/software/components/metaconfig';
 'services' = {
-  # default domain is still on SQL
-    SELF[escape('/etc/keystone/domains/keystone.default.conf')] = dict(
-              'module', 'tiny',
-    );
-    SELF[escape('/etc/keystone/domains/keystone.default.conf')]['contents']['identity'] = dict('driver', 'sql');
+  # the default identity driver for multi domain is SQL
 
     # foreach domain, populate the configuration file
     foreach(domain;params;OPENSTACK_KEYSTONE_IDENTITY_LDAP_PARAMS) {
