@@ -9,7 +9,7 @@ include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
 'contents/identity/domain_specific_drivers_enabled' = 'True';
 'contents/identity/domain_config_dir' = '/etc/keystone/domains';
-'contents/identity/driver' = 'ldap';
+'contents/identity/driver' = 'sql';
 'contents/resource/driver' = 'sql';
 'contents/assignment/driver' = 'sql';
 
