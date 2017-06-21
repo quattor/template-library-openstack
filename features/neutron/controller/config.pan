@@ -49,30 +49,30 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 'contents/DEFAULT/notify_nova_on_port_status_changes' = 'True';
 'contents/DEFAULT/notify_nova_on_port_data_changes' = 'True';
 'contents/DEFAULT/nova_url' = format(
-  '%s/%s',
-  openstack_generate_uri(
-    OPENSTACK_NOVA_CONTROLLER_PROTOCOL,
-    OPENSTACK_NOVA_SERVERS,
-    8774
-  ),
-  'v2',
+    '%s/%s',
+    openstack_generate_uri(
+        OPENSTACK_NOVA_CONTROLLER_PROTOCOL,
+        OPENSTACK_NOVA_SERVERS,
+        8774
+    ),
+    'v2',
 );
 'contents/DEFAULT/auth_strategy' = 'keystone';
 'contents/DEFAULT/notification_driver' = 'messagingv2';
 'contents/DEFAULT/ssl_cert_file' = if ( OPENSTACK_SSL ) {
-  OPENSTACK_SSL_CERT;
+    OPENSTACK_SSL_CERT;
 } else {
-  null;
+    null;
 };
 'contents/DEFAULT/ssl_key_file' = if ( OPENSTACK_SSL ) {
-  OPENSTACK_SSL_KEY;
+    OPENSTACK_SSL_KEY;
 } else {
-  null;
+    null;
 };
 'contents/DEFAULT/use_ssl' = if ( OPENSTACK_SSL ) {
-  'True';
+    'True';
 } else {
-  null;
+    null;
 };
 
 # [keystone_authtoken]
@@ -85,9 +85,9 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 
 # [nova]
 'contents/nova/auth_url' = openstack_generate_uri(
-  OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
-  OPENSTACK_KEYSTONE_SERVERS,
-  OPENSTACK_KEYSTONE_ADMIN_PORT
+    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
+    OPENSTACK_KEYSTONE_SERVERS,
+    OPENSTACK_KEYSTONE_ADMIN_PORT
 );
 'contents/nova/auth_plugin' = 'password';
 'contents/nova/auth_type' = 'password';
@@ -104,9 +104,9 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
 include if (OPENSTACK_HA) {
-    'features/neutron/controller/ha';
+        'features/neutron/controller/ha';
 } else {
-    null;
+        null;
 };
 
 variable OPENSTACK_NEUTRON_INIT_SCRIPT = OPENSTACK_INIT_SCRIPT_GENERAL + file_contents('defaults/openstack/init-network.sh');
@@ -114,18 +114,18 @@ variable OPENSTACK_NEUTRON_INIT_SCRIPT = OPENSTACK_INIT_SCRIPT_GENERAL + file_co
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
 '{/root/init-neutron.sh}' = dict(
-  'perms' ,'755',
-  'config', format(
-    file_contents('features/neutron/controller/init-neutron.sh'),
-    OPENSTACK_INIT_SCRIPT_GENERAL,
-    openstack_get_controller_host(OPENSTACK_NEUTRON_SERVERS),
-    OPENSTACK_NEUTRON_USERNAME,
-    OPENSTACK_NEUTRON_PASSWORD,
-    OPENSTACK_NEUTRON_DEFAULT_NETWORKS,
-    OPENSTACK_NEUTRON_DEFAULT_DHCP_POOL['start'],
-    OPENSTACK_NEUTRON_DEFAULT_DHCP_POOL['end'],
-    OPENSTACK_NEUTRON_DEFAULT_GATEWAY,
-    OPENSTACK_NEUTRON_DEFAULT_NAMESERVER,
-  ),
-  'restart' , '/root/init-neutron.sh',
+    'perms' ,'755',
+    'config', format(
+        file_contents('features/neutron/controller/init-neutron.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+        openstack_get_controller_host(OPENSTACK_NEUTRON_SERVERS),
+        OPENSTACK_NEUTRON_USERNAME,
+        OPENSTACK_NEUTRON_PASSWORD,
+        OPENSTACK_NEUTRON_DEFAULT_NETWORKS,
+        OPENSTACK_NEUTRON_DEFAULT_DHCP_POOL['start'],
+        OPENSTACK_NEUTRON_DEFAULT_DHCP_POOL['end'],
+        OPENSTACK_NEUTRON_DEFAULT_GATEWAY,
+        OPENSTACK_NEUTRON_DEFAULT_NAMESERVER,
+    ),
+    'restart' , '/root/init-neutron.sh',
 );

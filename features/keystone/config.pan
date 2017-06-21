@@ -56,11 +56,11 @@ include 'features/keystone/identity/' + OPENSTACK_KEYSTONE_IDENTITY_DRIVER;
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
 '{/root/init-keystone.sh}' = dict(
-  'perms' ,'755',
-  'config', format(
-    file_contents('features/keystone/init-keystone.sh'),
-    OPENSTACK_INIT_SCRIPT_GENERAL,
+    'perms' ,'755',
+    'config', format(
+        file_contents('features/keystone/init-keystone.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
 
-  ),
-  'restart' , '/root/init-keystone.sh',
+    ),
+    'restart' , '/root/init-keystone.sh',
 );

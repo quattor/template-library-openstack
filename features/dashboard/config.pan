@@ -39,17 +39,17 @@ prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local
 'contents/available_themes' = OPENSTACK_HORIZON_AVAILABLE_THEMES;
 'contents/default_theme' = OPENSTACK_HORIZON_DEFAULT_THEME;
 
-'contents/enable_distributed_router' =  {
-  if (exists(OPENSTACK_NEUTRON_DVR_ENABLED) && OPENSTACK_NEUTRON_DVR_ENABLED) {
-    'True';
-  } else {
-    'False';
-  };
+'contents/enable_distributed_router' =    {
+    if (exists(OPENSTACK_NEUTRON_DVR_ENABLED) && OPENSTACK_NEUTRON_DVR_ENABLED) {
+        'True';
+    } else {
+        'False';
+    };
 };
 
 
 include if (OPENSTACK_HA) {
-    'features/dashboard/ha';
+        'features/dashboard/ha';
 } else {
-    null;
+        null;
 };

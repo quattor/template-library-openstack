@@ -17,12 +17,12 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/plugins/ml2/linux
 # [vxlan] section
 'contents/vxlan/enable_vxlan' = OPENSTACK_NEUTRON_VXLAN_ENABLED;
 'contents/vxlan' = { if (OPENSTACK_NEUTRON_VXLAN_ENABLED == 'True') {
-    SELF['local_ip'] = OPENSTACK_NEUTRON_OVERLAY_IP;
-    SELF['l2_population'] = 'True';
-    SELF;
-  } else {
-    SELF;
-  };
+        SELF['local_ip'] = OPENSTACK_NEUTRON_OVERLAY_IP;
+        SELF['l2_population'] = 'True';
+        SELF;
+    } else {
+        SELF;
+    };
 };
 
 # [agent] section

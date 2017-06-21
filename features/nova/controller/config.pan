@@ -54,35 +54,35 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/DEFAULT/enabled_apis' = 'osapi_compute,metadata';
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 'contents/DEFAULT/ssl_cert_file' = if ( OPENSTACK_SSL ) {
-  OPENSTACK_SSL_CERT;
+    OPENSTACK_SSL_CERT;
 } else {
-  null;
+    null;
 };
 'contents/DEFAULT/ssl_key_file' = if ( OPENSTACK_SSL ) {
-  OPENSTACK_SSL_KEY;
+    OPENSTACK_SSL_KEY;
 } else {
-  null;
+    null;
 };
 'contents/DEFAULT/enabled_ssl_apis' = if ( OPENSTACK_SSL ) {
-  'osapi_compute';
+    'osapi_compute';
 } else {
-  null;
+    null;
 };
 # Enable SSL for novnc
 'contents/DEFAULT/cert' = if ( OPENSTACK_SSL ) {
-  OPENSTACK_SSL_CERT;
+    OPENSTACK_SSL_CERT;
 } else {
-  null;
+    null;
 };
 'contents/DEFAULT/key' = if ( OPENSTACK_SSL ) {
-  OPENSTACK_SSL_KEY;
+    OPENSTACK_SSL_KEY;
 } else {
-  null;
+    null;
 };
 'contents/DEFAULT/ssl_only' = if ( OPENSTACK_SSL ) {
-  'True';
+    'True';
 } else {
-  null;
+    null;
 };
 'contents/DEFAULT/cpu_allocation_ratio' = OPENSTACK_NOVA_CPU_RATIO;
 'contents/DEFAULT/ram_allocation_ratio' = OPENSTACK_NOVA_RAM_RATIO;
@@ -96,9 +96,9 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 #'contents/glance/host' = openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS);
 #'contents/glance/protocol' = OPENSTACK_GLANCE_CONTROLLER_PROTOCOL;
 'contents/glance/api_servers' = openstack_generate_uri(
-  OPENSTACK_GLANCE_CONTROLLER_PROTOCOL,
-  OPENSTACK_GLANCE_SERVERS,
-  9292
+    OPENSTACK_GLANCE_CONTROLLER_PROTOCOL,
+    OPENSTACK_GLANCE_SERVERS,
+    9292
 );
 
 # [keystone_authtoken] section
@@ -108,14 +108,14 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 
 # [neutron] section
 'contents/neutron/url' = openstack_generate_uri(
-  OPENSTACK_NEUTRON_CONTROLLER_PROTOCOL,
-  OPENSTACK_NEUTRON_SERVERS,
-  9696
+    OPENSTACK_NEUTRON_CONTROLLER_PROTOCOL,
+    OPENSTACK_NEUTRON_SERVERS,
+    9696
 );
 'contents/neutron/auth_url' = openstack_generate_uri(
-  OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
-  OPENSTACK_KEYSTONE_SERVERS,
-  OPENSTACK_KEYSTONE_ADMIN_PORT
+    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
+    OPENSTACK_KEYSTONE_SERVERS,
+    OPENSTACK_KEYSTONE_ADMIN_PORT
 );
 'contents/neutron/auth_plugin' = 'password';
 'contents/neutron/auth_type' = 'password';
@@ -138,21 +138,21 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/vnc/vncserver_proxyclient_address' = '$my_ip';
 
 include if (OPENSTACK_HA) {
-    'features/nova/controller/ha';
+        'features/nova/controller/ha';
 } else {
-    null;
+        null;
 };
 
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
 '{/root/init-nova.sh}' = dict(
-  'perms' ,'755',
-  'config', format(
-    file_contents('features/nova/controller/init-nova.sh'),
-    OPENSTACK_INIT_SCRIPT_GENERAL,
-    openstack_get_controller_host(OPENSTACK_NOVA_SERVERS),
-    OPENSTACK_NOVA_USERNAME,
-    OPENSTACK_NOVA_PASSWORD,
-  ),
-  'restart' , '/root/init-nova.sh',
+    'perms' ,'755',
+    'config', format(
+        file_contents('features/nova/controller/init-nova.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+        openstack_get_controller_host(OPENSTACK_NOVA_SERVERS),
+        OPENSTACK_NOVA_USERNAME,
+        OPENSTACK_NOVA_PASSWORD,
+    ),
+    'restart' , '/root/init-nova.sh',
 );

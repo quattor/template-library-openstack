@@ -14,19 +14,19 @@ include 'personality/neutron/config';
 include 'features/neutron/network/config';
 include 'personality/dashboard/config';
 include if (OPENSTACK_HEAT_ENABLED) {
-    'personality/heat/config';
+        'personality/heat/config';
 } else {
-    null;
+        null;
 } ;
 include if (OPENSTACK_CINDER_ENABLED) {
-    'personality/cinder/controller';
+        'personality/cinder/controller';
 } else {
-    null;
+        null;
 };
 include if (OPENSTACK_CEILOMETER_ENABLED) {
-    'personality/ceilometer/config';
+        'personality/ceilometer/config';
 } else {
-    null;
+        null;
 };
 
 include 'defaults/openstack/utils';

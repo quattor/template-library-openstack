@@ -14,29 +14,29 @@ prefix '/software/components/chkconfig/service';
 include 'components/dirperm/config';
 prefix '/software/components/dirperm';
 'paths' = {
-  SELF[length(SELF)] = dict(
-    'path', '/var/run/rabbitmq',
-    'owner', 'rabbitmq:rabbitmq',
-    'type', 'd',
-    'perm', '0755',
-  );
-  SELF;
+    SELF[length(SELF)] = dict(
+        'path', '/var/run/rabbitmq',
+        'owner', 'rabbitmq:rabbitmq',
+        'type', 'd',
+        'perm', '0755',
+    );
+    SELF;
 };
 
 include if (OPENSTACK_HA) {
-    'features/rabbitmq/ha';
+        'features/rabbitmq/ha';
 } else {
-    null;
+        null;
 };
 
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
 '{/root/init-rabbitmq.sh}' = dict(
-    'perms' , '755',
-    'config' , format(
-        file_contents('features/rabbitmq/init-rabbitmq.sh'),
-        OPENSTACK_RABBITMQ_USERNAME,
-        OPENSTACK_RABBITMQ_PASSWORD
-    ),
-    'restart' , './root/init-rabbitmq.sh',
+        'perms' , '755',
+        'config' , format(
+                file_contents('features/rabbitmq/init-rabbitmq.sh'),
+                OPENSTACK_RABBITMQ_USERNAME,
+                OPENSTACK_RABBITMQ_PASSWORD
+        ),
+        'restart' , './root/init-rabbitmq.sh',
 );

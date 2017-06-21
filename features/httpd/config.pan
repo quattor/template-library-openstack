@@ -23,30 +23,30 @@ prefix '/software/components/metaconfig/services/{/etc/httpd/conf.d/wsgi-keyston
 'contents/vhosts/0/processgroup' = 'keystone-public';
 'contents/vhosts/0/script' = '/usr/bin/keystone-wsgi-public';
 'contents/vhosts/0/ssl' = if (OPENSTACK_SSL) {
-  SELF['SSLEngine'] = 'on';
-  SELF['SSLCertificateFile'] = OPENSTACK_SSL_CERT;
-  SELF['SSLCertificateKeyFile'] = OPENSTACK_SSL_KEY;
-  if (exists(OPENSTACK_SSL_CHAIN)) {
-    SELF['SSLCertificateChainFile'] = OPENSTACK_SSL_CHAIN;
-  };
-  SELF;
+    SELF['SSLEngine'] = 'on';
+    SELF['SSLCertificateFile'] = OPENSTACK_SSL_CERT;
+    SELF['SSLCertificateKeyFile'] = OPENSTACK_SSL_KEY;
+    if (exists(OPENSTACK_SSL_CHAIN)) {
+        SELF['SSLCertificateChainFile'] = OPENSTACK_SSL_CHAIN;
+    };
+    SELF;
 } else {
-  null;
+    null;
 };
 
 'contents/vhosts/1/port' = 35357;
 'contents/vhosts/1/processgroup' = 'keystone-admin';
 'contents/vhosts/1/script' = '/usr/bin/keystone-wsgi-admin';
 'contents/vhosts/1/ssl' = if (OPENSTACK_SSL) {
-  SELF['SSLEngine'] = 'on';
-  SELF['SSLCertificateFile'] = OPENSTACK_SSL_CERT;
-  SELF['SSLCertificateKeyFile'] = OPENSTACK_SSL_KEY;
-  if (exists(OPENSTACK_SSL_CHAIN)) {
-    SELF['SSLCertificateChainFile'] = OPENSTACK_SSL_CHAIN;
-  };
-  SELF;
+    SELF['SSLEngine'] = 'on';
+    SELF['SSLCertificateFile'] = OPENSTACK_SSL_CERT;
+    SELF['SSLCertificateKeyFile'] = OPENSTACK_SSL_KEY;
+    if (exists(OPENSTACK_SSL_CHAIN)) {
+        SELF['SSLCertificateChainFile'] = OPENSTACK_SSL_CHAIN;
+    };
+    SELF;
 } else {
-  null;
+    null;
 };
 
 include 'components/filecopy/config';

@@ -14,11 +14,11 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/plugins/ml2/ml2_c
 
 # [ml2_type_vxlan]
 'contents/ml2_type_vxlan' = { if (OPENSTACK_NEUTRON_VXLAN_ENABLED == 'True') {
-    SELF['vni_ranges'] = OPENSTACK_NEUTRON_VXLAN_VNI_RANGES;
-    SELF;
-  } else {
-    null;
-  };
+        SELF['vni_ranges'] = OPENSTACK_NEUTRON_VXLAN_VNI_RANGES;
+        SELF;
+    } else {
+        null;
+    };
 };
 
 # [securitygroup]

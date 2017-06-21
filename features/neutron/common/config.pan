@@ -4,11 +4,11 @@ unique template features/neutron/common/config;
 include 'components/symlink/config';
 prefix '/software/components/symlink';
 'links' = {
-  SELF[length(SELF)] = dict(
-    'exists', false,
-    'name', '/etc/neutron/plugin.ini',
-    'replace', dict( 'all', 'yes'),
-    'target', '/etc/neutron/plugins/ml2/ml2_conf.ini'
-  );
-  SELF;
+    SELF[length(SELF)] = dict(
+        'exists', false,
+        'name', '/etc/neutron/plugin.ini',
+        'replace', dict( 'all', 'yes'),
+        'target', '/etc/neutron/plugins/ml2/ml2_conf.ini'
+    );
+    SELF;
 };

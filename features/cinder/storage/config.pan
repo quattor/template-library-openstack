@@ -36,9 +36,9 @@ prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}';
 'contents/DEFAULT/my_ip' = PRIMARY_IP;
 #'contents/DEFAULT/glance_host' = openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS);
 'contents/DEFAULT/glance_api_servers' = openstack_generate_uri(
-  OPENSTACK_GLANCE_CONTROLLER_PROTOCOL,
-  OPENSTACK_GLANCE_SERVERS,
-  9292
+    OPENSTACK_GLANCE_CONTROLLER_PROTOCOL,
+    OPENSTACK_GLANCE_SERVERS,
+    9292
 );
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 

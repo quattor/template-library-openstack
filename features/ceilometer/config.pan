@@ -48,14 +48,14 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 'contents/DEFAULT/my_ip' = PRIMARY_IP;
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 'contents/DEFAULT/cert_file' = if (OPENSTACK_SSL) {
-  OPENSTACK_SSL_CERT;
+    OPENSTACK_SSL_CERT;
 } else {
-  null;
+    null;
 };
 'contents/DEFAULT/key_file' = if (OPENSTACK_SSL) {
-  OPENSTACK_SSL_KEY;
+    OPENSTACK_SSL_KEY;
 } else {
-  null;
+    null;
 };
 
 # [database] section
@@ -70,13 +70,13 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 'contents/keystone_authtoken/password' = OPENSTACK_CEILOMETER_PASSWORD;
 
 'contents/service_credentials/os_auth_url' = format(
-  '%s/%s',
-  openstack_generate_uri(
-    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
-    OPENSTACK_KEYSTONE_SERVERS,
-    OPENSTACK_KEYSTONE_PORT
-    ),
-  'v2.0'
+    '%s/%s',
+    openstack_generate_uri(
+        OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
+        OPENSTACK_KEYSTONE_SERVERS,
+        OPENSTACK_KEYSTONE_PORT
+        ),
+    'v2.0'
 );
 'contents/service_credentials/username' = OPENSTACK_CEILOMETER_USERNAME;
 'contents/service_credentials/os_tenant_name' = 'service';
@@ -85,24 +85,24 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 'contents/service_credentials/os_region_name' = OPENSTACK_REGION_NAME;
 
 include if (OPENSTACK_HA) {
-    'features/ceilometer/ha';
+        'features/ceilometer/ha';
 } else {
-    null;
+        null;
 };
 
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
 '{/root/init-ceilometer.sh}' = dict(
-  'perms' ,'755',
-  'config', format(
-    file_contents('features/ceilometer/init-ceilometer.sh'),
-    OPENSTACK_INIT_SCRIPT_GENERAL,
-    openstack_get_controller_host(OPENSTACK_CEILOMETER_SERVERS),
-    OPENSTACK_CEILOMETER_DB_HOST,
-    OPENSTACK_CEILOMETER_DB_USERNAME,
-    OPENSTACK_CEILOMETER_DB_PASSWORD,
-    OPENSTACK_CEILOMETER_USERNAME,
-    OPENSTACK_CEILOMETER_PASSWORD,
-  ),
-  'restart' , '/root/init-ceilometer.sh',
+    'perms' ,'755',
+    'config', format(
+        file_contents('features/ceilometer/init-ceilometer.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+        openstack_get_controller_host(OPENSTACK_CEILOMETER_SERVERS),
+        OPENSTACK_CEILOMETER_DB_HOST,
+        OPENSTACK_CEILOMETER_DB_USERNAME,
+        OPENSTACK_CEILOMETER_DB_PASSWORD,
+        OPENSTACK_CEILOMETER_USERNAME,
+        OPENSTACK_CEILOMETER_PASSWORD,
+    ),
+    'restart' , '/root/init-ceilometer.sh',
 );

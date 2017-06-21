@@ -16,52 +16,52 @@ prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
 # All ldap configuration is put on /etc/keystone/domains/keystone.DOMAIN_NAME.conf
 prefix '/software/components/metaconfig';
 'services' = {
-  # the default identity driver for multi domain is SQL
+    # the default identity driver for multi domain is SQL
 
-    # foreach domain, populate the configuration file
-    foreach(domain;params;OPENSTACK_KEYSTONE_IDENTITY_LDAP_PARAMS) {
-    # Populate configuration file with some default value
-    SELF[escape('/etc/keystone/domains/keystone.'+domain+'.conf')] = dict(
-      'module', 'tiny',
-      'contents', dict('ldap',dict()),
-    );
-    # Others domain is on ldap
-    SELF[escape('/etc/keystone/domains/keystone.'+domain+'.conf')]['contents']['identity'] = dict('driver', 'ldap');
-    SELF[escape('/etc/keystone/domains/keystone.'+domain+'.conf')]['contents']['ldap'] = dict(
-      'use_dump_member', 'False',
-      'allow_subtree_delete', 'False',
-      'user_objectclass', 'inetOrgPerson',
-      'user_allow_create', 'False',
-      'user_allow_update', 'False',
-      'user_allow_delete', 'False',
-      'group_objectclass', 'groupOfNames',
-      'group_allow_create', 'False',
-      'group_allow_update', 'False',
-      'group_allow_delete', 'False',
-    );
-    # Verify if all needed parameters exists
-    if (!exists(params['url'])) {
-      error('LDAP identity need params [url]');
+        # foreach domain, populate the configuration file
+        foreach(domain;params;OPENSTACK_KEYSTONE_IDENTITY_LDAP_PARAMS) {
+        # Populate configuration file with some default value
+        SELF[escape('/etc/keystone/domains/keystone.'+domain+'.conf')] = dict(
+            'module', 'tiny',
+            'contents', dict('ldap',dict()),
+        );
+        # Others domain is on ldap
+        SELF[escape('/etc/keystone/domains/keystone.'+domain+'.conf')]['contents']['identity'] = dict('driver', 'ldap');
+        SELF[escape('/etc/keystone/domains/keystone.'+domain+'.conf')]['contents']['ldap'] = dict(
+            'use_dump_member', 'False',
+            'allow_subtree_delete', 'False',
+            'user_objectclass', 'inetOrgPerson',
+            'user_allow_create', 'False',
+            'user_allow_update', 'False',
+            'user_allow_delete', 'False',
+            'group_objectclass', 'groupOfNames',
+            'group_allow_create', 'False',
+            'group_allow_update', 'False',
+            'group_allow_delete', 'False',
+        );
+        # Verify if all needed parameters exists
+        if (!exists(params['url'])) {
+            error('LDAP identity need params [url]');
+                };
+        if (!exists(params['user'])) {
+            error('LDAP identity need params [user]');
         };
-    if (!exists(params['user'])) {
-      error('LDAP identity need params [user]');
-    };
-    if (!exists(params['password'])) {
-      error('LDAP identity need params [password]');
-    };
-    if (!exists(params['suffix'])) {
-      error('LDAP identity need params [suffix]');
-    };
-    if (!exists(params['user_tree_dn'])) {
-      error('LDAP identity need params [user_tree_dn]');
-    };
-    if (!exists(params['group_tree_dn'])) {
-      error('LDAP identity need params [group_tree_dn]');
-    };
+        if (!exists(params['password'])) {
+            error('LDAP identity need params [password]');
+        };
+        if (!exists(params['suffix'])) {
+            error('LDAP identity need params [suffix]');
+        };
+        if (!exists(params['user_tree_dn'])) {
+            error('LDAP identity need params [user_tree_dn]');
+        };
+        if (!exists(params['group_tree_dn'])) {
+            error('LDAP identity need params [group_tree_dn]');
+        };
 
-    foreach(attribute;attribute_value;params) {
-      SELF[escape('/etc/keystone/domains/keystone.'+domain+'.conf')]['contents']['ldap'][attribute] = attribute_value;
+        foreach(attribute;attribute_value;params) {
+            SELF[escape('/etc/keystone/domains/keystone.'+domain+'.conf')]['contents']['ldap'][attribute] = attribute_value;
+        };
     };
-  };
-  SELF;
+    SELF;
 };

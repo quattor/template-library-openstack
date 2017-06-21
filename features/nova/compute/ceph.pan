@@ -3,23 +3,23 @@ template features/nova/compute/ceph;
 include 'components/dirperm/config';
 prefix '/software/components/dirperm';
 'paths' = {
-  SELF[length(SELF)] = dict(
-    'path', '/var/run/ceph/guests',
-    'owner', 'qemu:libvirtd',
-    'type', 'd',
-    'perm', '0755',
-  );
-  SELF;
+    SELF[length(SELF)] = dict(
+        'path', '/var/run/ceph/guests',
+        'owner', 'qemu:libvirtd',
+        'type', 'd',
+        'perm', '0755',
+    );
+    SELF;
 };
 prefix '/software/components/dirperm';
 'paths' = {
-  SELF[length(SELF)] = dict(
-    'path', '/var/log/qemu',
-    'owner', 'qemu:libvirtd',
-    'type', 'd',
-    'perm', '0755',
-  );
-  SELF;
+    SELF[length(SELF)] = dict(
+        'path', '/var/log/qemu',
+        'owner', 'qemu:libvirtd',
+        'type', 'd',
+        'perm', '0755',
+    );
+    SELF;
 };
 
 include 'components/metaconfig/config';

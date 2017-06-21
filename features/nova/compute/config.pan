@@ -43,18 +43,18 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/DEFAULT/linuxnet_interface_driver' = 'nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver';
 'contents/DEFAULT/firewall_driver' = 'nova.virt.firewall.NoopFirewallDriver';
 'contents/DEFAULT/resume_guests_state_on_host_boot' = if (OPENSTACK_NOVA_RESUME_VM_ON_BOOT) {
-  'True';
+    'True';
 } else {
-  null;
+    null;
 };
 
 # [glance] section
 #'contents/glance/host' = openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS);
 #'contents/glance/protocol' = OPENSTACK_GLANCE_CONTROLLER_PROTOCOL;
 'contents/glance/api_servers' = openstack_generate_uri(
-  OPENSTACK_GLANCE_CONTROLLER_PROTOCOL,
-  OPENSTACK_GLANCE_SERVERS,
-  9292
+    OPENSTACK_GLANCE_CONTROLLER_PROTOCOL,
+    OPENSTACK_GLANCE_SERVERS,
+    9292
 );
 
 # [keystone_authtoken] section
@@ -67,14 +67,14 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 
 # [neutron] section
 'contents/neutron/url' = openstack_generate_uri(
-  OPENSTACK_NEUTRON_CONTROLLER_PROTOCOL,
-  OPENSTACK_NEUTRON_SERVERS,
-  9696
+    OPENSTACK_NEUTRON_CONTROLLER_PROTOCOL,
+    OPENSTACK_NEUTRON_SERVERS,
+    9696
 );
 'contents/neutron/auth_url' = openstack_generate_uri(
-  OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
-  OPENSTACK_KEYSTONE_SERVERS,
-  OPENSTACK_KEYSTONE_ADMIN_PORT
+    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
+    OPENSTACK_KEYSTONE_SERVERS,
+    OPENSTACK_KEYSTONE_ADMIN_PORT
 );
 'contents/neutron/auth_plugin' = 'password';
 'contents/neutron/auth_type' = 'password';
@@ -95,36 +95,36 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/vnc/vncserver_listen' = '0.0.0.0';
 'contents/vnc/vncserver_proxyclient_address' = '$my_ip';
 'contents/vnc/novncproxy_base_url' = format(
-  '%s:%s',
-  openstack_generate_uri(
-    OPENSTACK_NOVA_VNC_PROTOCOL,
-    OPENSTACK_NOVA_SERVERS ,
-    6080
-  ),
-  'vnc_auto.html'
+    '%s:%s',
+    openstack_generate_uri(
+        OPENSTACK_NOVA_VNC_PROTOCOL,
+        OPENSTACK_NOVA_SERVERS ,
+        6080
+    ),
+    'vnc_auto.html'
 );
 'contents/vnc/xvpvncproxy_base_url' = format(
-  '%s:%s',
-  openstack_generate_uri(
-    OPENSTACK_NOVA_VNC_PROTOCOL,
-    OPENSTACK_NOVA_SERVERS,
-    6081
-  ),
-  'console'
+    '%s:%s',
+    openstack_generate_uri(
+        OPENSTACK_NOVA_VNC_PROTOCOL,
+        OPENSTACK_NOVA_SERVERS,
+        6081
+    ),
+    'console'
 );
 
 # [cinder] section
 'contents/cinder' = {
-  if (OPENSTACK_CINDER_ENABLED) {
-    dict('os_region_name', OPENSTACK_REGION_NAME,
-        'cinder_catalog_info','volumev2:cinderv2:publicURL',);
-  } else {
-    null;
-  };
+    if (OPENSTACK_CINDER_ENABLED) {
+        dict('os_region_name', OPENSTACK_REGION_NAME,
+                'cinder_catalog_info','volumev2:cinderv2:publicURL',);
+    } else {
+        null;
+    };
 };
 
 include if (OPENSTACK_CEPH_NOVA) {
-    'features/nova/compute/ceph';
+        'features/nova/compute/ceph';
 } else {
-    null;
+        null;
 };

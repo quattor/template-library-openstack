@@ -35,14 +35,14 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}';
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 'contents/DEFAULT/show_multiple_locations' = OPENSTACK_GLANCE_MULTIPLE_LOCATIONS;
 'contents/DEFAULT/cert_file' = if (OPENSTACK_SSL) {
-  OPENSTACK_SSL_CERT;
+    OPENSTACK_SSL_CERT;
 } else {
-  null;
+    null;
 };
 'contents/DEFAULT/key_file' = if (OPENSTACK_SSL) {
-  OPENSTACK_SSL_KEY;
+    OPENSTACK_SSL_KEY;
 } else {
-  null;
+    null;
 };
 'contents/DEFAULT/registry_client_protocol' = OPENSTACK_CONTROLLER_PROTOCOL;
 
@@ -71,14 +71,14 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.co
 'contents/DEFAULT/notification_driver' = 'messagingv2';
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 'contents/DEFAULT/cert_file' = if (OPENSTACK_SSL) {
-  OPENSTACK_SSL_CERT;
+    OPENSTACK_SSL_CERT;
 } else {
-  null;
+    null;
 };
 'contents/DEFAULT/key_file' = if (OPENSTACK_SSL) {
-  OPENSTACK_SSL_KEY;
+    OPENSTACK_SSL_KEY;
 } else {
-  null;
+    null;
 };
 
 #[oslo_messaging_rabbit] section
@@ -96,27 +96,27 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.co
 'contents/paste_deploy/flavor' = 'keystone';
 
 include if (OPENSTACK_CEPH_GLANCE) {
-    'features/glance/ceph';
+        'features/glance/ceph';
 } else {
-    'features/glance/file';
+        'features/glance/file';
 };
 
 include if (OPENSTACK_HA) {
-    'features/glance/ha';
+        'features/glance/ha';
 } else {
-    null;
+        null;
 };
 
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
 '{/root/init-glance.sh}' = dict(
-  'perms' ,'755',
-  'config', format(
-    file_contents('features/glance/init-glance.sh'),
-    OPENSTACK_INIT_SCRIPT_GENERAL,
-    openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS),
-    OPENSTACK_GLANCE_USERNAME,
-    OPENSTACK_GLANCE_PASSWORD,
-  ),
-  'restart' , '/root/init-glance.sh',
+    'perms' ,'755',
+    'config', format(
+        file_contents('features/glance/init-glance.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+        openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS),
+        OPENSTACK_GLANCE_USERNAME,
+        OPENSTACK_GLANCE_PASSWORD,
+    ),
+    'restart' , '/root/init-glance.sh',
 );
