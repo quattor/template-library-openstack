@@ -95,7 +95,7 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/vnc/vncserver_listen' = '0.0.0.0';
 'contents/vnc/vncserver_proxyclient_address' = '$my_ip';
 'contents/vnc/novncproxy_base_url' = format(
-    '%s:%s',
+    '%s/%s',
     openstack_generate_uri(
         OPENSTACK_NOVA_VNC_PROTOCOL,
         OPENSTACK_NOVA_SERVERS ,
@@ -104,7 +104,7 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
     'vnc_auto.html'
 );
 'contents/vnc/xvpvncproxy_base_url' = format(
-    '%s:%s',
+    '%s/%s',
     openstack_generate_uri(
         OPENSTACK_NOVA_VNC_PROTOCOL,
         OPENSTACK_NOVA_SERVERS,
