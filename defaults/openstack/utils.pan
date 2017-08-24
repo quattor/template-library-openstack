@@ -33,31 +33,31 @@ include 'components/filecopy/config';
 # Copy scripts to help with init scripts
 prefix '/software/components/filecopy/services';
 '{/usr/local/bin/quattor_openstack_add_domain.sh}' = dict(
-        'perms' ,'755',
+        'perms', '755',
         'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_domain.sh'),
 );
 '{/usr/local/bin/quattor_openstack_add_endpoint.sh}' = dict(
-        'perms' ,'755',
+        'perms', '755',
         'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_endpoint.sh'),
 );
 '{/usr/local/bin/quattor_openstack_add_user.sh}' = dict(
-        'perms' ,'755',
+        'perms', '755',
         'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_user.sh'),
 );
 '{/usr/local/bin/quattor_openstack_add_role.sh}' = dict(
-        'perms' ,'755',
+        'perms', '755',
         'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_role.sh'),
 );
 '{/usr/local/bin/quattor_openstack_add_user_role.sh}' = dict(
-        'perms' ,'755',
+        'perms', '755',
         'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_user_role.sh'),
 );
 '{/usr/local/bin/quattor_openstack_add_service.sh}' = dict(
-        'perms' ,'755',
+        'perms', '755',
         'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_service.sh'),
 );
 '{/usr/local/bin/quattor_openstack_add_project.sh}' = dict(
-        'perms' ,'755',
+        'perms', '755',
         'config', file_contents('defaults/openstack/scripts/quattor_openstack_add_project.sh'),
 );
 

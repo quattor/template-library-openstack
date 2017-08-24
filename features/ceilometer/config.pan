@@ -31,18 +31,19 @@ prefix '/software/components/chkconfig/service';
 'openstack-ceilometer-alarm-evaluator/on' = '';
 'openstack-ceilometer-alarm-evaluator/startstop' = true;
 
-bind '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.conf}/contents' = openstack_ceilometer_config;
+bind '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.conf}/contents' =
+    openstack_ceilometer_config;
 
 # Configuration file for ceilometer
 include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.conf}';
 'module' = 'tiny';
-'daemons/openstack-ceilometer-api'='restart';
-'daemons/openstack-ceilometer-notification'='restart';
-'daemons/openstack-ceilometer-central'='restart';
-'daemons/openstack-ceilometer-collector'='restart';
-'daemons/openstack-ceilometer-alarm-evaluator'='restart';
-'daemons/openstack-ceilometer-alarm-notifier'='restart';
+'daemons/openstack-ceilometer-api' = 'restart';
+'daemons/openstack-ceilometer-notification' = 'restart';
+'daemons/openstack-ceilometer-central' = 'restart';
+'daemons/openstack-ceilometer-collector' = 'restart';
+'daemons/openstack-ceilometer-alarm-evaluator' = 'restart';
+'daemons/openstack-ceilometer-alarm-notifier' = 'restart';
 'contents/DEFAULT/rpc_backend' = 'rabbit';
 'contents/DEFAULT/auth_strategy' = 'keystone';
 'contents/DEFAULT/my_ip' = PRIMARY_IP;
@@ -84,16 +85,12 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 'contents/service_credentials/os_endpoint_type' = 'internalURL';
 'contents/service_credentials/os_region_name' = OPENSTACK_REGION_NAME;
 
-include if (OPENSTACK_HA) {
-        'features/ceilometer/ha';
-} else {
-        null;
-};
+include if (OPENSTACK_HA) {'features/ceilometer/ha'};
 
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
 '{/root/init-ceilometer.sh}' = dict(
-    'perms' ,'755',
+    'perms', '755',
     'config', format(
         file_contents('features/ceilometer/init-ceilometer.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
@@ -104,5 +101,5 @@ prefix '/software/components/filecopy/services';
         OPENSTACK_CEILOMETER_USERNAME,
         OPENSTACK_CEILOMETER_PASSWORD,
     ),
-    'restart' , '/root/init-ceilometer.sh',
+    'restart', '/root/init-ceilometer.sh',
 );

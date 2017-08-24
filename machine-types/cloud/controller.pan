@@ -13,20 +13,11 @@ include 'personality/nova/config';
 include 'personality/neutron/config';
 include 'features/neutron/network/config';
 include 'personality/dashboard/config';
-include if (OPENSTACK_HEAT_ENABLED) {
-        'personality/heat/config';
-} else {
-        null;
-} ;
-include if (OPENSTACK_CINDER_ENABLED) {
-        'personality/cinder/controller';
-} else {
-        null;
-};
-include if (OPENSTACK_CEILOMETER_ENABLED) {
-        'personality/ceilometer/config';
-} else {
-        null;
-};
+
+include if (OPENSTACK_HEAT_ENABLED) {'personality/heat/config'};
+
+include if (OPENSTACK_CINDER_ENABLED) {'personality/cinder/controller'};
+
+include if (OPENSTACK_CEILOMETER_ENABLED) {'personality/ceilometer/config'};
 
 include 'defaults/openstack/utils';

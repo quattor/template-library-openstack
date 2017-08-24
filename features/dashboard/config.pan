@@ -25,7 +25,7 @@ prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local
 'contents/host' = openstack_get_controller_host(OPENSTACK_HORIZON_SERVERS);
 'contents/role' = OPENSTACK_HORIZON_DEFAULT_ROLE;
 'contents/multidomain' = OPENSTACK_HORIZON_MULTIDOMAIN_ENABLED;
-'contents/default_domain'= OPENSTACK_HORIZON_DEFAULT_DOMAIN;
+'contents/default_domain' = OPENSTACK_HORIZON_DEFAULT_DOMAIN;
 'contents/keystone/protocol' = OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL;
 'contents/keystone/host' = openstack_get_controller_host(OPENSTACK_KEYSTONE_SERVERS);
 'contents/keystone/api_version' = OPENSTACK_HORIZON_KEYSTONE_API_VERSION;
@@ -39,17 +39,12 @@ prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local
 'contents/available_themes' = OPENSTACK_HORIZON_AVAILABLE_THEMES;
 'contents/default_theme' = OPENSTACK_HORIZON_DEFAULT_THEME;
 
-'contents/enable_distributed_router' =    {
+'contents/enable_distributed_router' =
     if (exists(OPENSTACK_NEUTRON_DVR_ENABLED) && OPENSTACK_NEUTRON_DVR_ENABLED) {
         'True';
     } else {
         'False';
     };
-};
 
 
-include if (OPENSTACK_HA) {
-        'features/dashboard/ha';
-} else {
-        null;
-};
+include if(OPENSTACK_HA) {'features/dashboard/ha'};
