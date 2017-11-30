@@ -29,26 +29,27 @@ bind '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}/con
 prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
 'module' = 'tiny';
 
+prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}/contents';
 # [DEFAULT] section
-'contents/DEFAULT/admin_token' ?= OPENSTACK_ADMIN_TOKEN;
-'contents/DEFAULT/notification_driver' = 'messagingv2';
-'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
+'DEFAULT/admin_token' ?= OPENSTACK_ADMIN_TOKEN;
+'DEFAULT/notification_driver' = 'messagingv2';
+'DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 
 # [database] section
-'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_KEYSTONE_DB);
+'database/connection' = openstack_dict_to_connection_string(OPENSTACK_KEYSTONE_DB);
 
 # [memcache] section
-'contents/memcache/servers' = openstack_dict_to_hostport_string(OPENSTACK_MEMCACHE_HOSTS);
+'memcache/servers' = openstack_dict_to_hostport_string(OPENSTACK_MEMCACHE_HOSTS);
 
 # [revoke] section
-'contents/revoke/driver' = 'sql';
+'revoke/driver' = 'sql';
 
 # [token] section
-'contents/token/provider' = OPENSTACK_KEYSTONE_TOKEN_PROVIDER;
-'contents/token/driver' = OPENSTACK_KEYSTONE_TOKEN_DRIVER;
+'token/provider' = OPENSTACK_KEYSTONE_TOKEN_PROVIDER;
+'token/driver' = OPENSTACK_KEYSTONE_TOKEN_DRIVER;
 
-#[oslo_messaging_rabbit] section
-'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+# [oslo_messaging_rabbit] section
+'oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # Configure identity backend
 include 'features/keystone/identity/' + OPENSTACK_KEYSTONE_IDENTITY_DRIVER;
@@ -56,7 +57,7 @@ include 'features/keystone/identity/' + OPENSTACK_KEYSTONE_IDENTITY_DRIVER;
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
 '{/root/init-keystone.sh}' = dict(
-    'perms' ,'755',
+    'perms', '755',
     'config', format(
         file_contents('features/keystone/init-keystone.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,

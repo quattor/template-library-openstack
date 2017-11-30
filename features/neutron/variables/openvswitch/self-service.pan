@@ -1,7 +1,7 @@
 unique template features/neutron/variables/openvswitch/self-service;
 
 variable OPENSTACK_NEUTRON_MECHANISM ?= 'openvswitch';
-variable OPENSTACK_NEUTRON_MECHANISM_DRIVERS ?= list('openvswitch','l2population');
+variable OPENSTACK_NEUTRON_MECHANISM_DRIVERS ?= list('openvswitch', 'l2population');
 
 variable OPENSTACK_NEUTRON_VXLAN_ENABLED ?= 'True';
 variable OPENSTACK_NEUTRON_DRIVERS ?= 'vlan,flat,vxlan';

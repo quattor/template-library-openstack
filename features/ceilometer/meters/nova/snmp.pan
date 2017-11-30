@@ -25,5 +25,5 @@ prefix '/software/components/metaconfig/services/{/etc/snmp/snmpd.conf}';
 'contents/main/access' = 'ConfigGroup ""     any     noauth    exact    systemview none none';
 'contents/main/com2sec' = 'ConfigUser    default     ' + OPENSTACK_SNMPD_COMMUNITY;
 'contents/main/view' = 'systemview        included     .1';
-'contents/main/agentAddress' = 'udp:'+OPENSTACK_SNMPD_IP+':161';
-'contents/group/' = list('ConfigGroup v2c     ConfigUser');
+'contents/main/agentAddress' = 'udp:' + OPENSTACK_SNMPD_IP + ':161';
+'contents/group' = list('ConfigGroup v2c     ConfigUser');

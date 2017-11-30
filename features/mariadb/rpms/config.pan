@@ -1,6 +1,6 @@
 unique template features/mariadb/rpms/config;
 
 prefix '/software/packages';
-'{mariadb}'                     ?= nlist();
-'{mariadb-server}'        ?= nlist();
-'{MySQL-python}'            ?= nlist();
+'mariadb' ?= dict();
+'mariadb-server' ?= dict();
+'MySQL-python' ?= dict();
