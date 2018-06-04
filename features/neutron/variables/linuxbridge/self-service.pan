@@ -1,7 +1,7 @@
 unique template features/neutron/variables/linuxbridge/self-service;
 
 variable OPENSTACK_NEUTRON_MECHANISM ?= 'linuxbridge';
-variable OPENSTACK_NEUTRON_MECHANISM_DRIVERS ?= list('linuxbridge','l2population');
+variable OPENSTACK_NEUTRON_MECHANISM_DRIVERS ?= list('linuxbridge', 'l2population');
 
 variable OPENSTACK_NEUTRON_VXLAN_ENABLED ?= 'True';
 variable OPENSTACK_NEUTRON_DRIVERS ?= 'vlan,flat,vxlan';

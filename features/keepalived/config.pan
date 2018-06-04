@@ -1,9 +1,10 @@
 unique template features/keepalived/config;
 
 include 'features/keepalived/rpms/config';
+
 # Need the ability to bind to IP addresses which are not assigned to a device
 # on the local system
-include    'components/sysctl/config';
+include 'components/sysctl/config';
 "/software/components/sysctl/variables/net.ipv4.ip_nonlocal_bind" = "1";
 
 # Configuration
@@ -37,23 +38,24 @@ EOF
 variable FLOATING_IPS ?= error("FLOATING_IPS must be defined");
 
 variable KEEPALIVED_CONFIG = {
-        result = format(KEEPALIVED_INIT, value("/system/network/hostname"));
-        foreach (i; floatingip; FLOATING_IPS) {
-                if ( FULL_HOSTNAME == floatingip["master"]) {
-                        result = result + format(VRRP_INSTANCE, floatingip["name"], floatingip["router_id"], 101, "MASTER", floatingip["ip"]);
-                } else {
-                        result = result + format(VRRP_INSTANCE, floatingip["name"], floatingip["router_id"], 100, "BACKUP", floatingip["ip"]);
-                };
+    cfg = format(KEEPALIVED_INIT, value("/system/network/hostname"));
+    foreach (i; fip; FLOATING_IPS) {
+        if (FULL_HOSTNAME == fip["master"]) {
+            cfg = cfg + format(VRRP_INSTANCE, fip["name"], fip["router_id"], 101, "MASTER", fip["ip"]);
+        } else {
+            cfg = cfg + format(VRRP_INSTANCE, fip["name"], fip["router_id"], 100, "BACKUP", fip["ip"]);
         };
-        result;
+    };
+    result;
 };
 
+include 'components/filecopy/config';
 '/software/components/filecopy/services/{/etc/keepalived/keepalived.conf}' = dict(
-        'config', KEEPALIVED_CONFIG,
-        'backup', false,
-        'owner', 'root:root',
-        'restart', 'service keepalived reload',
-        'perms', '0644',
+    'config', KEEPALIVED_CONFIG,
+    'backup', false,
+    'owner', 'root:root',
+    'restart', 'service keepalived reload',
+    'perms', '0644',
 );
 
 # Services
