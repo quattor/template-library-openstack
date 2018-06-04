@@ -80,7 +80,8 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
             'cookie', 'SERVERID insert indirect nocache',
             'rspidel', '^Set-cookie:\ IP=',
             ),
-        'options', list('tcpka', 'httplog', 'httpchk', 'forwardfor', 'httpclose'),
+
+        'options', list('tcpka', 'httplog', 'httpchk', 'forwardfor'),
         'serveroptions', dict(
             'cookie', 'control',
             ),
