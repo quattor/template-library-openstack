@@ -133,7 +133,7 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents'
 # [oslo_concurrency]
 'oslo_concurrency/lock_path' = '/var/lib/nova/tmp';
 #[oslo_messaging_rabbit] section
-'oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [vnc] section
 'vnc/vncserver_listen' = '$my_ip';

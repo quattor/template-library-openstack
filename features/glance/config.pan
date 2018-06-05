@@ -49,7 +49,7 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}/c
 'DEFAULT/registry_client_protocol' = OPENSTACK_CONTROLLER_PROTOCOL;
 
 #[oslo_messaging_rabbit] section
-'oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [database] section
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_GLANCE_DB);
@@ -86,7 +86,7 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.co
 };
 
 #[oslo_messaging_rabbit] section
-'oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [database] section
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_GLANCE_DB);

@@ -28,7 +28,7 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 
 # [oslo_messaging_rabbit] section
-'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'contents/DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [keystone_authtoken] section
 'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
