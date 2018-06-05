@@ -514,6 +514,12 @@ variable OPENSTACK_NOVA_USERNAME ?= 'nova';
 }
 variable OPENSTACK_NOVA_PASSWORD ?= 'NOVA_PASS';
 @use{
+    type = string
+    default = nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
+    note = Driver used to create ethernet devices - valid options are nova.network.linux_net.LinuxBridgeInterfaceDriver or nova.network.linux_net.LinuxOVSInterfaceDriver.
+}
+variable OPENSTACK_NOVA_LINUXNET_INTERFACE_DRIVER = 'nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver';
+@use{
     type = long
     default = 8774
     note = The port to use for the Nova API
