@@ -120,3 +120,14 @@ prefix '/software/components/filecopy/services';
     ),
     'restart', '/root/init-glance.sh',
 );
+
+prefix '/software/components/filecopy/services';
+'{/root/update-glance-to-newton.sh}' = dict(
+    'perms', '755',
+    'config', format(
+        file_contents('features/glance/update-glance-to-newton.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+        openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS),
+    ),
+    'restart' , '/root/update-glance-to-newton.sh',
+);

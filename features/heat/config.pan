@@ -118,3 +118,13 @@ prefix '/software/components/filecopy/services';
     ),
     'restart' , '/root/init-heat.sh',
 );
+
+prefix '/software/components/filecopy/services';
+'{/root/update-heat-to-newton.sh}' = dict(
+    'perms', '755',
+    'config', format(
+        file_contents('features/heat/update-heat-to-newton.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+    ),
+    'restart' , '/root/update-heat-to-newton.sh',
+);
