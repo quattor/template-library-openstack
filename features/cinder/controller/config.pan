@@ -80,3 +80,15 @@ prefix '/software/components/filecopy/services';
     ),
     'restart' , '/root/init-cinder.sh',
 );
+
+prefix '/software/components/filecopy/services';
+'{/root/update-cinder-to-newton.sh}' = dict(
+    'perms', '755',
+    'config', format(
+        file_contents('features/cinder/controller/update-cinder-to-newton.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+        openstack_get_controller_host(OPENSTACK_CINDER_SERVERS),
+        openstack_get_controller_host(OPENSTACK_CINDER_SERVERS),
+    ),
+    'restart' , '/root/update-cinder-to-newton.sh',
+);

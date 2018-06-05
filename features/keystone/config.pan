@@ -65,3 +65,14 @@ prefix '/software/components/filecopy/services';
     ),
     'restart' , '/root/init-keystone.sh',
 );
+
+prefix '/software/components/filecopy/services';
+'{/root/update-keystone-to-newton.sh}' = dict(
+    'perms', '755',
+    'config', format(
+        file_contents('features/keystone/update-keystone-to-newton.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+
+    ),
+    'restart' , '/root/update-keystone-to-newton.sh',
+);

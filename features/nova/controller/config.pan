@@ -153,3 +153,12 @@ prefix '/software/components/filecopy/services';
     ),
     'restart', '/root/init-nova.sh',
 );
+prefix '/software/components/filecopy/services';
+'{/root/update-nova-to-newton.sh}' = dict(
+    'perms', '755',
+    'config', format(
+        file_contents('features/nova/controller/update-nova-to-newton.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+    ),
+    'restart' , '/root/update-nova-to-newton.sh',
+);
