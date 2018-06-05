@@ -12,7 +12,7 @@ type openstack_keystone_config = extensible {
         'memcache' : openstack_keystone_memcache
         'revoke' : openstack_keystone_revoke
         'token' : openstack_keystone_token
-        'oslo_messaging_rabbit' : openstack_oslo_messaging_rabbit
+        'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
 };
 
 @documentation {
@@ -21,7 +21,7 @@ type openstack_keystone_config = extensible {
 type openstack_ceilometer_config = extensible {
         'DEFAULT' : openstack_DEFAULTS
         'database' : openstack_database
-        'oslo_messaging_rabbit' : openstack_oslo_messaging_rabbit
+        'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
         'keystone_authtoken' : openstack_keystone_authtoken
         'service_credentials' : openstack_service_credentials
 };
@@ -33,7 +33,7 @@ type openstack_ceilometer_config = extensible {
 type openstack_cinder_config = extensible {
         'DEFAULT' : openstack_DEFAULTS
         'database' : openstack_database
-        'oslo_messaging_rabbit' : openstack_oslo_messaging_rabbit
+        'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
         'keystone_authtoken' : openstack_keystone_authtoken
 };
 
@@ -44,7 +44,7 @@ type openstack_cinder_config = extensible {
 type openstack_glance_config = extensible {
         'DEFAULT' : openstack_DEFAULTS
         'database' : openstack_database
-        'oslo_messaging_rabbit' : openstack_oslo_messaging_rabbit
+        'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
         'keystone_authtoken' : openstack_keystone_authtoken
 };
 
@@ -55,7 +55,7 @@ type openstack_glance_config = extensible {
 type openstack_heat_config = extensible {
         'DEFAULT' : openstack_DEFAULTS
         'database' : openstack_database
-        'oslo_messaging_rabbit' : openstack_oslo_messaging_rabbit
+        'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
         'keystone_authtoken' : openstack_keystone_authtoken
 };
 
@@ -66,7 +66,7 @@ type openstack_heat_config = extensible {
 type openstack_nova_config = extensible {
         'DEFAULT' : openstack_DEFAULTS
         'database' : openstack_database
-        'oslo_messaging_rabbit' : openstack_oslo_messaging_rabbit
+        'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
         'keystone_authtoken' : openstack_keystone_authtoken
 };
 
@@ -75,7 +75,7 @@ type openstack_nova_config = extensible {
 }
 type openstack_nova_compute_config = extensible {
         'DEFAULT' : openstack_DEFAULTS
-        'oslo_messaging_rabbit' : openstack_oslo_messaging_rabbit
+        'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
         'keystone_authtoken' : openstack_keystone_authtoken
 };
 
@@ -86,7 +86,7 @@ type openstack_nova_compute_config = extensible {
 type openstack_neutron_config = extensible {
         'DEFAULT' : openstack_DEFAULTS
         'database' : openstack_database
-        'oslo_messaging_rabbit' : openstack_oslo_messaging_rabbit
+        'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
         'keystone_authtoken' : openstack_keystone_authtoken
 };
 
@@ -95,6 +95,6 @@ type openstack_neutron_config = extensible {
 }
 type openstack_neutron_compute_config = extensible {
         'DEFAULT' : openstack_DEFAULTS
-        'oslo_messaging_rabbit' : openstack_oslo_messaging_rabbit
+        'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
         'keystone_authtoken' : openstack_keystone_authtoken
 };
