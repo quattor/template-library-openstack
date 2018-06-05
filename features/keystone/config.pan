@@ -49,7 +49,7 @@ prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}/c
 'token/driver' = OPENSTACK_KEYSTONE_TOKEN_DRIVER;
 
 # [oslo_messaging_rabbit] section
-'oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # Configure identity backend
 include 'features/keystone/identity/' + OPENSTACK_KEYSTONE_IDENTITY_DRIVER;

@@ -91,7 +91,7 @@ prefix '/software/components/metaconfig/services/{/etc/heat/heat.conf}/contents'
 );
 
 # [oslo_messaging_rabbit] section
-'oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [database] section
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_HEAT_DB);
