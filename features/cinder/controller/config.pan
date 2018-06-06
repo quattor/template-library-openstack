@@ -82,13 +82,13 @@ prefix '/software/components/filecopy/services';
 );
 
 prefix '/software/components/filecopy/services';
-'{/root/update-cinder-to-newton.sh}' = dict(
+'{/root/update-cinder-to-ocata.sh}' = dict(
     'perms', '755',
     'config', format(
-        file_contents('features/cinder/controller/update-cinder-to-newton.sh'),
+        file_contents('features/cinder/controller/update-cinder-to-ocata.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
         openstack_get_controller_host(OPENSTACK_CINDER_SERVERS),
         openstack_get_controller_host(OPENSTACK_CINDER_SERVERS),
     ),
-    'restart' , '/root/update-cinder-to-newton.sh',
+    'restart' , '/root/update-cinder-to-ocata.sh',
 );

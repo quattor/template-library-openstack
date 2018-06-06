@@ -9,4 +9,5 @@ prefix '/software/packages';
 '{openstack-nova-console}' ?= dict();
 '{openstack-nova-novncproxy}' ?= dict();
 '{openstack-nova-scheduler}' ?= dict();
+'{openstack-nova-placement-api}' ?= dict();
 '{python-novaclient}' ?= dict();

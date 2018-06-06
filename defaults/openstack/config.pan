@@ -515,6 +515,18 @@ variable OPENSTACK_NOVA_USERNAME ?= 'nova';
 variable OPENSTACK_NOVA_PASSWORD ?= 'NOVA_PASS';
 @use{
     type = string
+    default = placement
+    note = The password to use for Nova Placement
+}
+variable OPENSTACK_NOVA_PLACEMENT_USER ?= 'placement';
+@use{
+    type = string
+    default = PLACEMENT_PASS
+    note = The password to use for Nova Placement
+}
+variable OPENSTACK_NOVA_PLACEMENT_PASSWORD ?= 'PLACEMENT_PASS';
+@use{
+    type = string
     default = nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
     note = Driver used to create ethernet devices - valid options are nova.network.linux_net.LinuxBridgeInterfaceDriver or nova.network.linux_net.LinuxOVSInterfaceDriver.
 }
@@ -543,6 +555,12 @@ variable OPENSTACK_NOVA_METADATA_PORT ?= 8774;
     note = The port to be used for the NoVNC proxy
 }
 variable OPENSTACK_NOVA_NOVNC_PORT ?= 6080;
+@use{
+    type = long
+    default = 8778
+    note = The port to be used for the Nova Placement API
+}
+variable OPENSTACK_NOVA_PLACEMENT_PORT ?= 8778;
 @use{
     type = list
     note = A list of ports used by Nova
