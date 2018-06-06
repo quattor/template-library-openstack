@@ -21,8 +21,6 @@ include 'components/chkconfig/config';
 prefix '/software/components/chkconfig/service';
 'openstack-nova-api/on' = '';
 'openstack-nova-api/startstop' = true;
-'openstack-nova-cert/on' = '';
-'openstack-nova-cert/startstop' = true;
 'openstack-nova-consoleauth/on' = '';
 'openstack-nova-consoleauth/startstop' = true;
 'openstack-nova-scheduler/on' = '';
@@ -31,6 +29,8 @@ prefix '/software/components/chkconfig/service';
 'openstack-nova-conductor/startstop' = true;
 'openstack-nova-novncproxy/on' = '';
 'openstack-nova-novncproxy/startstop' = true;
+'httpd/on' = '';
+'httpd/startstop' = true;
 
 bind '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents' = openstack_nova_config;
 
@@ -134,6 +134,23 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents'
 #[oslo_messaging_rabbit] section
 'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
+# [placement]
+'placement/os_region_name' = OPENSTACK_REGION_NAME;
+'placement/project_domain_name' = 'Default';
+'placement/project_name' = 'service';
+'placement/auth_type' = 'password';
+'placement/user_domain_name' = 'Default';
+'placement/auth_url' = openstack_generate_uri(
+    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
+    OPENSTACK_KEYSTONE_SERVERS,
+    OPENSTACK_KEYSTONE_ADMIN_PORT
+);
+'placement/username' = OPENSTACK_NOVA_PLACEMENT_USER;
+'placement/password' = OPENSTACK_NOVA_PLACEMENT_PASSWORD;
+
+# [upgrade_levels]
+'upgrade_levels/compute' = 'newton';
+
 # [vnc] section
 'vnc/vncserver_listen' = '$my_ip';
 'vnc/vncserver_proxyclient_address' = '$my_ip';
@@ -154,11 +171,14 @@ prefix '/software/components/filecopy/services';
     'restart', '/root/init-nova.sh',
 );
 prefix '/software/components/filecopy/services';
-'{/root/update-nova-to-newton.sh}' = dict(
+'{/root/update-nova-to-ocata.sh}' = dict(
     'perms', '755',
     'config', format(
-        file_contents('features/nova/controller/update-nova-to-newton.sh'),
+        file_contents('features/nova/controller/update-nova-to-ocata.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
+        OPENSTACK_NOVA_PLACEMENT_USER,
+        OPENSTACK_NOVA_PLACEMENT_PASSWORD,
+        openstack_get_controller_host(OPENSTACK_NOVA_SERVERS),
     ),
-    'restart' , '/root/update-nova-to-newton.sh',
+    'restart' , '/root/update-nova-to-ocata.sh',
 );
