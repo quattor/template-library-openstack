@@ -67,12 +67,12 @@ prefix '/software/components/filecopy/services';
 );
 
 prefix '/software/components/filecopy/services';
-'{/root/update-keystone-to-newton.sh}' = dict(
+'{/root/update-keystone-to-ocata.sh}' = dict(
     'perms', '755',
     'config', format(
-        file_contents('features/keystone/update-keystone-to-newton.sh'),
+        file_contents('features/keystone/update-keystone-to-ocata.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
 
     ),
-    'restart' , '/root/update-keystone-to-newton.sh',
+    'restart' , '/root/update-keystone-to-ocata.sh',
 );

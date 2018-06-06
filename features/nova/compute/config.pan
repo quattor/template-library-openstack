@@ -88,6 +88,23 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents'
 #[oslo_messaging_rabbit] section
 'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
+# [placement]
+'placement/os_region_name' = OPENSTACK_REGION_NAME;
+'placement/project_domain_name' = 'Default';
+'placement/project_name' = 'service';
+'placement/auth_type' = 'password';
+'placement/user_domain_name' = 'Default';
+'placement/auth_url' = openstack_generate_uri(
+    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
+    OPENSTACK_KEYSTONE_SERVERS,
+    OPENSTACK_KEYSTONE_ADMIN_PORT
+);
+'placement/username' = OPENSTACK_NOVA_PLACEMENT_USER;
+'placement/password' = OPENSTACK_NOVA_PLACEMENT_PASSWORD;
+
+# [upgrade_levels]
+'upgrade_levels/compute' = 'newton';
+
 # [vnc] section
 'vnc/enabled' = 'True';
 'vnc/vncserver_listen' = '0.0.0.0';
