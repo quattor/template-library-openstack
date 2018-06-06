@@ -36,11 +36,9 @@ prefix '/software/components/metaconfig';
             'ldap', merge(params, dict(
                 'use_dump_member', 'False',
                 'allow_subtree_delete', 'False',
-                'user_objectclass', 'inetOrgPerson',
                 'user_allow_create', 'False',
                 'user_allow_update', 'False',
                 'user_allow_delete', 'False',
-                'group_objectclass', 'groupOfNames',
                 'group_allow_create', 'False',
                 'group_allow_update', 'False',
                 'group_allow_delete', 'False',
