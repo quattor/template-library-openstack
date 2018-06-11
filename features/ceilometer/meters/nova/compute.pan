@@ -20,7 +20,7 @@ prefix '/software/components/chkconfig/service';
 include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.conf}';
 'module' = 'tiny';
-'daemons/openstack-ceilometer-compute'='restart';
+'daemons/openstack-ceilometer-compute' = 'restart';
 
 # [DEFAULT] section
 'contents/DEFAULT/rpc_backend' = 'rabbit';
@@ -28,7 +28,7 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 
 # [oslo_messaging_rabbit] section
-'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'contents/DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [keystone_authtoken] section
 'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
@@ -53,7 +53,7 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 
 prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'module' = 'tiny';
-'daemons/openstack-nova-compute'='restart';
+'daemons/openstack-nova-compute' = 'restart';
 
 # [DEFAULT] section
 'contents/DEFAULT/instance_usage_audit' = 'True';

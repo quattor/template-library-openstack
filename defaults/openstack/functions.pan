@@ -13,7 +13,7 @@ function openstack_load_config = {
         config = ARGV[0];
     };
 
-    foreach(k;v;config) {
+    foreach(k; v; config) {
         SELF[k] = v;
     };
     SELF;
@@ -34,7 +34,7 @@ function openstack_list_to_string = {
 
     result = '';
 
-    foreach(k;v;config) {
+    foreach(k; v; config) {
         if (result != '') {
             result = format(
                 '%s,%s',
@@ -51,7 +51,7 @@ function openstack_list_to_string = {
 
 function openstack_dict_to_hostport_string = {
     if (ARGC != 1) {
-         error('openstack_dict_to_hostport_string needs an argument');
+        error('openstack_dict_to_hostport_string needs an argument');
     };
 
     if (is_dict(ARGV[0])) {
@@ -60,7 +60,7 @@ function openstack_dict_to_hostport_string = {
         error('openstack_dict_to_hostport_string needs a dict as an argument');
     };
     result = '';
-    foreach(k;v;config) {
+    foreach(k; v; config) {
         if (result != '') {
             result = format(
                 '%s,%s:%d',
@@ -82,7 +82,7 @@ function openstack_dict_to_hostport_string = {
 
 function openstack_dict_to_connection_string = {
     if (ARGC != 1) {
-         error('openstack_dict_to_connection_string needs an argument');
+        error('openstack_dict_to_connection_string needs an argument');
     };
 
     if (is_dict(ARGV[0])) {
@@ -118,7 +118,7 @@ function openstack_generate_uri = {
 
 
     if (length(dict_of_hosts) == 1) {
-        result = foreach (k;v;dict_of_hosts[0]) {
+        result = foreach (k; v; dict_of_hosts[0]) {
             format(
                 '%s://%s:%d',
                 protocol,
@@ -149,7 +149,7 @@ function openstack_get_controller_host = {
     };
 
     if (length(dict_of_hosts) == 1) {
-        result = foreach (k;v;dict_of_hosts[0]) {
+        result = foreach (k; v; dict_of_hosts[0]) {
             k;
         };
     } else {

@@ -153,11 +153,12 @@ variable OPENSTACK_CONTROLLER_HOST ?= error('OPENSTACK_CONTROLLER_HOST must be d
     default = http
     note = This is the protocol used for communicating with OpenStack APIs, is set automatically based on the value of OPENSTACK_SSL
 }
-variable OPENSTACK_CONTROLLER_PROTOCOL ?= if (OPENSTACK_SSL) {
-    'https';
-} else {
-    'http';
-};
+variable OPENSTACK_CONTROLLER_PROTOCOL ?=
+    if (OPENSTACK_SSL) {
+        'https';
+    } else {
+        'http';
+    };
 
 #############################
 # Mariadb specific variable #
@@ -329,7 +330,7 @@ variable OPENSTACK_HEAT_PORT ?= 8004;
     type = long
     note = A list of ports which heat uses
 }
-variable OPENSTACK_HEAT_PORTS ?= list(OPENSTACK_HEAT_PORT,OPENSTACK_HEAT_CFN_PORT);
+variable OPENSTACK_HEAT_PORTS ?= list(OPENSTACK_HEAT_PORT, OPENSTACK_HEAT_CFN_PORT);
 
 ##############################
 # Keystone specific variable #
@@ -372,7 +373,7 @@ variable OPENSTACK_KEYSTONE_DB_PASSWORD ?= 'KEYSTONE_DBPASS';
 variable OPENSTACK_KEYSTONE_IDENTITY_DRIVER ?= 'sql';
 @use{
     type = dict
-    note = A Dictionary which provides ldap attributes to use for ldap authentication
+    note = A dictionary which provides ldap attributes to use for ldap authentication
 }
 variable OPENSTACK_KEYSTONE_IDENTITY_LDAP_PARAMS ?= dict();
 @use{
@@ -391,7 +392,7 @@ variable OPENSTACK_KEYSTONE_ADMIN_PORT ?= 35357;
     type = list
     note = A list of ports used by keystone
 }
-variable OPENSTACK_KEYSTONE_PORTS ?= list(OPENSTACK_KEYSTONE_PORT,OPENSTACK_KEYSTONE_ADMIN_PORT);
+variable OPENSTACK_KEYSTONE_PORTS ?= list(OPENSTACK_KEYSTONE_PORT, OPENSTACK_KEYSTONE_ADMIN_PORT);
 @use{
     type = string
     default = uuid
@@ -413,7 +414,7 @@ variable OPENSTACK_KEYSTONE_TOKEN_DRIVER ?= 'memcache';
     default = localhost:11211
     note = A dictionary of hosts and ports to use for memcached
 }
-variable OPENSTACK_MEMCACHE_HOSTS ?= dict('localhost','11211');
+variable OPENSTACK_MEMCACHE_HOSTS ?= dict('localhost', '11211');
 
 #############################
 # MongoDB specfic variable #
@@ -513,6 +514,12 @@ variable OPENSTACK_NOVA_USERNAME ?= 'nova';
 }
 variable OPENSTACK_NOVA_PASSWORD ?= 'NOVA_PASS';
 @use{
+    type = string
+    default = nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
+    note = Driver used to create ethernet devices - valid options are nova.network.linux_net.LinuxBridgeInterfaceDriver or nova.network.linux_net.LinuxOVSInterfaceDriver.
+}
+variable OPENSTACK_NOVA_LINUXNET_INTERFACE_DRIVER = 'nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver';
+@use{
     type = long
     default = 8774
     note = The port to use for the Nova API
@@ -540,7 +547,12 @@ variable OPENSTACK_NOVA_NOVNC_PORT ?= 6080;
     type = list
     note = A list of ports used by Nova
 }
-variable OPENSTACK_NOVA_PORTS ?= list(OPENSTACK_NOVA_OSAPI_PORT, OPENSTACK_NOVA_EC2_PORT, OPENSTACK_NOVA_EC2_PORT, OPENSTACK_NOVA_NOVNC_PORT);
+variable OPENSTACK_NOVA_PORTS ?= list(
+    OPENSTACK_NOVA_OSAPI_PORT,
+    OPENSTACK_NOVA_EC2_PORT,
+    OPENSTACK_NOVA_EC2_PORT,
+    OPENSTACK_NOVA_NOVNC_PORT,
+);
 
 #############################
 # Neutron specific variable #
@@ -816,13 +828,13 @@ variable OPENSTACK_RABBITMQ_PORT ?= 5672;
     default = OPENSTACK_RABBITMQ_HOST
     note = This is a list of hosts to be used for RabbitMQ
 }
-variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost',OPENSTACK_RABBITMQ_PORT);
+variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost', OPENSTACK_RABBITMQ_PORT);
 @use{
     type = list
     default = OPENSTACK_RABBITMQ_HOST
     note = This is a list of hosts to be used for RabbitMQ
 }
-variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost',OPENSTACK_RABBITMQ_PORT);
+variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost', OPENSTACK_RABBITMQ_PORT);
 @use{
     type = string
     default = openstack
@@ -839,7 +851,12 @@ variable OPENSTACK_RABBITMQ_PASSWORD ?= 'RABBIT_PASS';
     type = string
     note = The secret to be used for HA RabbitMQ Cluster
 }
-variable OPENSTACK_RABBITMQ_CLUSTER_SECRET ?= if (OPENSTACK_HA) {error('OPENSTACK_RABBITMQ_CLUSTER_SECRET must be set for high availability');} else {null;};
+variable OPENSTACK_RABBITMQ_CLUSTER_SECRET ?=
+    if (OPENSTACK_HA) {
+        error('OPENSTACK_RABBITMQ_CLUSTER_SECRET must be set for high availability');
+    } else {
+        null;
+    };
 
 ###########
 # Horizon #
@@ -854,13 +871,12 @@ variable OPENSTACK_HORIZON_SERVERS ?= OPENSTACK_SERVERS;
     default = 80
     note = The port to use for Horizon, can be controlled by setting OPENSTACK_SSL
 }
-variable OPENSTACK_HORIZON_PORT ?= {
+variable OPENSTACK_HORIZON_PORT ?=
     if (OPENSTACK_SSL) {
         port = 443;
     } else {
         port = 80
     };
-};
 @use{
     type = list
     default = list(*)
@@ -931,13 +947,12 @@ variable OPENSTACK_HORIZON_ENABLE_CONFIG_DRIVE ?= 'False';
     default = false
     note = Enable multiple domains in Horizon
 }
-variable OPENSTACK_HORIZON_MULTIDOMAIN_ENABLED ?= {
+variable OPENSTACK_HORIZON_MULTIDOMAIN_ENABLED ?=
     if (OPENSTACK_KEYSTONE_IDENTITY_DRIVER == 'sql') {
         false;
     } else {
         true;
     };
-};
 
 
 ##############################
@@ -1066,13 +1081,12 @@ variable OPENSTACK_CEPH_NOVA_CEPH_CONF ?= '/etc/ceph/ceph.conf';
     type = string
     note = The uuid of the libvirt secret for nova to use for ephemeral disks
 }
-variable OPENSTACK_CEPH_LIBVIRT_SECRET ?= {
+variable OPENSTACK_CEPH_LIBVIRT_SECRET ?=
     if (OPENSTACK_CEPH) {
         error('OPENSTACK_CEPH_LIBVIRT_SECRET must be defined when OPENSTACK_CEPH is true');
     } else {
         null;
     };
-};
 
 ########################################
 # SNMPD configuration (for ceilometer) #
@@ -1111,17 +1125,32 @@ variable OPENSTACK_SNMPD_IP ?= PRIMARY_IP;
     type = ipaddress
     note = The floating ip address to use for keepalived
 }
-variable OPENSTACK_KEEPALIVED_FLOATING_IP ?= if (OPENSTACK_HA) {error('OPENSTACK_KEEPALIVED_FLOATING_IP must be set for high availability');} else {null;};
+variable OPENSTACK_KEEPALIVED_FLOATING_IP ?=
+    if (OPENSTACK_HA) {
+        error('OPENSTACK_KEEPALIVED_FLOATING_IP must be set for high availability');
+    } else {
+        null;
+    };
 @use{
     type = long
     note = The router id to be used for keepalived. Must be unique within broadcast domains.
 }
-variable OPENSTACK_KEEPALIVED_ROUTER_ID ?= if (OPENSTACK_HA) {error('OPENSTACK_KEEPALIVED_FLOATING_IP must be set for high availability');} else {null;};
+variable OPENSTACK_KEEPALIVED_ROUTER_ID ?=
+    if (OPENSTACK_HA) {
+        error('OPENSTACK_KEEPALIVED_FLOATING_IP must be set for high availability');
+    } else {
+        null;
+    };
 @use{
     type = hostname
     note = The host to use as the master loadbalancer in active passive modes
 }
-variable OPENSTACK_LOADBALANCER_MASTER ?= if (OPENSTACK_HA) {error('OPENSTACK_LOADBALANCER_MASTER must be set for high availability');} else {null;};
+variable OPENSTACK_LOADBALANCER_MASTER ?=
+    if (OPENSTACK_HA) {
+        error('OPENSTACK_LOADBALANCER_MASTER must be set for high availability');
+    } else {
+        null;
+    };
 
 
 include 'defaults/openstack/dicts';
