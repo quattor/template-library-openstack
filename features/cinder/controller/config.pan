@@ -88,7 +88,6 @@ prefix '/software/components/filecopy/services';
         file_contents('features/cinder/controller/update-cinder-to-pike.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
         openstack_get_controller_host(OPENSTACK_CINDER_SERVERS),
-        openstack_get_controller_host(OPENSTACK_CINDER_SERVERS),
     ),
     'restart' , '/root/update-cinder-to-pike.sh',
 );
