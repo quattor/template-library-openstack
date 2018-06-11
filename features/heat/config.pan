@@ -120,11 +120,11 @@ prefix '/software/components/filecopy/services';
 );
 
 prefix '/software/components/filecopy/services';
-'{/root/update-heat-to-ocata.sh}' = dict(
+'{/root/update-heat-to-pike.sh}' = dict(
     'perms', '755',
     'config', format(
-        file_contents('features/heat/update-heat-to-ocata.sh'),
+        file_contents('features/heat/update-heat-to-pike.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
     ),
-    'restart' , '/root/update-heat-to-ocata.sh',
+    'restart' , '/root/update-heat-to-pike.sh',
 );

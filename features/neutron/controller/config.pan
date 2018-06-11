@@ -130,11 +130,11 @@ prefix '/software/components/filecopy/services';
 );
 
 prefix '/software/components/filecopy/services';
-'{/root/update-neutron-to-ocata.sh}' = dict(
+'{/root/update-neutron-to-pike.sh}' = dict(
     'perms', '755',
     'config', format(
-        file_contents('features/neutron/controller/update-neutron-to-ocata.sh'),
+        file_contents('features/neutron/controller/update-neutron-to-pike.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
     ),
-    'restart' , '/root/update-neutron-to-ocata.sh',
+    'restart' , '/root/update-neutron-to-pike.sh',
 );
