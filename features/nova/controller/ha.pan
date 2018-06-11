@@ -9,6 +9,6 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'contents/keystone_authtoken/memcached_servers' = openstack_dict_to_hostport_string(OPENSTACK_MEMCACHE_HOSTS);
 
 # [vnc] section
-'contents/vnc/vncserver_listen' = '*';
-'contents/vnc/vncserver_proxyclient_address' = '*';
+'contents/vnc/vncserver_listen' = '127.0.0.1';
+'contents/vnc/vncserver_proxyclient_address' = '127.0.0.1';
 'contents/cache' = openstack_load_config('features/memcache/client/openstack');

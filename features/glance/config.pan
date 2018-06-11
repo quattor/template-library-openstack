@@ -122,12 +122,12 @@ prefix '/software/components/filecopy/services';
 );
 
 prefix '/software/components/filecopy/services';
-'{/root/update-glance-to-ocata.sh}' = dict(
+'{/root/update-glance-to-pike.sh}' = dict(
     'perms', '755',
     'config', format(
-        file_contents('features/glance/update-glance-to-ocata.sh'),
+        file_contents('features/glance/update-glance-to-pike.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
         openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS),
     ),
-    'restart' , '/root/update-glance-to-ocata.sh',
+    'restart' , '/root/update-glance-to-pike.sh',
 );

@@ -171,14 +171,11 @@ prefix '/software/components/filecopy/services';
     'restart', '/root/init-nova.sh',
 );
 prefix '/software/components/filecopy/services';
-'{/root/update-nova-to-ocata.sh}' = dict(
+'{/root/update-nova-to-pike.sh}' = dict(
     'perms', '755',
     'config', format(
-        file_contents('features/nova/controller/update-nova-to-ocata.sh'),
+        file_contents('features/nova/controller/update-nova-to-pike.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
-        OPENSTACK_NOVA_PLACEMENT_USER,
-        OPENSTACK_NOVA_PLACEMENT_PASSWORD,
-        openstack_get_controller_host(OPENSTACK_NOVA_SERVERS),
     ),
-    'restart' , '/root/update-nova-to-ocata.sh',
+    'restart' , '/root/update-nova-to-pike.sh',
 );
