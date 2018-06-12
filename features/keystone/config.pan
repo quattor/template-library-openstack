@@ -67,12 +67,12 @@ prefix '/software/components/filecopy/services';
 );
 
 prefix '/software/components/filecopy/services';
-'{/root/update-keystone-to-pike.sh}' = dict(
+'{/root/update-keystone-to-queens.sh}' = dict(
     'perms', '755',
     'config', format(
-        file_contents('features/keystone/update-keystone-to-pike.sh'),
+        file_contents('features/keystone/update-keystone-to-queens.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
 
     ),
-    'restart' , '/root/update-keystone-to-pike.sh',
+    'restart' , '/root/update-keystone-to-queens.sh',
 );

@@ -171,11 +171,11 @@ prefix '/software/components/filecopy/services';
     'restart', '/root/init-nova.sh',
 );
 prefix '/software/components/filecopy/services';
-'{/root/update-nova-to-pike.sh}' = dict(
+'{/root/update-nova-to-queens.sh}' = dict(
     'perms', '755',
     'config', format(
-        file_contents('features/nova/controller/update-nova-to-pike.sh'),
+        file_contents('features/nova/controller/update-nova-to-queens.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
     ),
-    'restart' , '/root/update-nova-to-pike.sh',
+    'restart' , '/root/update-nova-to-queens.sh',
 );
