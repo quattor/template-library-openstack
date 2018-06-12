@@ -82,12 +82,12 @@ prefix '/software/components/filecopy/services';
 );
 
 prefix '/software/components/filecopy/services';
-'{/root/update-cinder-to-pike.sh}' = dict(
+'{/root/update-cinder-to-queens.sh}' = dict(
     'perms', '755',
     'config', format(
-        file_contents('features/cinder/controller/update-cinder-to-pike.sh'),
+        file_contents('features/cinder/controller/update-cinder-to-queens.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
         openstack_get_controller_host(OPENSTACK_CINDER_SERVERS),
     ),
-    'restart' , '/root/update-cinder-to-pike.sh',
+    'restart' , '/root/update-cinder-to-queens.sh',
 );
