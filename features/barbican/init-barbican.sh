@@ -8,7 +8,7 @@ export BARBICAN_PASSWORD=%s
 
 echo "[START] Databases configuration"
 echo "  Key manager service"
-$DEBUG_DATABASES su -s /bin/sh -c "barbican-manage db_sync" barbican
+$DEBUG_DATABASES su -s /bin/sh -c "barbican-manage db upgrade" barbican
 echo "[DONE] Database configuration"
 
 echo "[START] service configuration"
