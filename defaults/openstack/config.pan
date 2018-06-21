@@ -824,12 +824,6 @@ variable OPENSTACK_RABBITMQ_PORT ?= 5672;
 }
 variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost', OPENSTACK_RABBITMQ_PORT);
 @use{
-    type = list
-    default = OPENSTACK_RABBITMQ_HOST
-    note = This is a list of hosts to be used for RabbitMQ
-}
-variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost', OPENSTACK_RABBITMQ_PORT);
-@use{
     type = string
     default = openstack
     note = The user to be used to connect to rabbitmq
