@@ -58,7 +58,7 @@ prefix '/software/components/metaconfig/services/{/etc/barbican/barbican.conf}';
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services';
 '{/root/init-barbican.sh}' = dict(
-    'perms' ,'755',
+    'perms' , '755',
     'config', format(
         file_contents('features/barbican/init-barbican.sh'),
         OPENSTACK_INIT_SCRIPT_GENERAL,
