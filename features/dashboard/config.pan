@@ -34,6 +34,7 @@ prefix '/software/components/metaconfig/services/{/etc/openstack-dashboard/local
 'contents/memcacheservers' = openstack_dict_to_hostport_string(OPENSTACK_MEMCACHE_HOSTS);
 'contents/openstack_hypervisor_features/requires_keypair' = OPENSTACK_HORIZON_REQUIRES_KEYPAIR;
 'contents/launch_instance_defaults/enable_config_drive' = OPENSTACK_HORIZON_ENABLE_CONFIG_DRIVE;
+'contents/launch_instance_defaults/enable_create_volume' = OPENSTACK_HORIZON_ENABLE_CREATE_VOLUME;
 'contents/webroot' = OPENSTACK_HORIZON_WEBROOT;
 'contents/default_dashboard' = OPENSTACK_HORIZON_DEFAULT_DASHBOARD;
 'contents/available_themes' = OPENSTACK_HORIZON_AVAILABLE_THEMES;
