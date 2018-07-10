@@ -46,6 +46,12 @@ DEFAULT_THEME = '[% default_theme %]'
 [% IF default_dashboard != null %]
 HORIZON_CONFIG["user_home"] = "[% default_dashboard %]"
 [% END %]
+[% IF keystone_domain_dropdown != null %]
+OPENSTACK_KEYSTONE_DOMAIN_DROPDOWN = "[% keystone_domain_dropdown %]"
+[% END %]
+[% IF keystone_domain_choices != null %]
+OPENSTACK_KEYSTONE_DOMAIN_CHOICES = [% keystone_domain_choices %]
+[% END %]
 
 SECRET_KEY='[% secret_key %]'
 
@@ -81,7 +87,8 @@ OPENSTACK_CINDER_FEATURES = {
 }
 
 LAUNCH_INSTANCE_DEFAULTS = {
-    'config_drive' : [% launch_instance_defaults.enable_config_drive %]
+    'config_drive' : [% launch_instance_defaults.enable_config_drive %],
+    'create_volume' : [% launch_instance_defaults.enable_create_volume %],
 }
 
 OPENSTACK_NEUTRON_NETWORK = {

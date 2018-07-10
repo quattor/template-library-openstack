@@ -961,6 +961,12 @@ variable OPENSTACK_HORIZON_REQUIRES_KEYPAIR ?= 'False';
 }
 variable OPENSTACK_HORIZON_ENABLE_CONFIG_DRIVE ?= 'False';
 @use{
+    type = string
+    default = False
+    note = Whether to default to creating a volume for each instance created
+}
+variable OPENSTACK_HORIZON_ENABLE_CREATE_VOLUME ?= 'False';
+@use{
     type = boolean
     default = false
     note = Enable multiple domains in Horizon
