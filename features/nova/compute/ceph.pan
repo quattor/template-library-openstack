@@ -22,7 +22,7 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents/
 'images_type' = 'rbd';
 'images_rbd_pool' = OPENSTACK_CEPH_NOVA_POOL;
 'images_rbd_ceph_conf' = OPENSTACK_CEPH_NOVA_CEPH_CONF;
-'disk_cachemodes' = '"network=writeback"';
+'disk_cachemodes' = '"network=writethrough"';
 'rbd_user' = OPENSTACK_CEPH_NOVA_USER;
 'rbd_secret_uuid' = OPENSTACK_CEPH_LIBVIRT_SECRET;
 'inject_password' = 'false';
