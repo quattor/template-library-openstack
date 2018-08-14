@@ -75,7 +75,7 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 
     # Cinder
     openstack_haproxy_vhost(vhosts, 'cinder', OPENSTACK_CINDER_PORT, OPENSTACK_CINDER_SERVERS);
-
+    
     # Glance
     openstack_haproxy_vhost(vhosts, 'glance', OPENSTACK_GLANCE_PORT, OPENSTACK_GLANCE_SERVERS);
 
