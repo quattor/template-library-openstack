@@ -988,6 +988,67 @@ variable OPENSTACK_HORIZON_MULTIDOMAIN_ENABLED ?=
 }
 variable OPENSTACK_METADATA_HOST ?= openstack_get_controller_host(OPENSTACK_NOVA_SERVERS);
 
+
+############################
+# Aodh specific variable #
+############################
+@use{
+    type = dict
+    note = A dictionary with the hostname as the key and the IP address as the value to be used by HAProxy for Aodh
+}
+variable OPENSTACK_AODH_SERVERS ?= OPENSTACK_SERVERS;
+@use{
+    type = string
+    default = http
+    note = This is the protocol used for communicating with OpenStack APIs, is set automatically based on the value of OPENSTACK_SSL
+}
+variable OPENSTACK_AODH_CONTROLLER_PROTOCOL ?= OPENSTACK_CONTROLLER_PROTOCOL;
+@use{
+    type = hostname
+    default = OPENSTACK_DB_HOST
+    note = The host used for the Aodh database
+}
+variable OPENSTACK_AODH_DB_HOST ?= OPENSTACK_DB_HOST;
+@use{
+    type = string
+    default = Aodh
+    note = Username for Aodh to use to connect to it's database
+}
+variable OPENSTACK_AODH_DB_USERNAME ?= 'aodh';
+@use{
+    type = string
+    default = Aodh_DBPASS
+    note = Password for Aodh to use to connect to it's database
+}
+variable OPENSTACK_AODH_DB_PASSWORD ?= 'AODH_DBPASS';
+
+@use{
+    type = boolean
+    default = false
+    note = Whether to enable the Aodh component.
+}
+variable OPENSTACK_AODH_ENABLED ?= false;
+
+@use{
+    type = string
+    default = Aodh
+    note = The user for Aodh to run under
+}
+variable OPENSTACK_AODH_USERNAME ?= 'aodh';
+@use{
+    type = string
+    default = Aodh_PASS
+    note = The password to use for Aodh
+}
+variable OPENSTACK_AODH_PASSWORD ?= 'AODH_PASS';
+@use{
+    type = long
+    default = 8042
+    note = The port for Aodh
+}
+variable OPENSTACK_AODH_PORT ?= 8042;
+
+
 ###########################
 # CEPH Specific Variables #
 ###########################

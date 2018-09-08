@@ -79,3 +79,13 @@ variable OPENSTACK_CEILOMETER_DB = merge(SELF, dict(
     'dbprotocol', 'mongodb',
     'dbport', 27017,
 ));
+
+variable OPENSTACK_AODH_DB ?= dict();
+variable OPENSTACK_AODH_DB = merge(SELF, dict(
+    'dbhost', OPENSTACK_AODH_DB_HOST,
+    'dbname', 'aodh',
+    'dbuser', OPENSTACK_AODH_DB_USERNAME,
+    'dbpassword', OPENSTACK_AODH_DB_PASSWORD,
+    'dbprotocol', 'mysql+pymysql',
+    'dbport', 3306,
+));
