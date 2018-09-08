@@ -43,7 +43,7 @@ prefix '/software/components/metaconfig/services/{/etc/barbican/barbican.conf}';
 };
 
 'contents/DEFAULT/sql_connection' = openstack_dict_to_connection_string(OPENSTACK_BARBICAN_DB);
-'contents/DEFAULT/transport_url' = openstack_dict_to_transport_string(OPENSTACK_RABBITMQ_DICT);
+'contents/DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [keystone_authtoken] section
 'contents/keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
@@ -68,4 +68,3 @@ prefix '/software/components/filecopy/services';
     ),
     'restart', '/root/init-barbican.sh',
 );
-

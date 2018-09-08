@@ -61,3 +61,11 @@ include {
         null;
     };
 };
+
+include {
+    if (OPENSTACK_AODH_ENABLED) {
+        'features/mariadb/aodh';
+    } else {
+        null;
+    };
+};
