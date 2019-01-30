@@ -102,6 +102,27 @@ function openstack_dict_to_connection_string = {
     result;
 };
 
+function openstack_dict_to_transport_url_string = {
+    if (ARGC != 1) {
+        error('openstack_dict_to_transport_url_string needs an argument');
+    };
+
+    if (is_dict(ARGV[0])) {
+        config = ARGV[0];
+    } else {
+        error('openstack_dict_to_transport_url_string needs a dict as an argument');                                            
+    };
+
+    result = format(
+        '%s:%s@%s:%d',
+        config['dbuser'],
+        config['dbpassword'],
+        config['dbhost'],
+        config['dbport']                                                                                            
+    );
+
+    result;
+};
 
 function openstack_generate_uri = {
     if (ARGC != 3) {
