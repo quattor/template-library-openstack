@@ -79,7 +79,6 @@ variable OPENSTACK_CEILOMETER_DB = merge(SELF, dict(
     'dbprotocol', 'mongodb',
     'dbport', 27017,
 ));
-
 variable OPENSTACK_BARBICAN_DB ?= dict();
 variable OPENSTACK_BARBICAN_DB = merge(SELF, dict(
     'dbhost', OPENSTACK_BARBICAN_DB_HOST,

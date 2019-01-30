@@ -99,9 +99,6 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
     openstack_haproxy_vhost(vhosts, 'heat-cfn', OPENSTACK_HEAT_CFN_PORT, OPENSTACK_HEAT_SERVERS);
     openstack_haproxy_vhost(vhosts, 'heat', OPENSTACK_HEAT_PORT, OPENSTACK_HEAT_SERVERS);
 
-    # Aodh
-    openstack_haproxy_vhost(vhosts, 'aodh', OPENSTACK_AODH_PORT, OPENSTACK_AODH_SERVERS);
-
     # Ceilometer
     openstack_haproxy_vhost(vhosts, 'ceilometer', OPENSTACK_CEILOMETER_PORT, OPENSTACK_CEILOMETER_SERVERS);
 
