@@ -9,7 +9,7 @@ include 'defaults/openstack/schema/types';
 type openstack_keystone_config = extensible {
         'DEFAULT' : openstack_DEFAULTS
         'database' : openstack_database
-        'memcache' : openstack_keystone_memcache
+        'memcache' ? openstack_keystone_memcache
         'revoke' : openstack_keystone_revoke
         'token' : openstack_keystone_token
         'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
