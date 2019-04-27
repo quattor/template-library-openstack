@@ -1,6 +1,6 @@
 structure template features/keystone/client/config;
 
-'auth_uri' = openstack_generate_uri(
+'www_authenticate_uri' = openstack_generate_uri(
     OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
     OPENSTACK_KEYSTONE_SERVERS,
     OPENSTACK_KEYSTONE_PORT
@@ -15,3 +15,4 @@ structure template features/keystone/client/config;
 'user_domain_name' = 'default';
 'project_name' = 'service';
 'auth_type' = 'password';
+'insecure' = OPENSTACK_KEYSTONE_AUTHTOKEN_INSECURE;

@@ -44,6 +44,8 @@ type openstack_DEFAULTS = extensible {
         'my_ip' ? type_ip
         'cert_file' ? string
         'key_file' ? string
+        'sql_connection' ? string
+        'transport_url' ? string
 };
 
 @documentation {
@@ -69,7 +71,7 @@ type openstack_oslo_messaging_rabbit = extensible {
 type openstack_keystone_authtoken = extensible {
         'username' : string
         'password' : string
-        'auth_uri' : string #with match('*://*:*')
+        'www_authenticate_uri' : string #with match('*://*:*')
         'auth_url' : string #with match('*://*:*')
         'auth_plugin' : string
         'project_domain_name' : string
@@ -89,3 +91,11 @@ type openstack_service_credentials = extensible {
         'os_endpoint_type' : string
         'os_region_name' : string
 };
+
+@documentation {
+        The configuraiton options in the simple_crypto_plugin Section
+}
+type openstack_simple_crypto_plugin = extensible {
+        'kek' : string
+};
+

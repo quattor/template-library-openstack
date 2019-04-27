@@ -14,7 +14,8 @@ include 'features/accounts/config';
 # Include utils
 include 'defaults/openstack/utils';
 
-include 'features/cinder/controller/rpms/config';
+variable OPENSTACK_CINDER_CONTROLLER_USE_KOLLA_CONTAINERS ?= OPENSTACK_USE_KOLLA_CONTAINERS;
+include if (OPENSTACK_CINDER_CONTROLLER_USE_KOLLA_CONTAINERS) 'features/cinder/controlelr/kolla/config' else 'features/cinder/controller/rpms/config';
 
 include 'components/chkconfig/config';
 prefix '/software/components/chkconfig/service';
@@ -57,6 +58,7 @@ prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}/conte
 
 # [database] section
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_CINDER_DB);
+'database/connection_recycle_time' = OPENSTACK_DB_TIMEOUT;
 
 # [oslo_concurrency]
 'oslo_concurrency/lock_path' = '/var/lib/cinder/tmp';

@@ -11,7 +11,8 @@ include 'defaults/openstack/config';
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
-include 'features/cinder/storage/rpms/config';
+variable OPENSTACK_CINDER_STORAGE_USE_KOLLA_CONTAINERS ?= OPENSTACK_USE_KOLLA_CONTAINERS;
+include if (OPENSTACK_CINDER_STORAGE_USE_KOLLA_CONTAINERS) 'features/cinder/storage/kolla/config' else 'features/cinder/storage/rpms/config';
 
 # Include type specific configuration
 include 'features/cinder/storage/' + OPENSTACK_CINDER_STORAGE_TYPE;
@@ -49,6 +50,7 @@ prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}';
 
 # [database] section
 'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_CINDER_DB);
+'contents/database/connection_recycle_time' = OPENSTACK_DB_TIMEOUT;
 
 # [oslo_concurrency]
 'contents/oslo_concurrency/lock_path' = '/var/lib/cinder/tmp';

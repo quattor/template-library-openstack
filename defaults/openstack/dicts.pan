@@ -79,3 +79,30 @@ variable OPENSTACK_CEILOMETER_DB = merge(SELF, dict(
     'dbprotocol', 'mongodb',
     'dbport', 27017,
 ));
+variable OPENSTACK_BARBICAN_DB ?= dict();
+variable OPENSTACK_BARBICAN_DB = merge(SELF, dict(
+    'dbhost', OPENSTACK_BARBICAN_DB_HOST,
+    'dbname', 'barbican',
+    'dbuser', OPENSTACK_BARBICAN_DB_USERNAME,
+    'dbpassword', OPENSTACK_BARBICAN_DB_PASSWORD,
+    'dbprotocol', 'mysql+pymysql',
+    'dbport', 3306,
+));
+
+variable OPENSTACK_RABBITMQ_DICT ?= dict();
+variable OPENSTACK_RABBITMQ_DICT = merge(SELF, dict(
+    'rabbithosts', OPENSTACK_RABBITMQ_HOSTS,
+    'rabbituser', OPENSTACK_RABBITMQ_USERNAME,
+    'rabbitpassword', OPENSTACK_RABBITMQ_PASSWORD,
+    'rabbitprotocol', 'rabbit',
+));
+
+variable OPENSTACK_AODH_DB ?= dict();
+variable OPENSTACK_AODH_DB = merge(SELF, dict(
+    'dbhost', OPENSTACK_AODH_DB_HOST,
+    'dbname', 'aodh',
+    'dbuser', OPENSTACK_AODH_DB_USERNAME,
+    'dbpassword', OPENSTACK_AODH_DB_PASSWORD,
+    'dbprotocol', 'mysql+pymysql',
+    'dbport', 3306,
+));

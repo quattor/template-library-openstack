@@ -25,6 +25,11 @@ defaults
     timeout [% timeout.key %] [% timeout.value %]
 
     [%- END -%]
+[% FOREACH option IN defaults.option.pairs -%]
+    option [% option.key %] [% option.value %]
+
+    [%- END -%]
+
 
 listen stats :1936
     mode http
@@ -40,6 +45,10 @@ listen  [% vhost.name %]
 
 [% FOREACH config IN vhost.config.pairs -%]
     [% config.key %] [% config.value %]
+
+    [%- END -%]
+[% FOREACH timeouts IN vhost.timeouts.pairs -%]
+    timeout [% timeouts.key %] [% timeouts.value %]
 
     [%- END -%]
 [% FOREACH option IN vhost.options -%]
