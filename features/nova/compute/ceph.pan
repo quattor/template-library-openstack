@@ -4,7 +4,7 @@ include 'components/dirperm/config';
 prefix '/software/components/dirperm';
 'paths' = append(dict(
     'path', '/var/run/ceph/guests',
-    'owner', 'qemu:libvirtd',
+    'owner', 'qemu:libvirt',
     'type', 'd',
     'perm', '0755',
 ));
@@ -12,7 +12,7 @@ prefix '/software/components/dirperm';
 prefix '/software/components/dirperm';
 'paths' = append(dict(
     'path', '/var/log/qemu',
-    'owner', 'qemu:libvirtd',
+    'owner', 'qemu:libvirt',
     'type', 'd',
     'perm', '0755',
 ));
