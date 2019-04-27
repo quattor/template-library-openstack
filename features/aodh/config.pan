@@ -14,7 +14,8 @@ include 'features/accounts/config';
 # Include utils
 include 'defaults/openstack/utils';
 
-include 'features/aodh/rpms/config';
+variable OPENSTACK_AODH_USE_KOLLA_CONTAINERS ?= OPENSTACK_USE_KOLLA_CONTAINERS;
+include if (OPENSTACK_AODH_USE_KOLLA_CONTAINERS) 'features/aodh/kolla/config' else 'features/aodh/rpms/config';
 
 include 'components/chkconfig/config';
 prefix '/software/components/chkconfig/service';
@@ -55,6 +56,7 @@ prefix '/software/components/metaconfig/services/{/etc/aodh/aodh.conf}/contents'
 
 # [database] section
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_AODH_DB);
+'database/connection_recycle_time' = OPENSTACK_DB_TIMEOUT;
 
 # [keystone_authtoken] section
 'keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
