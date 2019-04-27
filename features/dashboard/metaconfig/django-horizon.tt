@@ -113,6 +113,24 @@ OPENSTACK_NEUTRON_NETWORK = {
     'supported_vnic_types': ['*']
 }
 
+OPENSTACK_IMAGE_BACKEND = {
+    'image_formats': [
+        ('', _('Select format')),
+#        ('aki', _('AKI - Amazon Kernel Image')),
+#        ('ami', _('AMI - Amazon Machine Image')),
+#        ('ari', _('ARI - Amazon Ramdisk Image')),
+#        ('docker', _('Docker')),
+#        ('iso', _('ISO - Optical Disk Image')),
+#        ('ova', _('OVA - Open Virtual Appliance')),
+        ('qcow2', _('QCOW2 - QEMU Emulator')),
+        ('raw', _('Raw')),
+#        ('vdi', _('VDI - Virtual Disk Image')),
+#        ('vhd', _('VHD - Virtual Hard Disk')),
+#        ('vhdx', _('VHDX - Large Virtual Hard Disk')),
+#        ('vmdk', _('VMDK - Virtual Machine Disk')),
+    ],
+}
+
 IMAGE_CUSTOM_PROPERTY_TITLES = {
     "architecture": _("Architecture"),
     "kernel_id": _("Kernel ID"),
@@ -123,6 +141,13 @@ IMAGE_CUSTOM_PROPERTY_TITLES = {
 }
 
 IMAGE_RESERVED_CUSTOM_PROPERTIES = []
+
+HORIZON_IMAGES_UPLOAD_MODE = 'direct'
+
+CREATE_IMAGE_DEFAULTS = {
+    'image_visibility': "private",
+}
+
 
 API_RESULT_LIMIT = 1000
 API_RESULT_PAGE_SIZE = 20
