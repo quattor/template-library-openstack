@@ -71,7 +71,7 @@ type openstack_oslo_messaging_rabbit = extensible {
 type openstack_keystone_authtoken = extensible {
         'username' : string
         'password' : string
-        'auth_uri' : string #with match('*://*:*')
+        'www_authenticate_uri' : string #with match('*://*:*')
         'auth_url' : string #with match('*://*:*')
         'auth_plugin' : string
         'project_domain_name' : string
