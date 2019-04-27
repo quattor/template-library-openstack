@@ -67,6 +67,80 @@ variable OPENSTACK_SSL_CHAIN ?= null;
 }
 variable OPENSTACK_REGION_NAME ?= 'RegionOne';
 
+##############
+# USE KOLLA CONTAINERS #
+##############
+@use{
+    type = boolean
+    default = false
+    note = Sets whether to use kolla containers, when true installation of OpenStack RPMs is disabled
+}
+variable OPENSTACK_USE_KOLLA_CONTAINERS ?= false;
+@use{
+    type = string
+    default = kolla
+    note = The dockerhub repository to use for kolla containers
+}
+variable OPENSTACK_KOLLA_DOCKERHUB_REPOSITORY ?= 'kolla';
+@use{
+    type = string
+    default = centos
+    note = the container os to use for kolla containers (centos or ubuntu)
+}
+variable OPENSTACK_KOLLA_DOCKER_OS ?= 'centos';
+@use{
+    type = string
+    default = binary
+    note = the type of packaging to use within kolla containers (binary or source)
+}
+variable OPENSTACK_KOLLA_DOCKER_PKGTYPE ?= 'binary';
+@use{
+    type = string
+    default = host
+    note = netork to use when starting kolla containers
+}
+variable OPENSTACK_KOLLA_NETWORK ?= 'host';
+@use{
+    type = string
+    default = kolla_start
+    note = command to use when starting kolla containers
+}
+variable OPENSTACK_KOLLA_COMMAND ?= 'kolla_start';
+@use{
+    type = list
+    default = list(dict('source', '/var/log/kolla', 'destination', '/var/log/kolla'));
+    note = list of dicts describing the volume mounts for kolla containers
+}
+variable OPENSTACK_KOLLA_VOLUMES ?= list(dict(
+    'type', 'bind',
+    'source', '/var/log/kolla',
+    'destination', '/var/log',
+    'readonly', 'rw'
+));
+@use{
+    type = list
+    default = dict(        'KOLLA_SERVICE_NAME', 'aodh-api',        'KOLLA_CONFIG_STRATEGY', 'COPY_ALWAYS',        'PATH', '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',        'PIP_INDEX_URL', 'http://mirror.ord.rax.openstack.org:8080/pypi/simple',        'PIP_TRUSTED_HOST', 'mirror.ord.rax.openstack.org',        'KOLLA_BASE_DISTRO', 'centos',        'KOLLA_INSTALL_TYPE', 'binary',        'KOLLA_INSTALL_METATYPE', 'rdo','PS1', '$\(tput bold\)\($\(printenv, KOLLA_SERVICE_NAME\)\)$\(tput sgr0\)\[$\(id -un\)@$\(hostname -s\) $\(pwd\)\]$'    );
+    note = dict describing the env variables for kolla containers
+}
+variable OPENSTACK_KOLLA_ENV ?= dict(
+    'KOLLA_CONFIG_STRATEGY', 'COPY_ALWAYS',
+    'PATH', '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+    'PIP_INDEX_URL', 'http://mirror.ord.rax.openstack.org:8080/pypi/simple',
+    'PIP_TRUSTED_HOST', 'mirror.ord.rax.openstack.org',
+    'KOLLA_BASE_DISTRO', 'centos',
+    'KOLLA_INSTALL_TYPE', 'binary',
+    'KOLLA_INSTALL_METATYPE', 'rdo',
+    'PS1', '$\(tput bold\)\($\(printenv KOLLA_SERVICE_NAME\)\)$\(tput sgr0\)\[$\(id -un\)@$\(hostname -s\) $\(pwd\)\]$'
+);
+
+
+@use{
+    type = string
+    default = queens
+    note = The release of OpenStack
+}
+variable OPENSTACK_RELEASE_VERSION ?= 'queens';
+
 ############################################
 # Virtual Machine interface for hypervisor #
 ############################################
@@ -181,6 +255,15 @@ variable OPENSTACK_DB_ADMIN_USERNAME ?= 'root';
 }
 variable OPENSTACK_DB_ADMIN_PASSWORD ?= 'root';
 
+@use{
+    type = string
+    default = 3600
+    note = Timeout used by services and HAProxy
+}
+variable OPENSTACK_DB_TIMEOUT ?= 3600;
+
+
+
 ############################
 # Glance specific variable #
 ############################
@@ -216,12 +299,6 @@ variable OPENSTACK_GLANCE_DB_PASSWORD ?= 'GLANCE_DBPASS';
 
 @use{
     type = string
-    default = null
-    note = Tells glance whether to support multiple backends
-}
-variable OPENSTACK_GLANCE_MULTIPLE_LOCATIONS ?= null;
-@use{
-    type = string
     default = glance
     note = The user to run Glance under
 }
@@ -244,7 +321,20 @@ variable OPENSTACK_GLANCE_STORE_DIR ?= '/var/lib/glance/images/';
 }
 variable OPENSTACK_GLANCE_PORT ?= 9292;
 
-##########################
+@use{
+    type = boolean
+    default = False
+    note = Enable Glance API V1
+}
+variable OPENSTACK_GLANCE_V1_API ?= 'False';
+@use{
+    type = boolean
+    default = True
+    note = Enable Glance API V2
+}
+variable OPENSTACK_GLANCE_V2_API ?= 'True';
+
+############################
 # Heat specific variable #
 ##########################
 @use{
@@ -405,6 +495,13 @@ variable OPENSTACK_KEYSTONE_TOKEN_PROVIDER ?= 'uuid';
     note = The driver keystone will use for token caching and sharing
 }
 variable OPENSTACK_KEYSTONE_TOKEN_DRIVER ?= 'memcache';
+@use{
+    type = boolean
+    default = false
+    note = configure keystone authtoken to run insecure
+}
+variable OPENSTACK_KEYSTONE_AUTHTOKEN_INSECURE ?= false;
+
 
 #############################
 # Memcache specfic variable #
@@ -500,7 +597,6 @@ variable OPENSTACK_NOVA_DB_USERNAME ?= 'nova';
 }
 variable OPENSTACK_NOVA_DB_PASSWORD ?= 'NOVA_DBPASS';
 
-
 @use{
     type = string
     default = nova
@@ -571,6 +667,12 @@ variable OPENSTACK_NOVA_PORTS ?= list(
     OPENSTACK_NOVA_EC2_PORT,
     OPENSTACK_NOVA_NOVNC_PORT,
 );
+@use{
+    type = boolean
+    default = false
+    note = When True, the 'X-Forwarded-For' header is treated as the canonical remote address. When False (the default), the 'remote_address' header is used.
+}
+variable OPENSTACK_NOVA_FORWARD_FOR ?= false;
 
 #############################
 # Neutron specific variable #
@@ -981,6 +1083,67 @@ variable OPENSTACK_HORIZON_MULTIDOMAIN_ENABLED ?=
     note = the host to use for Metadata
 }
 variable OPENSTACK_METADATA_HOST ?= openstack_get_controller_host(OPENSTACK_NOVA_SERVERS);
+
+
+############################
+# Aodh specific variable #
+############################
+@use{
+    type = dict
+    note = A dictionary with the hostname as the key and the IP address as the value to be used by HAProxy for Aodh
+}
+variable OPENSTACK_AODH_SERVERS ?= OPENSTACK_SERVERS;
+@use{
+    type = string
+    default = http
+    note = This is the protocol used for communicating with OpenStack APIs, is set automatically based on the value of OPENSTACK_SSL
+}
+variable OPENSTACK_AODH_CONTROLLER_PROTOCOL ?= OPENSTACK_CONTROLLER_PROTOCOL;
+@use{
+    type = hostname
+    default = OPENSTACK_DB_HOST
+    note = The host used for the Aodh database
+}
+variable OPENSTACK_AODH_DB_HOST ?= OPENSTACK_DB_HOST;
+@use{
+    type = string
+    default = Aodh
+    note = Username for Aodh to use to connect to it's database
+}
+variable OPENSTACK_AODH_DB_USERNAME ?= 'aodh';
+@use{
+    type = string
+    default = Aodh_DBPASS
+    note = Password for Aodh to use to connect to it's database
+}
+variable OPENSTACK_AODH_DB_PASSWORD ?= 'AODH_DBPASS';
+
+@use{
+    type = boolean
+    default = false
+    note = Whether to enable the Aodh component.
+}
+variable OPENSTACK_AODH_ENABLED ?= false;
+
+@use{
+    type = string
+    default = Aodh
+    note = The user for Aodh to run under
+}
+variable OPENSTACK_AODH_USERNAME ?= 'aodh';
+@use{
+    type = string
+    default = Aodh_PASS
+    note = The password to use for Aodh
+}
+variable OPENSTACK_AODH_PASSWORD ?= 'AODH_PASS';
+@use{
+    type = long
+    default = 8042
+    note = The port for Aodh
+}
+variable OPENSTACK_AODH_PORT ?= 8042;
+
 
 ###########################
 # CEPH Specific Variables #
