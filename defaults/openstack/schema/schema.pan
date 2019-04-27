@@ -16,6 +16,16 @@ type openstack_keystone_config = extensible {
 };
 
 @documentation {
+        list of barbican configuration sections
+}
+type openstack_barbican_config = extensible {
+        'DEFAULT' : openstack_DEFAULTS
+        'keystone_authtoken' : openstack_keystone_authtoken
+        'simple_crypto_plugin': openstack_simple_crypto_plugin
+};
+
+
+@documentation {
         list of ceilometer configuration sections
 }
 type openstack_ceilometer_config = extensible {

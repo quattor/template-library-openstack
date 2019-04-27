@@ -158,3 +158,27 @@ function openstack_get_controller_host = {
     result;
 
 };
+
+function openstack_dict_to_transport_string = {
+    if (ARGC != 1) {
+        error('openstack_dict_to_transport_string needs an argument');
+    };
+
+    if (is_dict(ARGV[0])) {
+        config = ARGV[0];
+    } else {
+        error('openstack_dict_to_transport_string needs a dict as an argument');
+    };
+    transport_url = format('%s://', config['rabbitprotocol']);
+    foreach (k; v; config['rabbithosts']) {
+        transport_url = transport_url + format(
+            '%s:%s@%s:%d,',
+            config['rabbituser'],
+            config['rabbitpassword'],
+            k,
+            v,
+        );
+    };
+    replace(',$', '', transport_url);
+};
+
