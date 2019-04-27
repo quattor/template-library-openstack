@@ -14,8 +14,8 @@ include 'defaults/openstack/utils';
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
-# Install RPMs for compute part of neutron
-include 'features/neutron/controller/rpms/config';
+variable OPENSTACK_NEUTRON_CONTROLLER_USE_KOLLA_CONTAINERS ?= OPENSTACK_USE_KOLLA_CONTAINERS;
+include if (OPENSTACK_NEUTRON_CONTROLLER_USE_KOLLA_CONTAINERS) 'features/neutron/controller/kolla/config' else 'features/neutron/controller/rpms/config';
 
 # Configure some usefull package for neutron
 #include 'features/httpd/config';
@@ -84,6 +84,7 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}/con
 
 # [database]
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_NEUTRON_DB);
+'database/connection_recycle_time' = OPENSTACK_DB_TIMEOUT;
 
 # [nova]
 'nova/auth_url' = openstack_generate_uri(

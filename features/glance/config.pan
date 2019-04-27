@@ -14,7 +14,8 @@ include 'features/accounts/config';
 # Include utils
 include 'defaults/openstack/utils';
 
-include 'features/glance/rpms/config';
+variable OPENSTACK_GLANCE_USE_KOLLA_CONTAINERS ?= OPENSTACK_USE_KOLLA_CONTAINERS;
+include if (OPENSTACK_GLANCE_USE_KOLLA_CONTAINERS) 'features/glance/kolla/config' else 'features/glance/rpms/config';
 
 include 'components/chkconfig/config';
 prefix '/software/components/chkconfig/service';
@@ -33,9 +34,10 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}';
 
 prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}/contents';
 # [DEFAULT] section
-'DEFAULT/notification_driver' = 'messagingv2';
+'DEFAULT/enable_v1_api' = OPENSTACK_GLANCE_V1_API;
+'DEFAULT/enable_v2_api' = OPENSTACK_GLANCE_V2_API;
 'DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
-'DEFAULT/show_multiple_locations' = OPENSTACK_GLANCE_MULTIPLE_LOCATIONS;
+#'DEFAULT/show_multiple_locations' = OPENSTACK_GLANCE_MULTIPLE_LOCATIONS;
 'DEFAULT/cert_file' = if (OPENSTACK_SSL) {
     OPENSTACK_SSL_CERT;
 } else {
@@ -51,8 +53,13 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}/c
 #[oslo_messaging_rabbit] section
 'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
+#[oslo_messaging_notification] section
+'oslo_messaging_notification/driver' = 'messagingv2';
+
 # [database] section
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_GLANCE_DB);
+'database/connection_recycle_time' = OPENSTACK_DB_TIMEOUT;
+
 
 'glance_store/filesystem_store_datadir' = OPENSTACK_GLANCE_STORE_DIR;
 
@@ -72,7 +79,6 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.co
 
 prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.conf}/contents';
 # [DEFAULT] section
-'DEFAULT/notification_driver' = 'messagingv2';
 'DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
 'DEFAULT/cert_file' = if (OPENSTACK_SSL) {
     OPENSTACK_SSL_CERT;
@@ -88,8 +94,14 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.co
 #[oslo_messaging_rabbit] section
 'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
+#[oslo_messaging_notification] section
+'oslo_messaging_notification/driver' = 'messagingv2';
+
 # [database] section
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_GLANCE_DB);
+'database/connection_recycle_time' = OPENSTACK_DB_TIMEOUT;
+
+
 
 # [keystone_authtoken] section
 'keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);

@@ -14,8 +14,8 @@ include 'defaults/openstack/utils';
 # Fix list of Openstack user that should not be deleted
 include 'features/accounts/config';
 
-# Install RPMs for compute part of neutron
-include 'features/nova/controller/rpms/config';
+variable OPENSTACK_NOVA_CONTROLLER_USE_KOLLA_CONTAINERS ?= OPENSTACK_USE_KOLLA_CONTAINERS;
+include if (OPENSTACK_NOVA_CONTROLLER_USE_KOLLA_CONTAINERS) 'features/nova/controller/kolla/config' else 'features/nova/controller/rpms/config';
 
 include 'components/chkconfig/config';
 prefix '/software/components/chkconfig/service';
@@ -90,6 +90,12 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents'
 
 # [database] section
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_NOVA_DB);
+'database/connection_recycle_time' = OPENSTACK_DB_TIMEOUT;
+
+#[api] section
+'api/use_forward_for' = OPENSTACK_NOVA_FORWARD_FOR;
+
+
 # [api_database] section
 'api_database/connection' = openstack_dict_to_connection_string(OPENSTACK_NOVA_API_DB);
 

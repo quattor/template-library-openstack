@@ -14,7 +14,8 @@ include 'features/accounts/config';
 # Include utils
 include 'defaults/openstack/utils';
 
-include 'features/ceilometer/rpms/config';
+variable OPENSTACK_CEILOMETER_USE_KOLLA_CONTAINERS ?= OPENSTACK_USE_KOLLA_CONTAINERS;
+include if (OPENSTACK_CEILOMETER_USE_KOLLA_CONTAINERS) 'features/ceilometer/kolla/config' else 'features/ceilometer/rpms/config';
 
 include 'components/chkconfig/config';
 prefix '/software/components/chkconfig/service';
@@ -61,6 +62,7 @@ prefix '/software/components/metaconfig/services/{/etc/ceilometer/ceilometer.con
 
 # [database] section
 'contents/database/connection' = openstack_dict_to_connection_string(OPENSTACK_CEILOMETER_DB);
+'database/connection_recycle_time' = OPENSTACK_DB_TIMEOUT;
 
 # [oslo_messaging_rabbit] section
 'contents/DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');

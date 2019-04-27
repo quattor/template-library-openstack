@@ -15,7 +15,8 @@ include 'features/accounts/config';
 # Include utils
 include 'defaults/openstack/utils';
 
-include 'features/keystone/rpms/config';
+variable OPENSTACK_KEYSTONE_USE_KOLLA_CONTAINERS ?= OPENSTACK_USE_KOLLA_CONTAINERS;
+include if (OPENSTACK_KEYSTONE_USE_KOLLA_CONTAINERS) 'features/keystone/kolla/config' else 'features/keystone/rpms/config';
 
 # Include some useful configuration
 include 'features/httpd/config';
@@ -37,6 +38,7 @@ prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}/c
 
 # [database] section
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_KEYSTONE_DB);
+'database/connection_recycle_time' = OPENSTACK_DB_TIMEOUT;
 
 # [memcache] section
 'memcache/servers' = openstack_dict_to_hostport_string(OPENSTACK_MEMCACHE_HOSTS);
