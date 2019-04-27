@@ -9,11 +9,21 @@ include 'defaults/openstack/schema/types';
 type openstack_keystone_config = extensible {
         'DEFAULT' : openstack_DEFAULTS
         'database' : openstack_database
-        'memcache' : openstack_keystone_memcache
+        'memcache' ? openstack_keystone_memcache
         'revoke' : openstack_keystone_revoke
         'token' : openstack_keystone_token
         'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
 };
+
+@documentation {
+        list of barbican configuration sections
+}
+type openstack_barbican_config = extensible {
+        'DEFAULT' : openstack_DEFAULTS
+        'keystone_authtoken' : openstack_keystone_authtoken
+        'simple_crypto_plugin': openstack_simple_crypto_plugin
+};
+
 
 @documentation {
         list of ceilometer configuration sections

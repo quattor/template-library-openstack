@@ -44,6 +44,8 @@ type openstack_DEFAULTS = extensible {
         'my_ip' ? type_ip
         'cert_file' ? string
         'key_file' ? string
+        'sql_connection' ? string
+        'transport_url' ? string
 };
 
 @documentation {
@@ -89,3 +91,11 @@ type openstack_service_credentials = extensible {
         'os_endpoint_type' : string
         'os_region_name' : string
 };
+
+@documentation {
+        The configuraiton options in the simple_crypto_plugin Section
+}
+type openstack_simple_crypto_plugin = extensible {
+        'kek' : string
+};
+

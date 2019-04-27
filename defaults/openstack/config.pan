@@ -139,9 +139,9 @@ variable OPENSTACK_LOGGING_DEBUG ?= 'False';
 }
 variable OPENSTACK_AUTH_CLIENT_CONFIG ?= 'features/keystone/client/config';
 
-###############################
+#######################################
 # Define OPENSTACK_CONTROLLER_HOST    #
-##############################
+#######################################
 @use{
     type = string
     default =
@@ -244,9 +244,9 @@ variable OPENSTACK_GLANCE_STORE_DIR ?= '/var/lib/glance/images/';
 }
 variable OPENSTACK_GLANCE_PORT ?= 9292;
 
-############################
+##########################
 # Heat specific variable #
-############################
+##########################
 @use{
     type = dict
     note = A dictionary with the hostname as the key and the IP address as the value to be used by HAProxy for Heat
@@ -416,9 +416,9 @@ variable OPENSTACK_KEYSTONE_TOKEN_DRIVER ?= 'memcache';
 }
 variable OPENSTACK_MEMCACHE_HOSTS ?= dict('localhost', '11211');
 
-#############################
+############################
 # MongoDB specfic variable #
-#############################
+############################
 @use{
     type = long
     default = 2
@@ -767,9 +767,9 @@ variable OPENSTACK_CINDER_STORAGE_TYPE ?= 'lvm';
 }
 variable OPENSTACK_CINDER_PORT ?= 8776;
 
-############################
+################################
 # Ceilometer specific variable #
-############################
+################################
 @use{
     type = dict
     note = A dictionary with the hostname as the key and the IP address as the value to be used by HAProxy for Ceilometer
@@ -841,12 +841,6 @@ variable OPENSTACK_CEILOMETER_PORT ?= 8777;
     note = The port to be used for rabbitmq
 }
 variable OPENSTACK_RABBITMQ_PORT ?= 5672;
-@use{
-    type = list
-    default = OPENSTACK_RABBITMQ_HOST
-    note = This is a list of hosts to be used for RabbitMQ
-}
-variable OPENSTACK_RABBITMQ_HOSTS ?= dict('localhost', OPENSTACK_RABBITMQ_PORT);
 @use{
     type = list
     default = OPENSTACK_RABBITMQ_HOST
@@ -1175,6 +1169,63 @@ variable OPENSTACK_LOADBALANCER_MASTER ?=
     } else {
         null;
     };
+
+
+##############################
+# Barbican specific variable #
+##############################
+@use{
+    type = dict
+    note = A dictionary with the hostname as the key and the IP address as the value to be used by HAProxy for Barbican
+}
+variable OPENSTACK_BARBICAN_SERVERS ?= OPENSTACK_SERVERS;
+@use{
+    type = string
+    default = http
+    note = This is the protocol used for communicating with OpenStack APIs, is set automatically based on the value of OPENSTACK_SSL
+}
+variable OPENSTACK_BARBICAN_CONTROLLER_PROTOCOL ?= OPENSTACK_CONTROLLER_PROTOCOL;
+@use{
+    type = hostname
+    default = OPENSTACK_DB_HOST
+    note = The host used for the Barbican database
+}
+variable OPENSTACK_BARBICAN_DB_HOST ?= OPENSTACK_DB_HOST;
+@use{
+    type = string
+    default = barbican
+    note = Username for Barbican to use to connect to it's database
+}
+variable OPENSTACK_BARBICAN_DB_USERNAME ?= 'barbican';
+@use{
+    type = string
+    default = BARBICAN_DBPASS
+    note = Password for Barbican to use to connect to it's database
+}
+variable OPENSTACK_BARBICAN_DB_PASSWORD ?= 'BARBICAN_DBPASS';
+@use{
+    type = string
+    default = ceilometer
+    note = The user to run Barbican under
+}
+variable OPENSTACK_BARBICAN_USERNAME ?= 'barbican';
+@use{
+  type = string
+  default = BARBICAN_PASS
+  note = The password to use for Barbican
+}
+variable OPENSTACK_BARBICAN_PASSWORD ?= 'BARBICAN_PASS';
+@use{
+    type = long
+    default = 9311
+    note = The port to use for the Barbican API
+}
+variable OPENSTACK_BARBICAN_PORT ?= 9311;
+@use{
+   type = string
+   note = The Key Encryption Key (KEK) for Barbican
+}
+variable OPENSTACK_BARBICAN_KEK ?= error('OPENSTACK_BARBICAN_KEK must be defined');
 
 
 include 'defaults/openstack/dicts';
