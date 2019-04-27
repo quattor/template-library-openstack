@@ -46,7 +46,7 @@ variable KEEPALIVED_CONFIG = {
             cfg = cfg + format(VRRP_INSTANCE, fip["name"], fip["router_id"], 100, "BACKUP", fip["ip"]);
         };
     };
-    result;
+    cfg;
 };
 
 include 'components/filecopy/config';

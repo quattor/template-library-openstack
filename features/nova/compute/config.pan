@@ -37,9 +37,8 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents'
 'DEFAULT/rcp_backend' = 'rabbit';
 'DEFAULT/auth_strategy' = 'keystone';
 'DEFAULT/my_ip' = PRIMARY_IP;
-'DEFAULT/network_api_class' = 'nova.network.neutronv2.api.API';
-'DEFAULT/security_group_api' = 'neutron';
-'DEFAULT/linuxnet_interface_driver' = 'nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver';
+'DEFAULT/use_neutron' = 'True';
+'DEFAULT/linuxnet_interface_driver' = OPENSTACK_NOVA_LINUXNET_INTERFACE_DRIVER;
 'DEFAULT/firewall_driver' = 'nova.virt.firewall.NoopFirewallDriver';
 'DEFAULT/resume_guests_state_on_host_boot' = if (OPENSTACK_NOVA_RESUME_VM_ON_BOOT) {
     'True';
@@ -87,7 +86,24 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents'
 # [oslo_concurrency]
 'oslo_concurrency/lock_path' = '/var/lib/nova/tmp';
 #[oslo_messaging_rabbit] section
-'oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
+
+# [placement]
+'placement/os_region_name' = OPENSTACK_REGION_NAME;
+'placement/project_domain_name' = 'Default';
+'placement/project_name' = 'service';
+'placement/auth_type' = 'password';
+'placement/user_domain_name' = 'Default';
+'placement/auth_url' = openstack_generate_uri(
+    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
+    OPENSTACK_KEYSTONE_SERVERS,
+    OPENSTACK_KEYSTONE_ADMIN_PORT
+);
+'placement/username' = OPENSTACK_NOVA_PLACEMENT_USER;
+'placement/password' = OPENSTACK_NOVA_PLACEMENT_PASSWORD;
+
+# [upgrade_levels]
+'upgrade_levels/compute' = 'newton';
 
 # [vnc] section
 'vnc/enabled' = 'True';

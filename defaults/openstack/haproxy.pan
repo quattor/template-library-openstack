@@ -30,7 +30,7 @@ function openstack_haproxy_vhost = {
             'servers', ARGV[3],
         );
         if (ARGC == 5) {
-            foreach(k; v; ARGC[4]) {
+            foreach(k; v; ARGV[4]) {
                 vhost[k] = v;
             };
         };
@@ -42,6 +42,7 @@ function openstack_haproxy_vhost = {
 
 prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
 'module' = 'haproxy';
+'contents/vhosts' = list();
 'contents/vhosts' = {
     vhosts = list();
     # Nova
@@ -49,6 +50,13 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
     openstack_haproxy_vhost(vhosts, 'nova-ec2', OPENSTACK_NOVA_EC2_PORT, OPENSTACK_NOVA_SERVERS);
 
     openstack_haproxy_vhost(vhosts, 'nova-metadata', OPENSTACK_NOVA_METADATA_PORT, OPENSTACK_NOVA_SERVERS);
+    openstack_haproxy_vhost(vhosts, 'nova-placement', OPENSTACK_NOVA_PLACEMENT_PORT, OPENSTACK_NOVA_SERVERS, dict(
+        'config', dict(
+            'mode', 'tcp',
+            'balance', 'source',
+            ),
+        'options', list('tcpka', 'tcplog'),
+    ));
     openstack_haproxy_vhost(vhosts, 'nova-novnc', OPENSTACK_NOVA_NOVNC_PORT, OPENSTACK_NOVA_SERVERS, dict(
         'config', dict(
             'mode', 'tcp',
@@ -80,7 +88,8 @@ prefix '/software/components/metaconfig/services/{/etc/haproxy/haproxy.cfg}';
             'cookie', 'SERVERID insert indirect nocache',
             'rspidel', '^Set-cookie:\ IP=',
             ),
-        'options', list('tcpka', 'httplog', 'httpchk', 'forwardfor', 'httpclose'),
+
+        'options', list('tcpka', 'httplog', 'httpchk', 'forwardfor'),
         'serveroptions', dict(
             'cookie', 'control',
             ),

@@ -49,7 +49,7 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}/c
 'DEFAULT/registry_client_protocol' = OPENSTACK_CONTROLLER_PROTOCOL;
 
 #[oslo_messaging_rabbit] section
-'oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [database] section
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_GLANCE_DB);
@@ -86,7 +86,7 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.co
 };
 
 #[oslo_messaging_rabbit] section
-'oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [database] section
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_GLANCE_DB);
@@ -119,4 +119,15 @@ prefix '/software/components/filecopy/services';
         OPENSTACK_GLANCE_PASSWORD,
     ),
     'restart', '/root/init-glance.sh',
+);
+
+prefix '/software/components/filecopy/services';
+'{/root/update-glance-to-ocata.sh}' = dict(
+    'perms', '755',
+    'config', format(
+        file_contents('features/glance/update-glance-to-ocata.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+        openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS),
+    ),
+    'restart' , '/root/update-glance-to-ocata.sh',
 );

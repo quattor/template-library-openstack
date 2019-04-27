@@ -10,7 +10,14 @@ include 'features/mariadb/functions';
         OPENSTACK_NOVA_DB_USERNAME, OPENSTACK_NOVA_DB_PASSWORD);
     SELF;
 };
-'nova_api' = {
+'/software/components/mysql/databases/nova_api' = {
+    SELF['createDb'] = true;
+    SELF['server'] = OPENSTACK_NOVA_DB_HOST;
+    SELF['users'] = mariadb_openstack_addusers(OPENSTACK_NOVA_SERVERS,
+        OPENSTACK_NOVA_DB_USERNAME, OPENSTACK_NOVA_DB_PASSWORD);
+    SELF;
+};
+'/software/components/mysql/databases/nova_cell0' = {
     SELF['createDb'] = true;
     SELF['server'] = OPENSTACK_NOVA_DB_HOST;
     SELF['users'] = mariadb_openstack_addusers(OPENSTACK_NOVA_SERVERS,

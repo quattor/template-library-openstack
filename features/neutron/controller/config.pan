@@ -103,7 +103,7 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}/con
 # [oslo_concurrency]
 'oslo_concurrency/lock_path' = '/var/lib/neutron/tmp';
 #[oslo_messaging_rabbit] section
-'oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 include if (OPENSTACK_HA) {'features/neutron/controller/ha'};
 
@@ -127,4 +127,14 @@ prefix '/software/components/filecopy/services';
         OPENSTACK_NEUTRON_DEFAULT_NAMESERVER,
     ),
     'restart' , '/root/init-neutron.sh',
+);
+
+prefix '/software/components/filecopy/services';
+'{/root/update-neutron-to-ocata.sh}' = dict(
+    'perms', '755',
+    'config', format(
+        file_contents('features/neutron/controller/update-neutron-to-ocata.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+    ),
+    'restart' , '/root/update-neutron-to-ocata.sh',
 );

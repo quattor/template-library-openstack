@@ -91,7 +91,7 @@ prefix '/software/components/metaconfig/services/{/etc/heat/heat.conf}/contents'
 );
 
 # [oslo_messaging_rabbit] section
-'oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 # [database] section
 'database/connection' = openstack_dict_to_connection_string(OPENSTACK_HEAT_DB);
@@ -117,4 +117,14 @@ prefix '/software/components/filecopy/services';
         OPENSTACK_HEAT_DOMAIN_ADMIN_PASSWORD,
     ),
     'restart' , '/root/init-heat.sh',
+);
+
+prefix '/software/components/filecopy/services';
+'{/root/update-heat-to-ocata.sh}' = dict(
+    'perms', '755',
+    'config', format(
+        file_contents('features/heat/update-heat-to-ocata.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+    ),
+    'restart' , '/root/update-heat-to-ocata.sh',
 );

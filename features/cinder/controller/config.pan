@@ -61,7 +61,7 @@ prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}/conte
 # [oslo_concurrency]
 'oslo_concurrency/lock_path' = '/var/lib/cinder/tmp';
 #[oslo_messaging_rabbit] section
-'oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/client/openstack');
+'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
 
 
 include if (OPENSTACK_HA) {'features/cinder/controller/ha'};
@@ -79,4 +79,16 @@ prefix '/software/components/filecopy/services';
         OPENSTACK_CINDER_PASSWORD,
     ),
     'restart' , '/root/init-cinder.sh',
+);
+
+prefix '/software/components/filecopy/services';
+'{/root/update-cinder-to-ocata.sh}' = dict(
+    'perms', '755',
+    'config', format(
+        file_contents('features/cinder/controller/update-cinder-to-ocata.sh'),
+        OPENSTACK_INIT_SCRIPT_GENERAL,
+        openstack_get_controller_host(OPENSTACK_CINDER_SERVERS),
+        openstack_get_controller_host(OPENSTACK_CINDER_SERVERS),
+    ),
+    'restart' , '/root/update-cinder-to-ocata.sh',
 );
