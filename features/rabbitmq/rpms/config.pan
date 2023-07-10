@@ -1,4 +1,3 @@
 unique template features/rabbitmq/rpms/config;
 
-prefix '/software/packages';
-'rabbitmq-server' ?= dict();
+'/software/packages' = pkg_repl('rabbitmq-server');

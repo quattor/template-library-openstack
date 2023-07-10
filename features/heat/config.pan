@@ -1,130 +1,89 @@
 unique template features/heat/config;
 
-include 'defaults/openstack/schema/schema';
-
 # Load some useful functions
 include 'defaults/openstack/functions';
+
+# Load Heat-related type definitions
+include 'types/openstack/heat';
 
 # Include general openstack variables
 include 'defaults/openstack/config';
 
-# Fix list of Openstack user that should not be deleted
-include 'features/accounts/config';
+include 'features/heat/rpms';
 
-# Include utils
-include 'defaults/openstack/utils';
-
-include 'features/heat/rpms/config';
-
-include 'components/chkconfig/config';
-prefix '/software/components/chkconfig/service';
-'openstack-heat-api/on' = '';
+include 'components/systemd/config';
+prefix '/software/components/systemd/unit';
 'openstack-heat-api/startstop' = true;
-'openstack-heat-api-cfn/on' = '';
 'openstack-heat-api-cfn/startstop' = true;
-'openstack-heat-engine/on' = '';
 'openstack-heat-engine/startstop' = true;
-
-bind '/software/components/metaconfig/services/{/etc/heat/heat.conf}/contents' = openstack_heat_config;
 
 # Configuration file for heat
 include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/heat/heat.conf}';
 'module' = 'tiny';
+'convert/joincomma' = true;
+'convert/truefalse' = true;
+'daemons/openstack-heat-api' = 'restart';
+'daemons/openstack-heat-api-cfn' = 'restart';
+'daemons/openstack-heat-engine' = 'restart';
+bind '/software/components/metaconfig/services/{/etc/heat/heat.conf}/contents' = openstack_heat_config;
 
-prefix '/software/components/metaconfig/services/{/etc/heat/heat.conf}/contents';
-'DEFAULT/rpc_backend' = 'rabbit';
-'DEFAULT/auth_strategy' = 'keystone';
-'DEFAULT/my_ip' = PRIMARY_IP;
-'DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
-'DEFAULT/cert_file' = if (OPENSTACK_SSL) {
-    OPENSTACK_SSL_CERT;
+# DEFAULT section
+'contents/DEFAULT' = openstack_load_config('features/openstack/base');
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
+'contents/DEFAULT' = openstack_load_ssl_config( OS_HEAT_PROTOCOL == 'https' );
+'contents/DEFAULT/heat_metadata_server_url' = format('%s://%s:8000', OS_HEAT_PROTOCOL, OS_HEAT_HOST);
+'contents/DEFAULT/heat_waitcondition_server_url' = format('%s://%s:8000/v1/waitcondition', OS_HEAT_PROTOCOL, OS_HEAT_HOST);
+'contents/DEFAULT/my_ip' = PRIMARY_IP;
+'contents/DEFAULT/region_name' = if ( is_defined(OS_HEAT__REGION_NAME) ) {
+    OS_HEAT_REGION_NAME;
 } else {
     null;
 };
-'DEFAULT/key_file' = if (OPENSTACK_SSL) {
-    OPENSTACK_SSL_KEY;
+'contents/DEFAULT/region_name_for_services' = if ( is_defined(OS_HEAT_ENDPOINTS_REGION_NAME) ) {
+    OS_HEAT_ENDPOINTS_REGION_NAME;
 } else {
     null;
 };
-'DEFAULT/heat_metadata_server_url' = openstack_generate_uri(
-    OPENSTACK_HEAT_CONTROLLER_PROTOCOL,
-    OPENSTACK_HEAT_SERVERS,
-    8000
-);
-'DEFAULT/heat_waitcondition_server_url' = format(
-    '%s/%s',
-    openstack_generate_uri(
-        OPENSTACK_HEAT_CONTROLLER_PROTOCOL,
-        OPENSTACK_HEAT_SERVERS,
-        8000
-    ),
-    'v1/waitcondition'
-);
-'DEFAULT/stack_domain_admin' = OPENSTACK_HEAT_USERNAME;
-'DEFAULT/stack_domain_admin_password' = OPENSTACK_HEAT_PASSWORD;
-'DEFAULT/stack_user_domain_name' = OPENSTACK_HEAT_STACK_DOMAIN;
-
-# [trustee] section
-'trustee/auth_plugin' = 'password';
-'trustee/auth_url' = openstack_generate_uri(
-    OPENSTACK_HEAT_CONTROLLER_PROTOCOL,
-    OPENSTACK_HEAT_SERVERS,
-    35357
-);
-'trustee/username' = OPENSTACK_HEAT_USERNAME;
-'trustee/password' = OPENSTACK_HEAT_PASSWORD;
-'trustee/user_domain_id' = 'default';
+'contents/DEFAULT/stack_domain_admin' = OS_HEAT_DOMAIN_ADMIN_USERNAME;
+'contents/DEFAULT/stack_domain_admin_password' = OS_HEAT_DOMAIN_ADMIN_PASSWORD;
+'contents/DEFAULT/stack_user_domain_name' = OS_HEAT_STACK_DOMAIN;
 
 # [clients_keystone] section
-'clients_keystone/auth_uri' = openstack_generate_uri(
-    OPENSTACK_HEAT_CONTROLLER_PROTOCOL,
-    OPENSTACK_HEAT_SERVERS,
-    5000
-);
-
-# [ec2authtoken] section
-'trustee/auth_uri' = openstack_generate_uri(
-    OPENSTACK_HEAT_CONTROLLER_PROTOCOL,
-    OPENSTACK_HEAT_SERVERS,
-    5000
-);
-
-# [oslo_messaging_rabbit] section
-'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
+'contents/clients_keystone/auth_uri' = format("%s://%s:%s", OS_KEYSTONE_CONTROLLER_PROTOCOL, OS_KEYSTONE_PUBLIC_CONTROLLER_HOST, OS_KEYSTONE_PUBLIC_CONTROLLER_PORT);
 
 # [database] section
-'database/connection' = openstack_dict_to_connection_string(OPENSTACK_HEAT_DB);
+'contents/database/connection' = format('mysql+pymysql://%s:%s@%s/heat', OS_HEAT_DB_USERNAME, OS_HEAT_DB_PASSWORD, OS_HEAT_DB_HOST);
+
+# [ec2authtoken] section
+'contents/ec2authtoken' = {
+    SELF['auth_uri'] = if ( OS_EC2_AUTH_ENABLED ) {
+        format("%s://%s:%s/v3", OS_KEYSTONE_CONTROLLER_PROTOCOL, OS_KEYSTONE_PUBLIC_CONTROLLER_HOST, OS_KEYSTONE_PUBLIC_CONTROLLER_PORT);
+    } else {
+        null;
+    };
+    if ( length(SELF) > 0 ) {
+        SELF;
+    } else {
+        null;
+    };
+};
+
+# [oslo_messaging_notifications] section
+'contents/oslo_messaging_notifications' = openstack_load_config('features/oslo_messaging/notifications');
+
+# [oslo_messaging_rabbit] section
+'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/openstack/client/base');
 
 # [keystone_authtoken] section
-'keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
-'keystone_authtoken/username' = OPENSTACK_HEAT_USERNAME;
-'keystone_authtoken/password' = OPENSTACK_HEAT_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OS_HEAT_USERNAME;
+'contents/keystone_authtoken/password' = OS_HEAT_PASSWORD;
+'contents/keystone_authtoken/memcached_servers' = list('localhost:11211');
 
-include 'components/filecopy/config';
-prefix '/software/components/filecopy/services';
-'{/root/init-heat.sh}' = dict(
-    'perms', '755',
-    'config', format(
-        file_contents('features/heat/init-heat.sh'),
-        OPENSTACK_INIT_SCRIPT_GENERAL,
-        openstack_get_controller_host(OPENSTACK_HEAT_SERVERS),
-        openstack_get_controller_host(OPENSTACK_HEAT_SERVERS),
-        OPENSTACK_HEAT_USERNAME,
-        OPENSTACK_HEAT_PASSWORD,
-        OPENSTACK_HEAT_STACK_DOMAIN,
-        OPENSTACK_HEAT_DOMAIN_ADMIN_USERNAME,
-        OPENSTACK_HEAT_DOMAIN_ADMIN_PASSWORD,
-    ),
-    'restart' , '/root/init-heat.sh',
-);
-
-prefix '/software/components/filecopy/services';
-'{/root/update-heat-to-queens.sh}' = dict(
-    'perms', '755',
-    'config', format(
-        file_contents('features/heat/update-heat-to-queens.sh'),
-        OPENSTACK_INIT_SCRIPT_GENERAL,
-    ),
-    'restart' , '/root/update-heat-to-queens.sh',
-);
+# [trustee] section
+'contents/trustee/auth_type' = OS_TRUSTEE_TOKEN_AUTH_TYPE;
+'contents/trustee/auth_url' = format("%s://%s:%s", OS_KEYSTONE_CONTROLLER_PROTOCOL, OS_KEYSTONE_CONTROLLER_HOST, OS_KEYSTONE_CONTROLLER_TOKEN_PORT);
+'contents/trustee/username' = OS_HEAT_USERNAME;
+'contents/trustee/password'= OS_HEAT_PASSWORD;
+'contents/trustee/user_domain_id' = OS_HEAT_USER_DOMAIN;

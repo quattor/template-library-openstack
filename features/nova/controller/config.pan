@@ -1,181 +1,132 @@
 unique template features/nova/controller/config;
 
-include 'defaults/openstack/schema/schema';
+variable OS_NOVA_SCHEDULER_ENABLED_FILTERS ?= list(
+    'AggregateInstanceExtraSpecsFilter',
+    'AvailabilityZoneFilter',
+    'ComputeFilter',
+    'ComputeCapabilitiesFilter',
+    'ImagePropertiesFilter',
+    'ServerGroupAntiAffinityFilter',
+    'ServerGroupAffinityFilter',
+);
 
 # Load some useful functions
 include 'defaults/openstack/functions';
 
+# Load Nova-related type definitions
+include 'types/openstack/nova';
+
 # Include general openstack variables
 include 'defaults/openstack/config';
 
-# Include utils
-include 'defaults/openstack/utils';
-
-# Fix list of Openstack user that should not be deleted
-include 'features/accounts/config';
-
 # Install RPMs for compute part of neutron
-include 'features/nova/controller/rpms/config';
+include 'features/nova/controller/rpms';
 
-include 'components/chkconfig/config';
-prefix '/software/components/chkconfig/service';
-'openstack-nova-api/on' = '';
+include 'components/systemd/config';
+prefix '/software/components/systemd/unit';
 'openstack-nova-api/startstop' = true;
-'openstack-nova-consoleauth/on' = '';
-'openstack-nova-consoleauth/startstop' = true;
-'openstack-nova-scheduler/on' = '';
 'openstack-nova-scheduler/startstop' = true;
-'openstack-nova-conductor/on' = '';
 'openstack-nova-conductor/startstop' = true;
-'openstack-nova-novncproxy/on' = '';
 'openstack-nova-novncproxy/startstop' = true;
-'httpd/on' = '';
-'httpd/startstop' = true;
-
-bind '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents' = openstack_nova_config;
 
 include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'module' = 'tiny';
-'daemons/openstack-nova-api' = 'restart';
-'daemons/openstack-nova-cert' = 'restart';
-'daemons/openstack-nova-consoleauth' = 'restart';
-'daemons/openstack-nova-scheduler' = 'restart';
-'daemons/openstack-nova-conductor' = 'restart';
-'daemons/openstack-nova-novncproxy' = 'restart';
+'convert/joincomma' = true;
+'convert/truefalse' = true;
+'daemons/openstack-nova-api'='restart';
+'daemons/openstack-nova-scheduler'='restart';
+'daemons/openstack-nova-conductor'='restart';
+'daemons/openstack-nova-novncproxy'='restart';
+bind '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents' = openstack_nova_server_config;
 
-prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents';
 # [DEFAULT] section
-'DEFAULT/rpc_backend' = 'rabbit';
-'DEFAULT/auth_strategy' = 'keystone';
-'DEFAULT/my_ip' = PRIMARY_IP;
-'DEFAULT/use_neutron' = 'True';
-'DEFAULT/linuxnet_interface_driver' = OPENSTACK_NOVA_LINUXNET_INTERFACE_DRIVER;
-'DEFAULT/firewall_driver' = 'nova.virt.firewall.NoopFirewallDriver';
-'DEFAULT/enabled_apis' = 'osapi_compute,metadata';
-'DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
-'DEFAULT/ssl_cert_file' = if ( OPENSTACK_SSL ) {
-    OPENSTACK_SSL_CERT;
+'contents/DEFAULT' = openstack_load_config('features/openstack/base');
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
+'contents/DEFAULT' = openstack_load_ssl_config( OS_NOVA_CONTROLLER_PROTOCOL == 'https' );
+'contents/DEFAULT/cpu_allocation_ratio' = OS_NOVA_CPU_RATIO;
+'contents/DEFAULT/enabled_apis' = list('osapi_compute', 'metadata');
+'contents/DEFAULT/enabled_ssl_apis' = if ( OS_NOVA_CONTROLLER_PROTOCOL == 'https') {
+    list('osapi_compute');
 } else {
     null;
 };
-'DEFAULT/ssl_key_file' = if ( OPENSTACK_SSL ) {
-    OPENSTACK_SSL_KEY;
-} else {
-    null;
-};
-'DEFAULT/enabled_ssl_apis' = if ( OPENSTACK_SSL ) {
-    'osapi_compute';
-} else {
-    null;
-};
+'contents/DEFAULT/my_ip' = PRIMARY_IP;
+'contents/DEFAULT/ram_allocation_ratio' = OS_NOVA_RAM_RATIO;
+
 # Enable SSL for novnc
-'DEFAULT/cert' = if ( OPENSTACK_SSL ) {
-    OPENSTACK_SSL_CERT;
-} else {
-    null;
+'contents/DEFAULT' = {
+     if ( OS_NOVA_CONTROLLER_PROTOCOL == 'https' ) {
+         SELF['cert'] = SELF['cert_file'];
+         SELF['key'] = SELF['key_file'];
+         SELF['ssl_only'] = true;
+     } else {
+         SELF['ssl_only'] = false;
+     };
+     SELF;
 };
-'DEFAULT/key' = if ( OPENSTACK_SSL ) {
-    OPENSTACK_SSL_KEY;
-} else {
-    null;
-};
-'DEFAULT/ssl_only' = if ( OPENSTACK_SSL ) {
-    'True';
-} else {
-    null;
-};
-'DEFAULT/cpu_allocation_ratio' = OPENSTACK_NOVA_CPU_RATIO;
-'DEFAULT/ram_allocation_ratio' = OPENSTACK_NOVA_RAM_RATIO;
+
+# [api] section
+'contents/api/dhcp_domain' = OS_NEUTRON_DNS_DOMAIN;
+
+# [api_database] section
+'contents/api_database/connection' = format('mysql+pymysql://%s:%s@%s/nova_api', OS_NOVA_DB_USERNAME, OS_NOVA_DB_PASSWORD, OS_NOVA_DB_HOST);
 
 # [database] section
-'database/connection' = openstack_dict_to_connection_string(OPENSTACK_NOVA_DB);
-# [api_database] section
-'api_database/connection' = openstack_dict_to_connection_string(OPENSTACK_NOVA_API_DB);
+'contents/database/connection' = format('mysql+pymysql://%s:%s@%s/nova', OS_NOVA_DB_USERNAME, OS_NOVA_DB_PASSWORD, OS_NOVA_DB_HOST);
 
-# [glance] section
-#'glance/host' = openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS);
-#'glance/protocol' = OPENSTACK_GLANCE_CONTROLLER_PROTOCOL;
-'glance/api_servers' = openstack_generate_uri(
-    OPENSTACK_GLANCE_CONTROLLER_PROTOCOL,
-    OPENSTACK_GLANCE_SERVERS,
-    9292
-);
+# [filter_scheduler] section
+'contents/filter_scheduler/available_filters' = list('nova.scheduler.filters.all_filters');
+'contents/filter_scheduler/cpu_weight_multiplier' = OS_NOVA_CPU_WEIGHT_MULTIPLIER;
+'contents/filter_scheduler/disk_weight_multiplier' = OS_NOVA_DISK_WEIGHT_MULTIPLIER;
+'contents/filter_scheduler/enabled_filters' = OS_NOVA_SCHEDULER_ENABLED_FILTERS;
+'contents/filter_scheduler/ram_weight_multiplier' = OS_NOVA_RAM_WEIGHT_MULTIPLIER;
 
 # [keystone_authtoken] section
-'keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
-'keystone_authtoken/username' = OPENSTACK_NOVA_USERNAME;
-'keystone_authtoken/password' = OPENSTACK_NOVA_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OS_NOVA_USERNAME;
+'contents/keystone_authtoken/password' = OS_NOVA_PASSWORD;
+'contents/keystone_authtoken/memcached_servers' = list('localhost:11211');
 
 # [neutron] section
-'neutron/url' = openstack_generate_uri(
-    OPENSTACK_NEUTRON_CONTROLLER_PROTOCOL,
-    OPENSTACK_NEUTRON_SERVERS,
-    9696
-);
-'neutron/auth_url' = openstack_generate_uri(
-    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
-    OPENSTACK_KEYSTONE_SERVERS,
-    OPENSTACK_KEYSTONE_ADMIN_PORT
-);
-'neutron/auth_plugin' = 'password';
-'neutron/auth_type' = 'password';
-'neutron/project_domain_name' = 'default';
-'neutron/user_domain_name' = 'default';
-'neutron/region_name' = OPENSTACK_REGION_NAME;
-'neutron/project_name' = 'service';
-'neutron/username' = OPENSTACK_NEUTRON_USERNAME;
-'neutron/password' = OPENSTACK_NEUTRON_PASSWORD;
-'neutron/service_metadata_proxy' = 'True';
-'neutron/metadata_proxy_shared_secret' = OPENSTACK_METADATA_SECRET;
+'contents/neutron' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
+'contents/neutron/metadata_proxy_shared_secret' = OS_METADATA_SECRET;
+'contents/neutron/password' = OS_NEUTRON_PASSWORD;
+'contents/neutron/service_metadata_proxy' = true;
+'contents/neutron/username' = OS_NEUTRON_USERNAME;
+# Remove options not valid in the [neutron] section
+'contents/neutron/auth_version' = null;
+'contents/neutron/www_authenticate_uri' = null;
 
 # [oslo_concurrency]
-'oslo_concurrency/lock_path' = '/var/lib/nova/tmp';
+'contents/oslo_concurrency/lock_path' = '/var/lib/nova/tmp';
+
+#[oslo_messaging_notifications] section
+'contents/oslo_messaging_notifications' = openstack_load_config('features/oslo_messaging/notifications');
+
 #[oslo_messaging_rabbit] section
-'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
+'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/openstack/client/base');
 
-# [placement]
-'placement/os_region_name' = OPENSTACK_REGION_NAME;
-'placement/project_domain_name' = 'Default';
-'placement/project_name' = 'service';
-'placement/auth_type' = 'password';
-'placement/user_domain_name' = 'Default';
-'placement/auth_url' = openstack_generate_uri(
-    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
-    OPENSTACK_KEYSTONE_SERVERS,
-    OPENSTACK_KEYSTONE_ADMIN_PORT
-);
-'placement/username' = OPENSTACK_NOVA_PLACEMENT_USER;
-'placement/password' = OPENSTACK_NOVA_PLACEMENT_PASSWORD;
-
-# [upgrade_levels]
-'upgrade_levels/compute' = 'newton';
+# [placement] section
+'contents/placement/os_region_name' = OS_REGION_NAME;
+'contents/placement/project_domain_name' = 'default';
+'contents/placement/project_name' = 'service';
+'contents/placement/user_domain_name' = 'default';
+'contents/placement/password' = OS_PLACEMENT_PASSWORD;
+'contents/placement/username' = OS_PLACEMENT_USERNAME;
+'contents/placement/auth_url' = OS_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OS_KEYSTONE_CONTROLLER_HOST + ':35357/v3';
+'contents/placement/auth_type' = 'password';
 
 # [vnc] section
-'vnc/vncserver_listen' = '$my_ip';
-'vnc/vncserver_proxyclient_address' = '$my_ip';
+'contents/vnc/server_listen' = PRIMARY_IP;
+'contents/vnc/server_proxyclient_address' = PRIMARY_IP;
 
-include if (OPENSTACK_HA) {'features/nova/controller/ha'};
+# [upgrade_levels] section
+'contents/upgrade_levels/compute' = OS_NOVA_UPGRADE_LEVELS;
 
-include 'components/filecopy/config';
-prefix '/software/components/filecopy/services';
-'{/root/init-nova.sh}' = dict(
-    'perms', '755',
-    'config', format(
-        file_contents('features/nova/controller/init-nova.sh'),
-        OPENSTACK_INIT_SCRIPT_GENERAL,
-        openstack_get_controller_host(OPENSTACK_NOVA_SERVERS),
-        OPENSTACK_NOVA_USERNAME,
-        OPENSTACK_NOVA_PASSWORD,
-    ),
-    'restart', '/root/init-nova.sh',
-);
-prefix '/software/components/filecopy/services';
-'{/root/update-nova-to-queens.sh}' = dict(
-    'perms', '755',
-    'config', format(
-        file_contents('features/nova/controller/update-nova-to-queens.sh'),
-        OPENSTACK_INIT_SCRIPT_GENERAL,
-    ),
-    'restart' , '/root/update-nova-to-queens.sh',
-);
+# [wsgi] section
+'contents/wsgi' = openstack_load_ssl_config( OS_NOVA_CONTROLLER_PROTOCOL == 'https' );
+'contents/wsgi/ssl_cert_file' = value('/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents/wsgi/cert_file');
+'contents/wsgi/ssl_key_file' = value('/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents/wsgi/key_file');
+'contents/wsgi/cert_file' = null;
+'contents/wsgi/key_file' = null;

@@ -1,7 +1,8 @@
 unique template machine-types/cloud/neutron;
 
-variable OPENSTACK_NODE_TYPE ?= 'controller';
+# OS_NODE_TYPE must be one of controller (only), network or combined
+variable OS_NODE_TYPE ?= 'combined';
+
 include 'machine-types/cloud/base';
 
 include 'personality/neutron/config';
-include 'features/neutron/network/config';
