@@ -2,7 +2,7 @@
 declaration template types/openstack/heat;
 
 include 'pan/types';
-include 'types/openstack/functions';
+include 'types/openstack/types';
 
 include 'types/openstack/core';
 
@@ -12,8 +12,9 @@ include 'types/openstack/core';
 type openstack_heat_defaults = {
     include openstack_DEFAULTS
 
-    'heat_metadata_server_url' : string with is_hostURI(SELF)
-    'heat_waitcondition_server_url' : string with is_hostURI(SELF)
+    'heat_metadata_server_url' : type_hostURI
+    'heat_waitcondition_server_url' : type_hostURI
+    'region_name' ? string
     'region_name_for_services' ? string
     'stack_domain_admin' : string
     'stack_domain_admin_password' : string

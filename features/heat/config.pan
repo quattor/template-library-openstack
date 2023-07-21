@@ -35,16 +35,8 @@ bind '/software/components/metaconfig/services/{/etc/heat/heat.conf}/contents' =
 'contents/DEFAULT/heat_metadata_server_url' = format('%s://%s:8000', OS_HEAT_PROTOCOL, OS_HEAT_HOST);
 'contents/DEFAULT/heat_waitcondition_server_url' = format('%s://%s:8000/v1/waitcondition', OS_HEAT_PROTOCOL, OS_HEAT_HOST);
 'contents/DEFAULT/my_ip' = PRIMARY_IP;
-'contents/DEFAULT/region_name' = if ( is_defined(OS_HEAT__REGION_NAME) ) {
-    OS_HEAT_REGION_NAME;
-} else {
-    null;
-};
-'contents/DEFAULT/region_name_for_services' = if ( is_defined(OS_HEAT_ENDPOINTS_REGION_NAME) ) {
-    OS_HEAT_ENDPOINTS_REGION_NAME;
-} else {
-    null;
-};
+'contents/DEFAULT/region_name' = openstack_add_if_defined(OS_HEAT_REGION_NAME);
+'contents/DEFAULT/region_name_for_services' = openstack_add_if_defined(OS_HEAT_ENDPOINTS_REGION_NAME);
 'contents/DEFAULT/stack_domain_admin' = OS_HEAT_DOMAIN_ADMIN_USERNAME;
 'contents/DEFAULT/stack_domain_admin_password' = OS_HEAT_DOMAIN_ADMIN_PASSWORD;
 'contents/DEFAULT/stack_user_domain_name' = OS_HEAT_STACK_DOMAIN;

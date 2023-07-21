@@ -45,7 +45,6 @@ bind '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}/content
 'contents/keystone_authtoken/memcached_servers' = list('localhost:11211');
 'contents/keystone_authtoken/username' = OS_CINDER_USERNAME;
 'contents/keystone_authtoken/password' = OS_CINDER_PASSWORD;
-'contents/keystone_authtoken/service_token_roles' = list('admin');
 
 # [oslo_concurrency]
 'contents/oslo_concurrency/lock_path' = '/var/lib/cinder/tmp';

@@ -10,6 +10,7 @@ bind '/software/components/metaconfig/services/{/etc/httpd/conf.d/00-placement-a
 
 'contents/port' = OS_PLACEMENT_CONTROLLER_PORT;
 'contents/ssl' = openstack_load_ssl_config( OS_PLACEMENT_CONTROLLER_PROTOCOL == 'https' );
+'contents/ssl' ?= dict();
 
 
 # Load TT file to configure Placement virtual host

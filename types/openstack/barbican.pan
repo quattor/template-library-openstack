@@ -2,16 +2,16 @@
 declaration template types/openstack/barbican;
 
 include 'pan/types';
-include 'types/openstack/functions';
+include 'types/openstack/types';
 
 include 'types/openstack/core';
 
 @documentation {
-    DEFAULT section for RBarbican
+    DEFAULT section for Barbican
 }
 type openstack_barbican_defaults = {
     include openstack_DEFAULTS
-    'host_href' : string with is_hostURI(SELF)
+    'host_href' : type_hostURI
     'sql_connection': string
 };
 

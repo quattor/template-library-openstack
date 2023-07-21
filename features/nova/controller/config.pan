@@ -96,6 +96,8 @@ bind '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents' =
 'contents/neutron/username' = OS_NEUTRON_USERNAME;
 # Remove options not valid in the [neutron] section
 'contents/neutron/auth_version' = null;
+'contents/neutron/service_token_roles' = null;
+'contents/neutron/service_token_roles_required' = null;
 'contents/neutron/www_authenticate_uri' = null;
 
 # [oslo_concurrency]
@@ -126,7 +128,15 @@ bind '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents' =
 
 # [wsgi] section
 'contents/wsgi' = openstack_load_ssl_config( OS_NOVA_CONTROLLER_PROTOCOL == 'https' );
-'contents/wsgi/ssl_cert_file' = value('/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents/wsgi/cert_file');
-'contents/wsgi/ssl_key_file' = value('/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents/wsgi/key_file');
+'contents/wsgi/ssl_cert_file' = if ( exists('/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents/wsgi/cert_file') ) {
+    value('/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents/wsgi/cert_file');
+} else {
+    null;
+};
+'contents/wsgi/ssl_key_file' = if ( exists('/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents/wsgi/key_file') ) {
+    value('/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents/wsgi/key_file');
+} else {
+    null;
+};
 'contents/wsgi/cert_file' = null;
 'contents/wsgi/key_file' = null;

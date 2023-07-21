@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -ex
+
+if [ -z "$HM_BIND_PORT" ]
+then
+    echo "HM_BIND_PORT must be defined in the environment file"
+    exit 1
+fi
+
+if [ -z "$MGMT_PORT_MAC" ]
+then
+    echo "MGMT_PORT_MAC must be defined in the environment file"
+    exit 1
+fi
+
+if [ -z "$MGMT_VLAN_ID" ]
+then
+    echo "MGMT_VLAN_ID must be defined in the environment file"
+    exit 1
+fi
+
+if [ -z "$VXLAN_DEVICE" ]
+then
+    echo "VXLAN_DEVICE must be defined in the environment file"
+    exit 1
+fi
+
+
+vxlan_if=o-vxlan
+
+if [ "$1" == "start" ]; then
+  exit_code=0
+  ip a show ${vxlan_if} >& /dev/null || exit_code=$?
+  [[ ${exit_code} -eq 0 ]] && echo "Interface ${vxlan_if} already exists" && exit 0
+  ip link add ${vxlan_if} type vxlan id ${MGMT_VLAN_ID} group 224.0.0.1 dev ${VXLAN_DEVICE} srcport 0 0 dstport 8472
+  ip link set dev ${vxlan_if} address $MGMT_PORT_MAC
+  ifconfig ${vxlan_if} up
+  iptables -I INPUT -i o-hm0 -p udp --dport ${HM_BIND_PORT} -j ACCEPT
+  dhclient -v ${vxlan_if} -cf /etc/dhcp/octavia
+elif [ "$1" == "stop" ]; then
+  dhclient -x
+  exit_code=0
+  ip a show ${vxlan_if} >& /dev/null || exit_code=$?
+  [[ ${exit_code} -eq 1 ]] && exit 0
+  ip link del ${vxlan_if}
+else
+  ip a s dev ${vxlan_if}
+fi

@@ -2,7 +2,7 @@
 declaration template types/openstack/neutron;
 
 include 'pan/types';
-include 'types/openstack/functions';
+include 'types/openstack/types';
 
 include 'types/openstack/core';
 

@@ -3,7 +3,7 @@
 declaration template types/openstack/core;
 
 include 'pan/types';
-include 'types/openstack/functions';
+include 'types/openstack/types';
 
 @documentation {
     The configuration options related to logging
@@ -29,14 +29,14 @@ type openstack_DEFAULTS = {
     'my_ip' ? type_ip
     'notifications' ? string
     'rpc_conn_pool_size' ? long
-    'transport_url' : string with is_hostURI(SELF)
+    'transport_url' : type_hostURI
 };
 
 @documentation {
     The configuration options in the clients_keystone section
 }
 type openstack_clients_keystone = {
-    'auth_uri' : string with is_hostURI(SELF)
+    'auth_uri' : type_hostURI
     'ca_file' ? absolute_file_path
     'cert_file' ? absolute_file_path
     'key_file' ? absolute_file_path
@@ -55,7 +55,7 @@ type openstack_database = {
     The configuration options in the ec2authtoken section
 }
 type openstack_ec2authtoken = {
-    'auth_uri' : string with is_hostURI(SELF)
+    'auth_uri' : type_hostURI
     'ca_file' ? absolute_file_path
     'cert_file' ? absolute_file_path
     'key_file' ? absolute_file_path
@@ -73,7 +73,7 @@ type openstack_httpd_ssl_config = {
     The configuration options in the keystone_authtoken section
 }
 type openstack_keystone_authtoken = {
-    'auth_url' : string with is_hostURI(SELF)
+    'auth_url' : type_hostURI
     'auth_type' : string
     'auth_version' ? string
     'memcached_servers' ? type_hostport[]
@@ -82,11 +82,12 @@ type openstack_keystone_authtoken = {
     'project_domain_name' ? string
     'project_name' : string
     'region_name' ? string
-    'service_token_roles' ? string[]
+    'service_token_roles' ? string[] = list('admin, service')
+    'service_token_roles_required' ? boolean = true
     'username' : string
     'user_domain_id' ? string
     'user_domain_name' ? string
-    'www_authenticate_uri' ? string with is_hostURI(SELF)
+    'www_authenticate_uri' ? type_hostURI
 } with openstack_project_name_or_id(SELF);
 
 @documentation {
@@ -100,9 +101,9 @@ type openstack_keystone_memcache = {
     Configuration of a Nginx proxy in front of an OpenStack service
 }
 type openstack_nginx_proxy_config = {
-    'bind_port' : long(1..65535)
+    'bind_port' : type_port
     'proxy_host' : type_hostname
-    'proxy_port' : long(1..65535)
+    'proxy_port' : type_port
     'server_name' : type_hostname
     'service' : string
     'ssl' : openstack_httpd_ssl_config
@@ -114,6 +115,13 @@ type openstack_nginx_proxy_config = {
 }
 type openstack_oslo_concurrency = {
     'lock_path': absolute_file_path
+};
+
+@documentation {
+    The configuration options in the oslo_messaging section
+}
+type openstack_oslo_messaging = {
+    'topic' ? string
 };
 
 @documentation {
@@ -157,7 +165,7 @@ type openstack_service_credentials = {
     The configuration options in the trustee section
 }
 type openstack_trustee = {
-    'auth_url' : string with is_hostURI(SELF)
+    'auth_url' : type_hostURI
     'auth_type' : string
     'password' : string
     'username' : string

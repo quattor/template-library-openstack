@@ -1,5 +1,15 @@
 template features/mongodb/openstack/config;
 
+@{
+desc = Mongo DB directory path
+values = absolute path
+default = undef
+required = no
+}
+variable OS_MONGODB_DBPATH ?= undef;
+
+include 'defaults/openstack/functions';
+
 include 'defaults/openstack/config';
 
 include 'features/mongodb/openstack/schema';
@@ -35,10 +45,6 @@ prefix '/software/components/metaconfig/services/{/etc/mongod.conf}';
 'daemons/mongod' = 'restart';
 bind '/software/components/metaconfig/services/{/etc/mongod.conf}/contents' = openstack_mongodb_config;
 'contents/bind_ip' = list('127.0.0.1', PRIMARY_IP);
-'contents/dbpath' = if ( is_defined(OS_MONGODB_DBPATH) ) {
-    OS_MONGODB_DBPATH
-} else {
-    null;
-};
+'contents/dbpath' = openstack_add_if_defined(OS_MONGODB_DBPATH);
 'contents/fork' = true;
 'contents/journal' = true;

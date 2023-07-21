@@ -1,5 +1,7 @@
 unique template features/neutron/plugins/ml2_conf;
 
+variable OS_NEUTRON_VLAN_RANGES ?= error('OS_NEUTRON_VLAN_RANGES undefined: must specify the network to use');
+
 include 'types/openstack/neutron_ml2';
 
 '/software/packages' = pkg_repl('openstack-neutron-ml2');

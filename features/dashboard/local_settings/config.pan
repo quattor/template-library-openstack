@@ -1,5 +1,14 @@
 unique template features/dashboard/local_settings/config;
 
+@{
+desc = policy files
+values = dict of absolute path
+default = undef
+required = non
+}
+variable OS_HORIZON_POLICY_FILE_PATH ?= undef;
+
+
 include 'defaults/openstack/functions';
 
 include 'features/dashboard/local_settings/schema';
@@ -34,11 +43,7 @@ bind '/software/components/metaconfig/services/{/etc/openstack-dashboard/local_s
 } else {
     dict();
 };
-'contents/policy_files_path' = if ( is_defined(OS_HORIZON_POLICY_FILE_PATH) ) {
-    OS_HORIZON_POLICY_FILE_PATH;
-} else {
-    null;
-};
+'contents/policy_files_path' = openstack_add_if_defined(OS_HORIZON_POLICY_FILE_PATH);
 'contents/role' = OS_HORIZON_DEFAULT_ROLE;
 'contents/root_url' = OS_HORIZON_ROOT_URL;
 'contents/secret_key' = OS_HORIZON_SECRET_KEY;

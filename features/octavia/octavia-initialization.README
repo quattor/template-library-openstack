@@ -1,0 +1,50 @@
+Initial configuration of Octavia with Quattor requires several manual steps after the Octavia
+server has been installed. For the detail of each step, refer to the official installation
+documentation at https://docs.openstack.org/octavia/latest/install/install-ubuntu.html (despite
+it is for Ubuntu, it applies also to EL installations as the Ubuntu-specific part is handled
+by Quattor.
+
+The steps described below must be done once the Octavia server has been installed with Quattor.
+At the end of the installation, you must ignore the errors in components metaconfig, systemd
+and chkconfig caused by octavia-interface.service Some missing configuration produced by the
+following steps will be added and then the problem will be fixed.
+
+1. Create the octavia DB and grant the Octavia server acces to it with all privileges.
+   Initialize the database with 'octavia-db-manage' (Installation step 10)
+
+2. On a machine where you have an admin access to OpenStack, create the octavia account
+
+   - execute the commands (Prerequisites step 3) to create the octavia user and service. Set
+     a strong password for the octavia account.
+
+   - In your cloud Quattor configuration, define the variable OS_OCTAVIA_PASSWORD with 
+     the octavia account password set previously in your cloud Quattor configuration. Deploy
+     the new configuration.
+
+3. On the Octavia server, initialize the Octavia endpoints, the security groups and the 
+   management network after sourcing /root/openstack-octavia-rc with the following commands:
+
+   - Initialization of the endpoints, the security groups and the management network:
+     /root/octavia-management-network-init.sh
+
+   - Initialization of the management network interface: systemctl restart octavia-interface
+
+   - In your cloud Quattor configuration, add/update the variables mentioned in the previous step
+     and deploy your changes.
+
+4. On the Octavia server, as the root user, source /root/openstack-octavia-rc and create
+   the Octavia CAs with the following steps:
+
+       cd /root/octavia_ca
+       ./create_dual_intermediate_CA.sh
+
+5. Create the amphora image. To achieve this, you need to be on a Ubuntu machine:
+  - Clone the Git repository https://opendev.org/openstack/octavia.git
+  - Follow the instructions at https://docs.openstack.org/octavia/latest/admin/amphora-image-build.html
+    (in 'cd octavia/diskimage-create' in the first steps, 'octavia' refers to the directory where the
+     repository has been cloned)
+
+8. On the Octavia server, after sourcing /root/openstack-octavia-rc, Upload the amphora image
+   (Prerequesites step 8) and define the amphora flavor with the mentioned ID (Prerequesites step9)
+
+That's should be all! Octavia should be operational!

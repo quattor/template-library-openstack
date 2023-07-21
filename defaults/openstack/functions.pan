@@ -71,7 +71,7 @@ function openstack_add_httpd_packages = {
 # This function allows to avoiding duplicate dependencies.
 #
 # Calling sequence :
-#    '/software/components/glitestartup/dependencies/pre' (or post) = glitestartup_add_dependency(dependency);
+#    '/software/components/xxxx/dependencies/pre' (or post) = openstack_add_dependency(dependency);
 #
 # with dependency a dependency or a list of dependencies.
 
@@ -112,6 +112,27 @@ function openstack_add_component_dependency = {
 
     if ( length(deps) > 0 ) {
         deps;
+    } else {
+        null;
+    };
+};
+
+
+@documentation {
+
+This function returns the value receive in argument if it is defined, null
+otherwise. It is a helper for assigning optional values to the schema.
+
+}
+function openstack_add_if_defined = {
+    function_name = 'openstack_add_component_dependency';
+
+    if ( ARGC != 1 ) {
+        error('openstack_add_if_defined requires one argument of any type');
+    };
+
+    if ( is_defined(ARGV[0]) ) {
+        ARGV[0];
     } else {
         null;
     };

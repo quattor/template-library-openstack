@@ -3,13 +3,12 @@ unique template defaults/openstack/config;
 ##################################
 # Define site specific variables #
 ##################################
-include if_exists('site/openstack/config');
+include 'site/openstack/config';
 variable PRIMARY_IP ?= DB_IP[escape(FULL_HOSTNAME)];
 
-############################
-# Active SSL configuration #
-############################
-variable OS_SSL ?= false;
+#####################
+# SSL configuration #
+#####################
 variable OS_SSL_CERT ?= '/etc/certs/' + FULL_HOSTNAME + '.crt';
 variable OS_SSL_KEY ?= '/etc/certs/' + FULL_HOSTNAME + '.key';
 
@@ -24,7 +23,9 @@ variable OS_CLOUD_TIMEZONE ?= error("You must specify your cloud timezone with O
 ############################################
 variable OS_INTERFACE_MAPPING ?= boot_nic();
 
-# Force user to specify OS_ADMIN_TOKEN
+####################
+# General variable #
+####################
 variable OS_ADMIN_TOKEN ?= error('OS_ADMIN_TOKEN must be declared');
 variable OS_USERNAME ?= 'admin';
 variable OS_PASSWORD ?= 'admin';
@@ -33,15 +34,11 @@ variable OS_METADATA_SECRET ?= error('OS_METADATA_SECRET must be declared');
 variable OS_LOGGING_TYPE ?= 'file';
 variable OS_AUTH_CLIENT_CONFIG ?= 'features/keystone/client/config';
 
-###############################
-# Define OS_CONTROLLER_HOST  #
-##############################
-variable OS_CONTROLLER_HOST ?= error('OS_CONTROLLER_HOST must be declared');
-variable OS_CONTROLLER_PROTOCOL ?= if (OS_SSL) {
-  'https';
-} else {
-  'http';
-};
+# Define the following variable with the service project ID
+# Used by some services like Octavia to do some filtering
+# Normally optional
+variable OS_PROJECT_SERVICE_ID ?= undef;
+
 
 #############################
 # Mariadb specific variable #
@@ -58,8 +55,8 @@ variable OS_EC2_AUTH_ENABLED ?= false;
 ############################
 # Glance specific variable #
 ############################
-variable OS_GLANCE_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
-variable OS_GLANCE_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_GLANCE_CONTROLLER_HOST ?= error('OS_GLANCE_CONTROLLER_HOST must be declared');
+variable OS_GLANCE_CONTROLLER_PROTOCOL ?= 'http';
 variable OS_GLANCE_PUBLIC_HOST ?= OS_GLANCE_CONTROLLER_HOST;
 variable OS_GLANCE_CONTROLLER_PORT ?= if ( OS_GLANCE_CONTROLLER_PROTOCOL == 'https' ) 9293 else 9292;
 variable OS_GLANCE_PUBLIC_PORT ?= if ( OS_GLANCE_CONTROLLER_PROTOCOL == 'https' ) 9292 else null;
@@ -70,39 +67,11 @@ variable OS_GLANCE_MULTIPLE_LOCATIONS ?= null;
 variable OS_GLANCE_USERNAME ?= 'glance';
 variable OS_GLANCE_PASSWORD ?= 'GLANCE_PASS';
 
-##########################
-# Heat specific variable #
-##########################
-variable OS_HEAT_HOST ?= OS_CONTROLLER_HOST;
-variable OS_HEAT_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
-variable OS_HEAT_DB_HOST ?= OS_DB_HOST;
-variable OS_HEAT_ENABLED ?= false;
-variable OS_HEAT_DB_USERNAME ?= 'heat';
-variable OS_HEAT_DB_PASSWORD ?= 'HEAT_DBPASS';
-variable OS_HEAT_USERNAME ?= 'heat';
-variable OS_HEAT_PASSWORD ?= 'HEAT_PASS';
-variable OS_HEAT_STACK_DOMAIN ?= 'heat';
-variable OS_HEAT_USER_DOMAIN ?= 'default';
-variable OS_HEAT_DOMAIN_ADMIN_USERNAME ?= 'heat_domain_admin';
-variable OS_HEAT_DOMAIN_ADMIN_PASSWORD ?= 'HEAT_DOMAIN_ADMIN_PASS';
-
-######################
-# Barbican variables #
-######################
-variable OS_BARBICAN_HOST ?= OS_CONTROLLER_HOST;
-variable OS_BARBICAN_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
-variable OS_BARBICAN_PORT ?= 9311;
-variable OS_BARBICAN_USERNAME ?= 'barbican';
-variable OS_BARBICAN_PASSWORD ?= 'BARBICAN_PASS';
-variable OS_BARBICAN_DB_USERNAME ?= 'barbican_user';
-variable OS_BARBICAN_DB_PASSWORD ?= 'BARBICAN_REAL_PASS';
-variable OS_BARBICAN_DB_HOST ?= OS_DB_HOST;
-
 ###################
 # Magnum variales #
 ###################
-variable OS_MAGNUM_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
-variable OS_MAGNUM_HOST ?= OS_CONTROLLER_HOST;
+variable OS_MAGNUM_PROTOCOL ?= 'http';
+variable OS_MAGNUM_HOST ?= error('OS_MAGNUM_HOST must be declared');
 variable OS_MAGNUM_PORT ?= 9511;
 variable OS_MAGNUM_DEFAULT_VOLUME_TYPE ?= 'magnum_volume_type';
 variable OS_REGION_NAME ?= 'default';
@@ -117,11 +86,39 @@ variable OS_MAGNUM_DOMAIN_ADMIN_PASSWORD ?= 'MAGNUM_DOMAIN_ADMIN_USER_PASS';
 variable OS_MAGNUM_CLUSTER_USER_TRUST ?= true;
 variable OS_MAGNUM_RPC_CONN_POOL_SIZE ?= 200;
 
+##########################
+# Heat specific variable #
+##########################
+variable OS_HEAT_HOST ?= OS_MAGNUM_HOST;
+variable OS_HEAT_PROTOCOL ?= 'http';
+variable OS_HEAT_DB_HOST ?= OS_DB_HOST;
+variable OS_HEAT_ENABLED ?= false;
+variable OS_HEAT_DB_USERNAME ?= 'heat';
+variable OS_HEAT_DB_PASSWORD ?= 'HEAT_DBPASS';
+variable OS_HEAT_USERNAME ?= 'heat';
+variable OS_HEAT_PASSWORD ?= 'HEAT_PASS';
+variable OS_HEAT_STACK_DOMAIN ?= 'heat';
+variable OS_HEAT_USER_DOMAIN ?= 'default';
+variable OS_HEAT_DOMAIN_ADMIN_USERNAME ?= 'heat_domain_admin';
+variable OS_HEAT_DOMAIN_ADMIN_PASSWORD ?= 'HEAT_DOMAIN_ADMIN_PASS';
+
+######################
+# Barbican variables #
+######################
+variable OS_BARBICAN_HOST ?= OS_MAGNUM_HOST;
+variable OS_BARBICAN_PROTOCOL ?= 'http';
+variable OS_BARBICAN_PORT ?= 9311;
+variable OS_BARBICAN_USERNAME ?= 'barbican';
+variable OS_BARBICAN_PASSWORD ?= 'BARBICAN_PASS';
+variable OS_BARBICAN_DB_USERNAME ?= 'barbican_user';
+variable OS_BARBICAN_DB_PASSWORD ?= 'BARBICAN_REAL_PASS';
+variable OS_BARBICAN_DB_HOST ?= OS_DB_HOST;
+
 ##############################
 # Keystone specific variable #
 ##############################
-variable OS_KEYSTONE_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
-variable OS_KEYSTONE_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
+variable OS_KEYSTONE_CONTROLLER_PROTOCOL ?= 'http';
+variable OS_KEYSTONE_CONTROLLER_HOST ?= error('OS_KEYSTONE_CONTROLLER_HOST must be declared');
 variable OS_KEYSTONE_CONTROLLER_TOKEN_PORT ?= '35357';
 variable OS_KEYSTONE_PUBLIC_CONTROLLER_HOST ?= OS_KEYSTONE_CONTROLLER_HOST;
 variable OS_KEYSTONE_PUBLIC_CONTROLLER_TOKEN_PORT ?= '5000';
@@ -145,9 +142,9 @@ variable OS_MEMCACHE_HOST ?= 'localhost';
 ##########################
 # Nova specific variable #
 ##########################
-variable OS_NOVA_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
+variable OS_NOVA_CONTROLLER_HOST ?= error('OS_NOVA_CONTROLLER_HOST must be declared');
 variable OS_NOVA_VNC_HOST ?= OS_NOVA_CONTROLLER_HOST;
-variable OS_NOVA_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_NOVA_CONTROLLER_PROTOCOL ?= 'http';
 variable OS_NOVA_VNC_PROTOCOL ?= OS_NOVA_CONTROLLER_PROTOCOL;
 variable OS_NOVA_OVERWRITE_DEFAULT_POLICY ?= false;
 variable OS_NOVA_RESUME_VM_ON_BOOT ?= false;
@@ -174,9 +171,10 @@ variable OS_NOVA_CEPH_CEPH_CONF ?= '/etc/ceph/ceph.conf';
 #############################
 # Neutron specific variable #
 #############################
-variable OS_NEUTRON_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
+variable OS_NEUTRON_CONTROLLER_HOST ?= error('OS_NEUTRON_CONTROLLER_HOST must be declared');
 variable OS_NEUTRON_NETWORK_PROVIDER ?= OS_NEUTRON_CONTROLLER_HOST;
-variable OS_NEUTRON_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_NEUTRON_CONTROLLER_PROTOCOL ?= 'http';
+variable OS_NEUTRON_PUBLIC_HOST ?= OS_NEUTRON_CONTROLLER_HOST;
 variable OS_NEUTRON_DB_HOST ?= OS_DB_HOST;
 variable OS_NEUTRON_DB_USERNAME ?= 'neutron';
 variable OS_NEUTRON_DB_PASSWORD ?= 'NEUTRON_DBPASS';
@@ -203,8 +201,8 @@ variable OS_NEUTRON_DHCP_LEASE_DURATION ?= 86400;
 ############################
 # Placement specific variable #
 ############################
-variable OS_PLACEMENT_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
-variable OS_PLACEMENT_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_PLACEMENT_CONTROLLER_HOST ?= OS_NOVA_CONTROLLER_HOST;
+variable OS_PLACEMENT_CONTROLLER_PROTOCOL ?= OS_NOVA_CONTROLLER_PROTOCOL;
 variable OS_PLACEMENT_CONTROLLER_PORT ?= 8778;
 variable OS_PLACEMENT_DB_HOST ?= OS_DB_HOST;
 variable OS_PLACEMENT_DB_USERNAME ?= 'placement';
@@ -218,8 +216,8 @@ variable OS_PLACEMENT_PASSWORD ?= 'PLACEMENT_PASS';
 
 # Cinder Controller
 variable OS_CINDER_ENABLED ?= false;
-variable OS_CINDER_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
-variable OS_CINDER_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_CINDER_CONTROLLER_HOST ?= error('OS_CINDER_CONTROLLER_HOST must be declared');
+variable OS_CINDER_CONTROLLER_PROTOCOL ?= 'http';
 variable OS_CINDER_PUBLIC_HOST ?= OS_CINDER_CONTROLLER_HOST;
 variable OS_CINDER_CONTROLLER_PORT ?= if ( OS_CINDER_CONTROLLER_PROTOCOL == 'https' ) 8777 else 8776;
 variable OS_CINDER_PUBLIC_PORT ?= if ( OS_CINDER_CONTROLLER_PROTOCOL == 'https' ) 8776 else null;
@@ -237,8 +235,8 @@ variable OS_CINDER_BACKUP_CEPH_CONF ?= '/etc/ceph/ceph.conf';
 ############################
 # Ceilometer specific variable #
 ############################
-variable OS_CEILOMETER_CONTROLLER_HOST ?= OS_CONTROLLER_HOST;
-variable OS_CEILOMETER_CONTROLLER_PROTOCOL ?= OS_CONTROLLER_PROTOCOL;
+variable OS_CEILOMETER_CONTROLLER_HOST ?= error('OS_CEILOMETER_CONTROLLER_HOST must be declared');
+variable OS_CEILOMETER_CONTROLLER_PROTOCOL ?= 'http';
 variable OS_CEILOMETER_METERS_ENABLED ?= false;
 variable OS_CEILOMETER_DB_HOST ?= OS_DB_HOST;
 variable OS_CEILOMETER_ENABLED ?= false;
@@ -252,9 +250,10 @@ variable OS_CEILOMETER_PASSWORD ?= 'CEILOMETER_PASS';
 ##############################
 # RabbitMQ specific variable #
 ##############################
-variable OS_RABBITMQ_HOST ?= OS_CONTROLLER_HOST;
+variable OS_RABBITMQ_HOST ?= error('OS_RABBITMQ_HOST must be declared');
 variable OS_RABBITMQ_USERNAME ?= 'openstack';
 variable OS_RABBITMQ_PASSWORD ?= 'RABBIT_PASS';
+
 
 ###########
 # Horizon #
@@ -273,6 +272,23 @@ variable OS_HORIZON_MULTIDOMAIN_ENABLED ?= if (OS_KEYSTONE_IDENTITY_DRIVER == 's
 } else {
     true;
 };
+
+
+###########
+# Octavia #
+###########
+variable OS_OCTAVIA_CONTROLLER_HOST ?= error('OS_OCTAVIA_CONTROLLER_HOST must be declared');
+variable OS_OCTAVIA_CONTROLLER_PORT ?= 9876;
+variable OS_OCTAVIA_PUBLIC_HOST ?= OS_OCTAVIA_CONTROLLER_HOST;
+variable OS_OCTAVIA_PUBLIC_PORT ?= 9876;
+variable OS_OCTAVIA_PROTOCOL ?= 'http';
+variable OS_OCTAVIA_DB_HOST ?= OS_DB_HOST;
+variable OS_OCTAVIA_DB_PASSWORD ?= 'OCTAVIA_DBPASS';
+variable OS_OCTAVIA_DB_USERNAME ?= 'octavia';
+variable OS_OCTAVIA_PASSWORD ?= 'OCTAVIA_PASS';
+variable OS_OCTAVIA_USERNAME ?= 'octavia';
+variable OS_OCTAVIA_CA_CERT_DIR ?= '/etc/octavia/certs';
+
 
 ########################################
 # SNMPD configuration (for ceilometer) #

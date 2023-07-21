@@ -2,7 +2,7 @@
 declaration template types/openstack/nova;
 
 include 'pan/types';
-include 'types/openstack/functions';
+include 'types/openstack/types';
 
 include 'types/openstack/core';
 
@@ -45,7 +45,7 @@ type openstack_nova_api = {
     parameters for nova configuration [api_database] section
 }
 type openstack_nova_api_database = {
-    'connection' : string with is_hostURI(SELF)
+    'connection' : type_hostURI
 };
 
 @documentation {
@@ -94,7 +94,7 @@ type openstack_nova_libvirt = {
     parameters for nova configuration [neutron] section
 }
 type openstack_nova_neutron = {
-    'auth_url' : string with is_hostURI(SELF)
+    'auth_url' : type_hostURI
     'auth_type' : string
     'metadata_proxy_shared_secret' ? string
     'password' : string
@@ -140,7 +140,7 @@ type openstack_nova_pci = {
     parameters for nova configuration [placement] section
 }
 type openstack_nova_placement = {
-    'auth_url' : string with is_hostURI(SELF)
+    'auth_url' : type_hostURI
     'auth_type' : string
     'os_region_name' ? string
     'password' : string
@@ -173,7 +173,7 @@ type openstack_nova_wsgi = {
 }
 type openstack_nova_vnc = {
     'enabled' : boolean = true
-    'novncproxy_base_url' ? string with is_hostURI(SELF)
+    'novncproxy_base_url' ? type_hostURI
     'server_listen' ? string with is_ipv4(SELF) || is_hostname(SELF)
     'server_proxyclient_address' ? string with is_ipv4(SELF) || is_hostname(SELF)
 };

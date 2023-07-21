@@ -1,12 +1,12 @@
 unique template features/nova/compute/vm-migration/cold;
 
 @{
-desc = filecontaining the nova SSH private key
+desc = file containing the nova SSH private key
 values = file path (relative to pan include path)
 default = site/openstack/vm-migration/nova_ssh.key
 required = no
 }
-variable OS_NOVA_SSH_PRIVATE_KEY ?= 'site/openstack/vm-migration/nova_ssh.key';
+variable OS_NOVA_SSH_PRIVATE_KEY_FILE ?= 'site/openstack/vm-migration/nova_ssh.key';
 
 
 ###################################################
@@ -31,14 +31,14 @@ prefix '/software/components/accounts/users';
 # Put public key into nova account
 include 'components/useraccess/config';
 prefix '/software/components/useraccess/users';
-'nova/ssh_keys_urls' = list('http://quattorsrv.lal.in2p3.fr/sshkeys/nova.pub');
+'nova/ssh_keys_urls' = list(OS_NOVA_SSH_PUBLIC_KEY_URL);
 
 # Deploy nova account private key
 include 'components/filecopy/config';
 prefix '/software/components/filecopy/services/{/var/lib/nova/.ssh/id_rsa}';
 'owner' = 'nova:nova';
 'perms' = '0600';
-'config' = file_contents(OS_NOVA_SSH_PRIVATE_KEY);
+'config' = file_contents(OS_NOVA_SSH_PRIVATE_KEY_FILE);
 
 # Define SSH client configuration to ignore host key check
 include 'components/metaconfig/config';
