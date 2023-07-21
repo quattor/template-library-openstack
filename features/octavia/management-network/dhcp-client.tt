@@ -1,0 +1,3 @@
+[% FOREACH key IN config.keys %]
+    [%- key %] [% config.$key %];
+[% END %]

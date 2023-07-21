@@ -1,0 +1,3 @@
+[% FOREACH key IN config.keys -%]
+export [% key %]=[% config.$key %]
+[% END -%]

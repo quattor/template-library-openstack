@@ -1,0 +1,64 @@
+#!/bin/bash
+#
+# Create OpenSack Octavia management network
+
+OCTAVIA_MGMT_SUBNET=[% subnet %]
+OCTAVIA_MGMT_SUBNET_START=[% subnet_start %]
+OCTAVIA_MGMT_SUBNET_END=[% subnet_end %]
+OCTAVIA_MGMT_PORT_IP=[% mgt_port_ip_address %]
+
+sudo_cmd=sudo
+[[ ${USER} == 'root' ]] && sudo_cmd=''
+
+
+echo "**************** Creating Octavia endpoints *****************"
+openstack endpoint create --region [% region_name %] lal load-balancer public [% protocol %]://[% public_host %]:9876
+openstack endpoint create --region [% region_name %] lal load-balancer internal [% protocol %]://[% internal_host %]:9876
+openstack endpoint create --region [% region_name %] lal load-balancer admin [% protocol %]://[% internal_host %]:9876
+         
+echo "**************** Creating Octavia security groups *****************"
+openstack security group create lb-mgmt-sec-grp
+openstack security group rule create --protocol icmp lb-mgmt-sec-grp
+openstack security group rule create --protocol tcp --dst-port 22 lb-mgmt-sec-grp
+openstack security group rule create --protocol tcp --dst-port 9443 lb-mgmt-sec-grp
+openstack security group create lb-health-mgr-sec-grp
+openstack security group rule create --protocol udp --dst-port 5555 lb-health-mgr-sec-grp
+
+
+echo "**************** Creating Octavia management network **************"
+openstack network create lb-mgmt-net
+openstack subnet create --subnet-range $OCTAVIA_MGMT_SUBNET --allocation-pool \
+      start=$OCTAVIA_MGMT_SUBNET_START,end=$OCTAVIA_MGMT_SUBNET_END \
+        --network lb-mgmt-net lb-mgmt-subnet
+
+NET_ID=$(openstack network show lb-mgmt-net -c id -f value)
+SUBNET_ID=$(openstack subnet show lb-mgmt-subnet -f value -c id)
+
+echo "**************** Creating Octavia health manager port  ************"
+PORT_FIXED_IP="--fixed-ip subnet=$SUBNET_ID,ip-address=$OCTAVIA_MGMT_PORT_IP"
+MGMT_PORT_ID=$(openstack port create --security-group \
+      lb-health-mgr-sec-grp --device-owner Octavia:health-mgr \
+        --host=[% octavia_hostname %] -c id -f value --network lb-mgmt-net \
+          $PORT_FIXED_IP octavia-health-manager-listen-port)
+
+MGMT_PORT_MAC=$(openstack port show -c mac_address -f value $MGMT_PORT_ID)
+BRNAME=brq$(echo $NET_ID|cut -c 1-11)
+
+# Display instructions to update Quattor configuration
+echo ""
+echo "Add the following variables to your Quattor configuration for the OpenStack cluster:"
+echo "OS_OCTAVIA_MGMT_NETWORK_OPENSTACK_ID ?= '${NET_ID}';"
+echo "variable OS_OCTAVIA_MGMT_NETWORK_BRNAME ?= '${BRNAME}';"
+echo "variable OS_OCTAVIA_MGMT_NETWORK_MGMT_PORT_MAC ?= '${MGMT_PORT_MAC}';"
+
+# If Octavia is not running on the Neutron server, display instructions to retrieve the
+# management VLAN ID else display the bridge name
+if [ ! -d /etc/neutron ]
+then
+    echo "Retrieve the management network VLAN ID by connection on the Neutron server and executing:"
+    echo "    brctl show ${BRNAME} | grep vxlan | awk -F- '{print \$2}'"
+    echo ""
+    echo "then add the following variable to your Quattor configuratioin for the OepnStack cluster:"
+    echo "OS_OCTAVIA_MGMT_NETWORK_VLAN_ID ?= value_retrieved_with_previous_command;"
+fi
+

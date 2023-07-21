@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -ex
+
+if [ -z "$MGMT_PORT_MAC" ]
+then
+    echo "MGMT_PORT_MAC must be defined in the environment file"
+    exit 1
+fi
+
+if [ -z "$HM_BIND_PORT" ]
+then
+    echo "HM_BIND_PORT must be defined in the environment file"
+    exit 1
+fi
+
+if [ -z "$BRNAME" ]
+then
+    echo "BRNAME must be defined in the environment file"
+    exit 1
+fi
+
+if [ "$1" == "start" ]; then
+  exit_code=0
+  ip a show o-hm0 >& /dev/null || exit_code=$?
+  [[ ${exit_code} -eq 0 ]] && echo "Interface o-hm0 already exists" && exit 0
+  ip link show o-hm0 >& /dev/null || ip link add o-hm0 type veth peer name o-bhm0
+  brctl addif $BRNAME o-bhm0
+  ip link set o-bhm0 up
+  ip link set dev o-hm0 address $HM_BIND_PORT
+  ip link set o-hm0 up
+  iptables -I INPUT -i o-hm0 -p udp --dport ${HM_BIND_PORT} -j ACCEPT
+  dhclient -v o-hm0 -cf /etc/dhcp/octavia
+elif [ "$1" == "stop" ]; then
+  dhclient -x
+  dhclient -x
+  exit_code=0
+  ip a show o-hm0 >& /dev/null || exit_code=$?
+  ip link del o-hm0
+else
+  brctl show $BRNAME
+  ip a s dev o-hm0
+fi

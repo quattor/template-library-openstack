@@ -1,0 +1,6 @@
+SSLCipherSuite [% SSLCipherSuite.join(':') %]
+SSLHonorCipherOrder [% SSLHonorCipherOrder ? 'on' : 'off' %]
+SSLProtocol [% SSLProtocol.join(' ') %]
+SSLSessionTickets [% SSLSessionTickets ? 'on' : 'off' %]
+SSLStaplingCache "[% SSLStaplingCache %]"
+SSLUseStapling [% SSLUseStapling ? 'on' : 'off' %]

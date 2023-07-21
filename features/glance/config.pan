@@ -1,133 +1,86 @@
 unique template features/glance/config;
 
-include 'defaults/openstack/schema/schema';
+@{
+desc = number of Glance API workers to start
+values = long
+default = number of cores, not capped to 8 (assume all CPUs have the same number of cores)
+required = no
+}
+variable OS_GLANCE_WORKERS_NUM ?= length(value('/hardware/cpu')) * value('/hardware/cpu/0/cores');
+
 
 # Load some useful functions
 include 'defaults/openstack/functions';
 
+# Define Glance types
+include 'types/openstack/glance';
+
 # Include general openstack variables
 include 'defaults/openstack/config';
 
-# Fix list of Openstack user that should not be deleted
-include 'features/accounts/config';
+# Add Glance bae RPMs
+include 'features/glance/rpms';
 
-# Include utils
-include 'defaults/openstack/utils';
-
-include 'features/glance/rpms/config';
-
-include 'components/chkconfig/config';
-prefix '/software/components/chkconfig/service';
-'openstack-glance-api/on' = '';
+# Configgure Glance services
+include 'components/systemd/config';
+prefix '/software/components/systemd/unit';
 'openstack-glance-api/startstop' = true;
-'openstack-glance-registry/on' = '';
-'openstack-glance-registry/startstop' = true;
 
-bind '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}/contents' = openstack_glance_config;
 
-# Configuration file for glance
+#######################################
+# Build configuration file for Glance #
+#######################################
+
+@{
+doc = whether to enable or not copy-on-write cloning of images. Read \
+documentation to ensure you understood/mitigated the security risks
+values = boolean
+default = false
+required = no
+}
+variable OS_COW_IMG_CLONING_ENABLED ?= false;
+
 include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}';
 'module' = 'tiny';
+'convert/joincomma' = true;
+'convert/truefalse' = true;
 'daemons/openstack-glance-api' = 'restart';
+bind '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}/contents' = openstack_glance_api_config;
 
-prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}/contents';
 # [DEFAULT] section
-'DEFAULT/notification_driver' = 'messagingv2';
-'DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
-'DEFAULT/show_multiple_locations' = OPENSTACK_GLANCE_MULTIPLE_LOCATIONS;
-'DEFAULT/cert_file' = if (OPENSTACK_SSL) {
-    OPENSTACK_SSL_CERT;
-} else {
-    null;
-};
-'DEFAULT/key_file' = if (OPENSTACK_SSL) {
-    OPENSTACK_SSL_KEY;
-} else {
-    null;
-};
-'DEFAULT/registry_client_protocol' = OPENSTACK_CONTROLLER_PROTOCOL;
-
-#[oslo_messaging_rabbit] section
-'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
+'contents/DEFAULT' = openstack_load_config('features/openstack/base');
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
+'contents/DEFAULT/show_image_direct_url' = OS_COW_IMG_CLONING_ENABLED;
+'contents/DEFAULT/show_multiple_locations' = OS_GLANCE_MULTIPLE_LOCATIONS;
+'contents/DEFAULT/workers' = OS_GLANCE_WORKERS_NUM;
 
 # [database] section
-'database/connection' = openstack_dict_to_connection_string(OPENSTACK_GLANCE_DB);
-
-'glance_store/filesystem_store_datadir' = OPENSTACK_GLANCE_STORE_DIR;
+'contents/database/connection' = format('mysql+pymysql://%s:%s@%s/glance', OS_GLANCE_DB_USERNAME, OS_GLANCE_DB_PASSWORD, OS_GLANCE_DB_HOST);
 
 # [keystone_authtoken] section
-'keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
-'keystone_authtoken/username' = OPENSTACK_GLANCE_USERNAME;
-'keystone_authtoken/password' = OPENSTACK_GLANCE_PASSWORD;
+'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OS_GLANCE_USERNAME;
+'contents/keystone_authtoken/password' = OS_GLANCE_PASSWORD;
+'contents/keystone_authtoken/memcached_servers' = list('localhost:11211');
 
-# [paste_deploy] section
-'paste_deploy/flavor' = 'keystone';
+# [paste_deploy] section
+'contents/paste_deploy/flavor' = 'keystone';
 
-bind '/software/components/metaconfig/services/{/etc/glance/glance-registry.conf}/contents' = openstack_glance_config;
+# [oslo_messaging_notifications] section
+'contents/oslo_messaging_notifications' = openstack_load_config('features/oslo_messaging/notifications');
 
-prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.conf}';
-'module' = 'tiny';
-#'daemons/openstack-glance-registry' = 'restart';
+# [taskflow_executor] section
+'contents/taskflow_executor/max_workers' = to_long(OS_GLANCE_WORKERS_NUM * 1.2);
 
-prefix '/software/components/metaconfig/services/{/etc/glance/glance-registry.conf}/contents';
-# [DEFAULT] section
-'DEFAULT/notification_driver' = 'messagingv2';
-'DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
-'DEFAULT/cert_file' = if (OPENSTACK_SSL) {
-    OPENSTACK_SSL_CERT;
-} else {
-    null;
-};
-'DEFAULT/key_file' = if (OPENSTACK_SSL) {
-    OPENSTACK_SSL_KEY;
-} else {
-    null;
-};
 
-#[oslo_messaging_rabbit] section
-'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
+######################
+# Configure backends #
+######################
+include 'features/glance/store/config';
 
-# [database] section
-'database/connection' = openstack_dict_to_connection_string(OPENSTACK_GLANCE_DB);
 
-# [keystone_authtoken] section
-'keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
-'keystone_authtoken/username' = OPENSTACK_GLANCE_USERNAME;
-'keystone_authtoken/password' = OPENSTACK_GLANCE_PASSWORD;
-
-# [paste_deploy] section
-'paste_deploy/flavor' = 'keystone';
-
-include if (OPENSTACK_CEPH_GLANCE) {
-    'features/glance/ceph';
-} else {
-    'features/glance/file';
-};
-
-include if (OPENSTACK_HA) {'features/glance/ha'};
-
-include 'components/filecopy/config';
-prefix '/software/components/filecopy/services';
-'{/root/init-glance.sh}' = dict(
-    'perms', '755',
-    'config', format(
-        file_contents('features/glance/init-glance.sh'),
-        OPENSTACK_INIT_SCRIPT_GENERAL,
-        openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS),
-        OPENSTACK_GLANCE_USERNAME,
-        OPENSTACK_GLANCE_PASSWORD,
-    ),
-    'restart', '/root/init-glance.sh',
-);
-
-prefix '/software/components/filecopy/services';
-'{/root/update-glance-to-queens.sh}' = dict(
-    'perms', '755',
-    'config', format(
-        file_contents('features/glance/update-glance-to-queens.sh'),
-        OPENSTACK_INIT_SCRIPT_GENERAL,
-        openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS),
-    ),
-    'restart' , '/root/update-glance-to-queens.sh',
-);
+#########################################
+# Configure SSL proxy if SSL is enabled #
+#########################################
+include if ( OS_GLANCE_CONTROLLER_PROTOCOL == 'https' ) 'features/glance/nginx/config';

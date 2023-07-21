@@ -1,142 +1,125 @@
 unique template features/nova/compute/config;
 
-include 'defaults/openstack/schema/schema';
+@{
+desc = template with site-specific configuration for live-migration
+values = template path (namespece). Set to null to disable it.
+default = undef
+required = no
+}
+variable OS_NOVA_LIVE_MIGRATION_SITE_CONFIG ?= undef;
+
 
 # Load some useful functions
 include 'defaults/openstack/functions';
 
+# Load Nova-related type definitions
+include 'types/openstack/nova';
+
 # Include general openstack variables
 include 'defaults/openstack/config';
 
-# Fix list of Openstack user that should not be deleted
-include 'features/accounts/config';
-
 # Include RPMS for nova hypervisor configuration
-include 'features/nova/compute/rpms/config';
+include 'features/nova/compute/rpms';
+
+# Include Placement configuration for compute servers
+include 'features/nova/compute/placement';
+
+# Include policy.json file
+include if ( OS_NOVA_OVERWRITE_DEFAULT_POLICY ) 'features/nova/compute/policy/config';
+
+# Enable nested virtualization if needed
+include if ( is_defined(OS_NOVA_COMPUTE_NESTED) && OS_NOVA_COMPUTE_NESTED ) 'features/nova/compute/nested';
+
+# Configure VM magration
+include 'features/nova/compute/vm-migration/config';
+# Add site-specific configuration for live migration, if any
+include OS_NOVA_LIVE_MIGRATION_SITE_CONFIG;
 
 # Restart nova specific daemon
-include 'components/chkconfig/config';
-prefix '/software/components/chkconfig/service';
-'libvirtd/on' = '';
+include 'components/systemd/config';
+prefix '/software/components/systemd/unit';
 'libvirtd/startstop' = true;
-'openstack-nova-compute/on' = '';
 'openstack-nova-compute/startstop' = true;
 
-bind '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents' = openstack_nova_compute_config;
 
 # Configuration file for nova
 include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 'module' = 'tiny';
-'daemons/openstack-nova-compute' = 'restart';
+'convert/joincomma' = true;
+'convert/truefalse' = true;
 'daemons/libvirtd' = 'restart';
+'daemons/openstack-nova-compute' = 'restart';
+bind '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents' = openstack_nova_compute_config;
 
-prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}/contents';
-# [DEFAULT] section
-'DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
-'DEFAULT/rcp_backend' = 'rabbit';
-'DEFAULT/auth_strategy' = 'keystone';
-'DEFAULT/my_ip' = PRIMARY_IP;
-'DEFAULT/use_neutron' = 'True';
-'DEFAULT/linuxnet_interface_driver' = OPENSTACK_NOVA_LINUXNET_INTERFACE_DRIVER;
-'DEFAULT/firewall_driver' = 'nova.virt.firewall.NoopFirewallDriver';
-'DEFAULT/resume_guests_state_on_host_boot' = if (OPENSTACK_NOVA_RESUME_VM_ON_BOOT) {
-    'True';
+# [DEFAULT] section
+'contents/DEFAULT' = openstack_load_config('features/openstack/base');
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
+'contents/DEFAULT/cpu_allocation_ratio' = OS_NOVA_CPU_RATIO;
+'contents/DEFAULT/initial_cpu_allocation_ratio' = OS_NOVA_INITIAL_CPU_RATIO;
+'contents/DEFAULT/disk_allocation_ratio' = OS_NOVA_DISK_RATIO;
+'contents/DEFAULT/initial_disk_allocation_ratio' = OS_NOVA_INITIAL_DISK_RATIO;
+'contents/DEFAULT/ram_allocation_ratio' = OS_NOVA_RAM_RATIO;
+'contents/DEFAULT/initial_ram_allocation_ratio' = OS_NOVA_INITIAL_RAM_RATIO;
+'contents/DEFAULT/resume_guests_state_on_host_boot' = if (OS_NOVA_RESUME_VM_ON_BOOT) {
+  true;
+} else {
+  null;
+};
+
+# [cinder] section
+'contents/cinder' = {
+  if ( OS_CINDER_ENABLED ) {
+    dict('os_region_name', OS_REGION_NAME);
+  } else {
+    null;
+  };
+};
+
+# [keystone_authtoken] section
+'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
+'contents/keystone_authtoken/username' = OS_NOVA_USERNAME;
+'contents/keystone_authtoken/password' = OS_NOVA_PASSWORD;
+
+# [libvirtd] section
+'contents/libvirt/virt_type' = OS_NOVA_VIRT_TYPE;
+
+# [neutron] section
+'contents/neutron/auth_type' = 'password';
+'contents/neutron/auth_url' = OS_KEYSTONE_CONTROLLER_PROTOCOL + '://' + OS_KEYSTONE_CONTROLLER_HOST + ':35357';
+'contents/neutron/password' = OS_NEUTRON_PASSWORD;
+'contents/neutron/project_name' = 'service';
+'contents/neutron/project_domain_id' = 'default';
+'contents/neutron/region_name' = OS_REGION_NAME;
+'contents/neutron/user_domain_id' = 'default';
+'contents/neutron/username' = OS_NEUTRON_USERNAME;
+
+# [oslo_concurrency]
+'contents/oslo_concurrency/lock_path' = '/var/lib/nova/tmp';
+
+#[oslo_messaging_rabbit] section
+'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/openstack/client/base');
+
+# [upgrade_levels] section
+# Require OS_NOVA_UPGRADE_LEVELS to be <= to current server version
+'contents/upgrade_levels' = if ( is_defined(OS_NOVA_UPGRADE_LEVELS) ) {
+    if ( OS_NOVA_UPGRADE_LEVELS <= OPENSTACK_VERSION_NAME ) {
+        dict('compute', OS_NOVA_UPGRADE_LEVELS);
+    } else {
+        error("OS_NOVA_UPGRADE_LEVELS (%s) must be less or equal to current OpenStack version (%s)",
+              OS_NOVA_UPGRADE_LEVELS,
+              OS_VERSION_NAME
+             );
+    };
 } else {
     null;
 };
 
-# [glance] section
-#'glance/host' = openstack_get_controller_host(OPENSTACK_GLANCE_SERVERS);
-#'glance/protocol' = OPENSTACK_GLANCE_CONTROLLER_PROTOCOL;
-'glance/api_servers' = openstack_generate_uri(
-    OPENSTACK_GLANCE_CONTROLLER_PROTOCOL,
-    OPENSTACK_GLANCE_SERVERS,
-    9292
-);
+# [vnc] section
+'contents/vnc/enabled' = true;
+'contents/vnc/server_listen' = '0.0.0.0';
+'contents/vnc/server_proxyclient_address' = PRIMARY_IP;
+'contents/vnc/novncproxy_base_url' = OS_NOVA_VNC_PROTOCOL + '://' + OS_NOVA_VNC_HOST + ':6080/vnc_auto.html';
 
-# [keystone_authtoken] section
-'keystone_authtoken' = openstack_load_config(OPENSTACK_AUTH_CLIENT_CONFIG);
-'keystone_authtoken/username' = OPENSTACK_NOVA_USERNAME;
-'keystone_authtoken/password' = OPENSTACK_NOVA_PASSWORD;
-
-# [libvirtd] section
-'libvirt/virt_type' = OPENSTACK_NOVA_VIRT_TYPE;
-
-# [neutron] section
-'neutron/url' = openstack_generate_uri(
-    OPENSTACK_NEUTRON_CONTROLLER_PROTOCOL,
-    OPENSTACK_NEUTRON_SERVERS,
-    9696
-);
-'neutron/auth_url' = openstack_generate_uri(
-    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
-    OPENSTACK_KEYSTONE_SERVERS,
-    OPENSTACK_KEYSTONE_ADMIN_PORT
-);
-'neutron/auth_plugin' = 'password';
-'neutron/auth_type' = 'password';
-'neutron/project_domain_name' = 'default';
-'neutron/user_domain_name' = 'default';
-'neutron/region_name' = OPENSTACK_REGION_NAME;
-'neutron/project_name' = 'service';
-'neutron/username' = OPENSTACK_NEUTRON_USERNAME;
-'neutron/password' = OPENSTACK_NEUTRON_PASSWORD;
-
-# [oslo_concurrency]
-'oslo_concurrency/lock_path' = '/var/lib/nova/tmp';
-#[oslo_messaging_rabbit] section
-'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
-
-# [placement]
-'placement/os_region_name' = OPENSTACK_REGION_NAME;
-'placement/project_domain_name' = 'Default';
-'placement/project_name' = 'service';
-'placement/auth_type' = 'password';
-'placement/user_domain_name' = 'Default';
-'placement/auth_url' = openstack_generate_uri(
-    OPENSTACK_KEYSTONE_CONTROLLER_PROTOCOL,
-    OPENSTACK_KEYSTONE_SERVERS,
-    OPENSTACK_KEYSTONE_ADMIN_PORT
-);
-'placement/username' = OPENSTACK_NOVA_PLACEMENT_USER;
-'placement/password' = OPENSTACK_NOVA_PLACEMENT_PASSWORD;
-
-# [upgrade_levels]
-'upgrade_levels/compute' = 'newton';
-
-# [vnc] section
-'vnc/enabled' = 'True';
-'vnc/vncserver_listen' = '0.0.0.0';
-'vnc/vncserver_proxyclient_address' = '$my_ip';
-'vnc/novncproxy_base_url' = format(
-    '%s/%s',
-    openstack_generate_uri(
-        OPENSTACK_NOVA_VNC_PROTOCOL,
-        OPENSTACK_NOVA_SERVERS ,
-        6080
-    ),
-    'vnc_auto.html'
-);
-'vnc/xvpvncproxy_base_url' = format(
-    '%s/%s',
-    openstack_generate_uri(
-        OPENSTACK_NOVA_VNC_PROTOCOL,
-        OPENSTACK_NOVA_SERVERS,
-        6081
-    ),
-    'console'
-);
-
-# [cinder] section
-'cinder' =
-    if (OPENSTACK_CINDER_ENABLED) {
-        dict(
-            'os_region_name', OPENSTACK_REGION_NAME,
-            'cinder_catalog_info', 'volumev2:cinderv2:publicURL'
-        );
-    } else {
-        null;
-    };
-
-include if (OPENSTACK_CEPH_NOVA) {'features/nova/compute/ceph'};
+# Configure Ceph if needed
+include if ( OS_NOVA_USE_CEPH ) 'features/nova/compute/ceph';

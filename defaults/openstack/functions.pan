@@ -1,160 +1,139 @@
-unique template defaults/openstack/functions;
+declaration template defaults/openstack/functions;
 
+# Function to load part of the config from a template, preserving the existing
+# configuration, if any.
+# Argument: structure template to load
 function openstack_load_config = {
-    if (ARGC != 1 ) {
-        error('openstack_load_config need a argument');
+    if ( ARGC != 1 ) {
+        error('openstack_load_config requires the name of the template to load');
     };
 
-    if (is_string(ARGV[0])) {
-        config = create(ARGV[0]);
-    } else if (!is_dict(ARGV[0])) {
-        error('openstack_load_config need a string or a dict as argument');
+    template_file = ARGV[0];
+    if ( !is_string(template_file) ) {
+        error('openstack_load_config argument must be a string');
+    };
+
+    if ( is_defined(SELF) ) {
+        config = SELF;
     } else {
-        config = ARGV[0];
+        config = dict();
     };
 
-    foreach(k; v; config) {
-        SELF[k] = v;
+    merge(config, create(template_file));
+};
+
+
+# Function to load the SSL/certificate information in the configuration
+# Requires an argument saying if configuration must be done to simplify
+# configuration of services.
+function openstack_load_ssl_config = {
+    if ( ARGC != 1 ) {
+        error('openstack_load_ssl_config requires a boolean argument');
     };
+
+    configure_ssl = ARGV[0];
+    if ( !is_boolean(configure_ssl) ) {
+        error('openstack_load_ssl_config argument must be a boolean');
+    };
+
+    if ( configure_ssl ) {
+        openstack_load_config('features/ssl/openstack/config');
+    } else if ( is_defined(SELF) ) {
+        SELF;
+    } else {
+        null;
+    };
+};
+
+
+# Function to add http packages to an OpenStack service
+# Argument: true if SSL is enabled for the service
+function openstack_add_httpd_packages = {
+    if ( ARGC != 1 ) {
+        error('openstack_add_httpd_packages requires a boolean argument');
+    };
+
+    configure_ssl = ARGV[0];
+    if ( !is_boolean(configure_ssl) ) {
+        error('openstack_add_httpd_packages argument must be a boolean');
+    };
+
+    pkg_repl('httpd');
+    pkg_repl('python3-mod_wsgi');
+    if ( configure_ssl ) {
+        pkg_repl('mod_ssl');
+    };
+
     SELF;
 };
 
-# FIXME: As I use tiny metaconfig module, i can't just put list to have
-# element1, element2, ...
-function openstack_list_to_string = {
-    if (ARGC != 1 ) {
-        error('openstack_load_config need a argument');
+# Function to add a new dependency to a component.
+# This function allows to avoiding duplicate dependencies.
+#
+# Calling sequence :
+#    '/software/components/xxxx/dependencies/pre' (or post) = openstack_add_dependency(dependency);
+#
+# with dependency a dependency or a list of dependencies.
+
+function openstack_add_component_dependency = {
+    function_name = 'openstack_add_component_dependency';
+    deps = SELF;
+    tmpdeps = dict();
+
+    if ( (ARGC != 1) || (!is_string(ARGV[0]) && !is_list(ARGV[0]) ) ) {
+        error('%s: argument must be a depencency or a list of dependencies', function_name);
     };
 
-    if (is_list(ARGV[0])) {
-        config = ARGV[0];
-    } else    {
-        error('openstack_list_to_string need a list as an argument');
-    };
-
-    result = '';
-
-    foreach(k; v; config) {
-        if (result != '') {
-            result = format(
-                '%s,%s',
-                result,
-                v
-            );
-        } else {
-            result = v;
+    if ( !is_defined(deps) ) {
+        deps = list();
+    } else if ( !is_list(deps) ) {
+        error('%s: component dependencies must be a list', function_name);
+    } else {
+        foreach (i; dep; deps) {
+            tmpdeps[dep] = '';
         };
+    };
 
-        result;
+    if ( is_string(ARGV[0]) ) {
+        newdeps = list(ARGV[0]);
+    } else {
+        newdeps = ARGV[0];
+    };
+    foreach (i; dep; newdeps) {
+        if ( !exists(tmpdeps[dep]) ) {
+            tmpdeps[dep] = '';
+        }
+    };
+
+    deps = list();
+    foreach (dep; v; tmpdeps) {
+        deps[length(deps)] = dep;
+    };
+
+    if ( length(deps) > 0 ) {
+        deps;
+    } else {
+        null;
     };
 };
 
-function openstack_dict_to_hostport_string = {
-    if (ARGC != 1) {
-        error('openstack_dict_to_hostport_string needs an argument');
+
+@documentation {
+
+This function returns the value receive in argument if it is defined, null
+otherwise. It is a helper for assigning optional values to the schema.
+
+}
+function openstack_add_if_defined = {
+    function_name = 'openstack_add_component_dependency';
+
+    if ( ARGC != 1 ) {
+        error('openstack_add_if_defined requires one argument of any type');
     };
 
-    if (is_dict(ARGV[0])) {
-        config = ARGV[0];
+    if ( is_defined(ARGV[0]) ) {
+        ARGV[0];
     } else {
-        error('openstack_dict_to_hostport_string needs a dict as an argument');
+        null;
     };
-    result = '';
-    foreach(k; v; config) {
-        if (result != '') {
-            result = format(
-                '%s,%s:%d',
-                result,
-                k,
-                v
-            );
-        } else {
-            result = format(
-                '%s:%d',
-                k,
-                v
-            );
-        };
-
-        result;
-    };
-};
-
-function openstack_dict_to_connection_string = {
-    if (ARGC != 1) {
-        error('openstack_dict_to_connection_string needs an argument');
-    };
-
-    if (is_dict(ARGV[0])) {
-        config = ARGV[0];
-    } else {
-        error('openstack_dict_to_connection_string needs a dict as an argument');
-    };
-    result = format(
-        '%s://%s:%s@%s:%d/%s',
-        config['dbprotocol'],
-        config['dbuser'],
-        config['dbpassword'],
-        config['dbhost'],
-        config['dbport'],
-        config['dbname']
-    );
-    result;
-};
-
-
-function openstack_generate_uri = {
-    if (ARGC != 3) {
-        error('openstack_generate_uri needs an argument');
-    };
-
-    if (is_dict(ARGV[1])) {
-        dict_of_hosts = ARGV[1];
-    } else {
-        error('openstack_generate_uri needs a dict as an argument');
-    };
-    protocol = ARGV[0];
-    port = ARGV[2];
-
-
-    if (length(dict_of_hosts) == 1) {
-        result = foreach (k; v; dict_of_hosts[0]) {
-            format(
-                '%s://%s:%d',
-                protocol,
-                k,
-                port
-            );
-        };
-    } else {
-        result = format(
-            '%s://%s:%d',
-            protocol,
-            OPENSTACK_CONTROLLER_HOST,
-            port
-        );
-    };
-    result;
-};
-
-function openstack_get_controller_host = {
-    if (ARGC != 1) {
-        error('openstack_get_controller_host needs an argument');
-    };
-
-    if (is_dict(ARGV[0])) {
-        dict_of_hosts = ARGV[0];
-    } else {
-        error('openstack_get_controller_host needs a list as an argument');
-    };
-
-    if (length(dict_of_hosts) == 1) {
-        result = foreach (k; v; dict_of_hosts[0]) {
-            k;
-        };
-    } else {
-        result = OPENSTACK_CONTROLLER_HOST;
-    };
-    result;
-
 };

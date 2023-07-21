@@ -1,78 +1,62 @@
-
 unique template features/keystone/config;
-
-include 'defaults/openstack/schema/schema';
 
 # Load some useful functions
 include 'defaults/openstack/functions';
 
+# Load Keystone-related type definitions
+include 'types/openstack/keystone';
+
 # Include general openstack variables
 include 'defaults/openstack/config';
 
-# Fix list of Openstack user that should not be deleted
-include 'features/accounts/config';
+include 'features/keystone/rpms';
 
-# Include utils
-include 'defaults/openstack/utils';
+#  httpd configuration
+include 'features/httpd/openstack/config';
+include 'features/keystone/wsgi/config';
 
-include 'features/keystone/rpms/config';
-
-# Include some useful configuration
-include 'features/httpd/config';
+# memcache configuration
 include 'features/memcache/config';
 
 # Configuration file for keystone
 include 'components/metaconfig/config';
-
-bind '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}/contents' = openstack_keystone_config;
-
 prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}';
 'module' = 'tiny';
+'convert/joincomma' = true;
+'convert/truefalse' = true;
+'daemons/httpd' = 'restart';
+bind '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}/contents' = openstack_keystone_config;
 
-prefix '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}/contents';
 # [DEFAULT] section
-'DEFAULT/admin_token' ?= OPENSTACK_ADMIN_TOKEN;
-'DEFAULT/notification_driver' = 'messagingv2';
-'DEFAULT' = openstack_load_config('features/openstack/logging/' + OPENSTACK_LOGGING_TYPE);
+'contents/DEFAULT' = openstack_load_config('features/openstack/base');
+'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
+'contents/DEFAULT' = openstack_load_ssl_config( OS_KEYSTONE_CONTROLLER_PROTOCOL == 'https' );
+'contents/DEFAULT/admin_token' ?= OS_ADMIN_TOKEN;
+# Remove unsupported parameters
+'contents/DEFAULT/auth_strategy' = null;
+
+# [cache] section
+'contents/cache/memcache_servers' = list(OS_MEMCACHE_HOST + ':11211');
+'contents/cache/enabled' = true;
+'contents/cache/backend' = 'oslo_cache.memcache_pool';
 
 # [database] section
-'database/connection' = openstack_dict_to_connection_string(OPENSTACK_KEYSTONE_DB);
+'contents/database/connection' = format('mysql+pymysql://%s:%s@%s/keystone', OS_KEYSTONE_DB_USERNAME, OS_KEYSTONE_DB_PASSWORD, OS_KEYSTONE_DB_HOST);
+
+# [fernet_tokens] section
+'contents/fernet_tokens/key_repository' = '/etc/keystone/fernet-keys';
 
 # [memcache] section
-'memcache/servers' = openstack_dict_to_hostport_string(OPENSTACK_MEMCACHE_HOSTS);
+'contents/memcache/servers' = list(OS_MEMCACHE_HOST + ':11211');
 
-# [revoke] section
-'revoke/driver' = 'sql';
+# [oslo_messaging_notifications] section
+'contents/oslo_messaging_notifications' = openstack_load_config('features/oslo_messaging/notifications');
+
+#[oslo_messaging_rabbit] section
+'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/openstack/client/base');
 
 # [token] section
-'token/provider' = OPENSTACK_KEYSTONE_TOKEN_PROVIDER;
-'token/driver' = OPENSTACK_KEYSTONE_TOKEN_DRIVER;
-
-# [oslo_messaging_rabbit] section
-'DEFAULT' = openstack_load_config('features/rabbitmq/client/openstack');
+'contents/token/provider' = 'fernet';
 
 # Configure identity backend
-include 'features/keystone/identity/' + OPENSTACK_KEYSTONE_IDENTITY_DRIVER;
-
-include 'components/filecopy/config';
-prefix '/software/components/filecopy/services';
-'{/root/init-keystone.sh}' = dict(
-    'perms', '755',
-    'config', format(
-        file_contents('features/keystone/init-keystone.sh'),
-        OPENSTACK_INIT_SCRIPT_GENERAL,
-
-    ),
-    'restart' , '/root/init-keystone.sh',
-);
-
-prefix '/software/components/filecopy/services';
-'{/root/update-keystone-to-queens.sh}' = dict(
-    'perms', '755',
-    'config', format(
-        file_contents('features/keystone/update-keystone-to-queens.sh'),
-        OPENSTACK_INIT_SCRIPT_GENERAL,
-
-    ),
-    'restart' , '/root/update-keystone-to-queens.sh',
-);
+include 'features/keystone/identity/' + OS_KEYSTONE_IDENTITY_DRIVER;

@@ -1,0 +1,49 @@
+<VirtualHost *:80>
+  ServerName [% server_name %]
+  [%- IF server_aliases.size > 0 %]
+  ServerAlias [% server_aliases.join(" ") %]
+  [%- END %] 
+
+  RedirectMatch ^(.*)$ https://[% server_name %]$1
+</VirtualHost>
+
+<VirtualHost *:443>
+  ServerName [% server_name %]
+  [%- IF server_aliases.size > 0 %]
+  ServerAlias [% server_aliases.join(" ") %]
+  [%- END %] 
+
+  RewriteEngine on
+  RewriteCond %{HTTP_HOST} "!^[% server_name %]" [NC]
+  RewriteRule ^/(.*)       https://[% server_name %]/$1 [L,R]
+
+  [%- UNLESS root_url == '/' %]
+  RedirectMatch ^/$ https://[% server_name %][% root_url %]/
+  [%- END %] 
+
+  SSLEngine On
+  SSLCertificateFile [% ssl.cert_file %]
+  SSLCertificateKeyFile [% ssl.key_file %]
+  SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown
+
+  # HTTP Strict Transport Security (HSTS) enforces that all communications
+  # with a server go over SSL. This mitigates the threat from attacks such
+  # as SSL-Strip which replaces links on the wire, stripping away https prefixes
+  # and potentially allowing an attacker to view confidential information on the
+  # wire
+  Header add Strict-Transport-Security "max-age=15768000"
+
+  WSGIDaemonProcess horizon processes=3 threads=10
+
+  WSGIScriptAlias [% root_url %] /usr/share/openstack-dashboard/openstack_dashboard/wsgi.py
+  Alias [% root_url %]/static /usr/share/openstack-dashboard/static/
+
+  ErrorLog /var/log/httpd/dashboard-error.log
+  CustomLog /var/log/httpd/dashboard-access.log combined
+
+  <Location [% root_url %]>
+    Options None
+    AllowOverride None
+    Require all granted
+  </Location>
+</VirtualHost>

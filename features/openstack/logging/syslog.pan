@@ -1,6 +1,5 @@
 structure template features/openstack/logging/syslog;
 
-'verbose' = OPENSTACK_LOGGING_VERBOSE;
-'debug' = OPENSTACK_LOGGING_DEBUG;
-'use_syslog' = 'True';
+'debug' = false;
+'use_syslog' = true;
 'syslog_log_facility' = 'LOG_LOCAL0';

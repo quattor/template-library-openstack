@@ -1,0 +1,29 @@
+<VirtualHost *:80>
+  ServerName [% server_name %]
+  [%- IF server_aliases.size > 0 %]
+  ServerAlias [% server_aliases.join(" ") %]
+  [%- END %] 
+
+  RedirectMatch ^(.*)$ https://[% server_name %]$1
+</VirtualHost>
+
+<VirtualHost *:443>
+  ServerName [% server_name %]
+  [%- IF server_aliases.size > 0 %]
+  ServerAlias [% server_aliases.join(" ") %]
+  [%- END %] 
+
+  RedirectMatch ^(.*)$ https://[% server_name %]$1
+
+  RewriteEngine on
+  RewriteCond %{HTTP_HOST} "!^[% server_name %]" [NC]
+  RewriteRule ^/(.*)       https://[% server_name %]/$1 [L,R]
+
+  SSLEngine On
+  SSLCertificateFile [% ssl.cert_file %]
+  SSLCertificateKeyFile [% ssl.key_file %]
+  SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown
+
+  ErrorLog /var/log/httpd/dashboard-error.log
+  CustomLog /var/log/httpd/dashboard-access.log combined
+</VirtualHost>

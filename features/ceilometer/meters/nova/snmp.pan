@@ -6,9 +6,8 @@ include 'defaults/openstack/config';
 include 'features/ceilometer/meters/nova/rpms/snmp';
 
 # Enable snmpd
-include 'components/chkconfig/config';
-prefix '/software/components/chkconfig/service';
-'snmpd/on' = '';
+include 'components/systemd/config';
+prefix '/software/components/systemd/unit';
 'snmpd/startstop' = true;
 
 # Configure snmpd.conf
@@ -20,10 +19,10 @@ prefix '/software/components/metaconfig/services/{/etc/snmp/snmpd.conf}';
 'daemons/snmpd' = 'restart';
 
 # system information
-'contents/main/sysLocation' = OPENSTACK_SNMPD_LOCATION;
-'contents/main/sysContact' = OPENSTACK_SNMPD_CONTACT;
-'contents/main/access' = 'ConfigGroup ""     any     noauth    exact    systemview none none';
-'contents/main/com2sec' = 'ConfigUser    default     ' + OPENSTACK_SNMPD_COMMUNITY;
-'contents/main/view' = 'systemview        included     .1';
-'contents/main/agentAddress' = 'udp:' + OPENSTACK_SNMPD_IP + ':161';
-'contents/group' = list('ConfigGroup v2c     ConfigUser');
+'contents/main/sysLocation' = OS_SNMPD_LOCATION;
+'contents/main/sysContact' = OS_SNMPD_CONTACT;
+'contents/main/access' = 'ConfigGroup ""      any       noauth    exact  systemview none none';
+'contents/main/com2sec' = 'ConfigUser  default       ' + OS_SNMPD_COMMUNITY;
+'contents/main/view' = 'systemview    included   .1';
+'contents/main/agentAddress' = 'udp:'+OS_SNMPD_IP+':161';
+'contents/group/' = list('ConfigGroup v2c           ConfigUser');

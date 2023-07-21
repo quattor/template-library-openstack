@@ -1,14 +1,10 @@
 unique template machine-types/cloud/base;
 
-include 'machine-types/core';
-# Load some useful functions
-include 'defaults/openstack/functions';
-
-# Include general openstack variables
-include 'defaults/openstack/config';
+variable OPENSTACK_CORE_MACHINE_TYPE ?= 'machine-types/core';
+include OPENSTACK_CORE_MACHINE_TYPE;
 
 # Fix list of Openstack user that should not be deleted
-include 'features/accounts/config';
+include 'features/openstack/accounts';
 
 # Include some useful RPMs
-include 'defaults/openstack/rpms';
+include 'features/openstack/rpms';
