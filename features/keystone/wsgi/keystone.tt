@@ -4,10 +4,10 @@ Listen [% port %]
 [%-  END -%]
 
 [% FOREACH vhost IN vhosts -%]
-<VirtualHost *:[% vhost.port %]>
-    WSGIDaemonProcess [% vhost.processgroup %] processes=15 threads=10 user=keystone group=keystone display-name=%{GROUP}
-    WSGIProcessGroup [% vhost.processgroup %]
-    WSGIScriptAlias / [% vhost.script %]
+<VirtualHost [% vhost.bind_host %]:[% vhost.port %]>
+    WSGIDaemonProcess [% vhost.wsgi.process_group %] processes=[% vhost.wsgi.processes %] threads=[% vhost.wsgi.threads %] user=[% vhost.wsgi.user %] group=[% vhost.wsgi.group %] display-name=[% vhost.wsgi.process_group %] listen-backlog=[% vhost.wsgi.listen_backlog %] queue-timeout=[% vhost.wsgi.queue_timeout %] request-timeout=[% vhost.wsgi.request_timeout %] inactivity-timeout=[% vhost.wsgi.inactivity_timeout %] deadlock-timeout=[% vhost.wsgi.deadlock_timeout %] graceful-timeout=[% vhost.wsgi.graceful_timeout %] eviction-timeout=[% vhost.wsgi.eviction_timeout %]
+    WSGIProcessGroup [% vhost.wsgi.process_group %]
+    WSGIScriptAlias / [% vhost.wsgi.script_path %]/[% vhost.wsgi.script_name %]
     WSGIApplicationGroup %{GLOBAL}
     WSGIPassAuthorization On
     <IfVersion >= 2.4>
@@ -26,7 +26,7 @@ Listen [% port %]
     ErrorLog /var/log/httpd/keystone-error.log
     CustomLog /var/log/httpd/keystone-access.log combined
 
-    <Directory /usr/bin>
+    <Directory [% vhost.wsgi.script_path %]>
         Require all granted
     </Directory>
 

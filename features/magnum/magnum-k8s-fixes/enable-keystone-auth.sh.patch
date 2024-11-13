@@ -1,0 +1,11 @@
+--- enable-keystone-auth.sh.original	2024-07-05 15:35:22.868933362 +0200
++++ enable-keystone-auth.sh	2024-07-05 15:38:46.696212423 +0200
+@@ -4,7 +4,7 @@
+ printf "Starting to run ${step}\n"
+ 
+ if [ "$(echo $KEYSTONE_AUTH_ENABLED | tr '[:upper:]' '[:lower:]')" != "false" ]; then
+-    _prefix=${CONTAINER_INFRA_PREFIX:-docker.io/k8scloudprovider/}
++    _prefix=${CONTAINER_INFRA_PREFIX:-registry.k8s.io/provider-os/}
+     CERT_DIR=/etc/kubernetes/certs
+ 
+     # Create policy configmap for keystone auth

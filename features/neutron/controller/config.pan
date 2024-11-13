@@ -34,31 +34,8 @@ include 'features/neutron/base';
 include 'features/neutron/server';
 
 # Include policy file if OS_NEUTRON_POLICY is defined
-@{
-desc = file to load as the policy file. File extension is used to determine the policy file extension
-values = path relative to include paths
-default = undef
-requied = no
-}
-variable OS_NEUTRON_POLICY ?= undef;
 include 'components/filecopy/config';
-'/software/components/filecopy/services' = {
-    if ( is_defined(OS_NEUTRON_POLICY) ) {
-        toks = matches(OS_NEUTRON_POLICY, '.*\.(json|yaml)$');
-        if ( length(toks) < 2 ) {
-            error('OS_NEUTRON_POLICY must be a file name with the extension .json or .yaml');
-        };
-        policy_file = format('/etc/neutron/policy.%s', toks[1]);
-        SELF[escape(policy_file)] = dict(
-            'config', file_contents(OS_NEUTRON_POLICY),
-            'owner', 'root',
-            'perms', '0644',
-            'backup', true,
-        );
-    };
-
-    SELF;
-};
+'/software/components/filecopy/services' = openstack_load_policy('neutron', OS_NEUTRON_POLICY);
 
 
 # neutron.conf
@@ -74,11 +51,17 @@ prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
 bind '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}/contents' = openstack_neutron_server_config;
 
 # [DEFAULT]
+'contents/DEFAULT/bind_host' = if ( OS_NEUTRON_PROTOCOL == 'https' ) {
+    OS_NEUTRON_CONTROLLER_HOST;
+} else {
+    '0.0.0.0';
+};
+'contents/DEFAULT/bind_port' = OS_NEUTRON_CONTROLLER_PORT;
 'contents/DEFAULT/notify_nova_on_port_status_changes' = true;
 'contents/DEFAULT/notify_nova_on_port_data_changes' = true;
-'contents/DEFAULT/use_ssl' = OS_NEUTRON_CONTROLLER_PROTOCOL == 'https';
 'contents/DEFAULT/api_workers' = OS_NEUTRON_API_WORKERS;
 'contents/DEFAULT/rpc_workers' = OS_NEUTRON_RPC_WORKERS;
+'contents/DEFAULT/use_ssl' = false;
 
 # [database]
 'contents/database/connection' = format(
@@ -98,5 +81,8 @@ bind '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}/conte
 # [oslo_concurrency]
 'contents/oslo_concurrency/lock_path' = '/var/lib/neutron/tmp';
 
-# [ssl] section
-'contents/ssl' = openstack_load_ssl_config( OS_NEUTRON_CONTROLLER_PROTOCOL == 'https' );
+
+#########################################
+# Configure SSL proxy if SSL is enabled #
+#########################################
+include if ( OS_NEUTRON_PROTOCOL == 'https' ) 'features/neutron/controller/nginx/config';

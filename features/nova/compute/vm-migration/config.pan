@@ -5,5 +5,3 @@ include 'features/nova/compute/vm-migration/live';
 
 # Configuration specific to cold migration #
 include 'features/nova/compute/vm-migration/cold';
-
-

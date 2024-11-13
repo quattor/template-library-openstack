@@ -11,9 +11,14 @@ include 'types/openstack/octavia';
 # Include general openstack variables
 include 'defaults/openstack/config';
 
-# Configure gunicorn
-# 2024-03-17: Work in progress - not working yet
-#include 'features/octavia/gunicorn/config';
+
+@{
+desc = number of processes to handle Octavia API requests
+values = long
+default = 16
+required = no
+}
+variable OS_OCTAVIA_API_PROCESSES ?= 16;
 
 @{
 desc = password used to encrypt CA private key for both Octavia CAs
@@ -60,6 +65,13 @@ variable OS_OCTAVIA_HEARTBEAT_KEY = if ( length(OS_OCTAVIA_HEARTBEAT_KEY) >= 20 
     error('OS_OCTAVIA_HEARTBEAT_KEY must be at least 20-character long');
 };
 
+@{
+desc = Directory for Octavia services
+values = absolute file path
+default = /var/log/octavia
+required = no
+}
+variable OS_OCTAVIA_LOG_DIR ?= '/var/log/octavia';
 
 @{
 desc = Octavia management network OpenStack ID
@@ -87,22 +99,29 @@ variable OS_OCTAVIA_SERVICE_SSH_KEY ?= error(
 
 # For the following parameters, default values should be appropriate
 include 'features/octavia/management-network/defaults';
-variable OS_OCTAVIA_API_BIND_PORT ?= 9876;
-variable OS_OCTAVIA_HEALTH_MANAGER_BIND_PORT ?= 5555;
+variable OS_OCTAVIA_API_PORT ?= OS_OCTAVIA_CONTROLLER_PORT;
+variable OS_OCTAVIA_HEALTH_MANAGER_PORT ?= 5555;
 variable OS_OCTAVIA_HEALTH_MANAGER_CONTROLLER_IP_PORT_LIST ?= list(format(
     '%s:%s',
     OS_OCTAVIA_MGMT_NETWORK_MGT_PORT_IP,
-    OS_OCTAVIA_HEALTH_MANAGER_BIND_PORT,
+    OS_OCTAVIA_HEALTH_MANAGER_PORT,
 ));
+variable OS_OCTAVIA_GROUP ?= OS_OCTAVIA_USERNAME;
 
 
-# Add Glance bae RPMs
+# Include policy file if OS_OCTAVIA_POLICY is defined
+include 'components/filecopy/config';
+'/software/components/filecopy/services' = openstack_load_policy('octavia', OS_OCTAVIA_POLICY);
+
+
+# Add Octavia bae RPMs
 include 'features/octavia/rpms';
 
-# Configgure Glance services
+# Configgure Octavia services
 include 'components/systemd/config';
 prefix '/software/components/systemd/unit';
-'octavia-api/startstop' = true;
+# octavia-api service is disabled as it is run via uwsgi
+'octavia-api/state' = 'disabled';
 'octavia-health-manager/startstop' = true;
 'octavia-housekeeping/startstop' = true;
 'octavia-worker/startstop' = true;
@@ -117,7 +136,7 @@ prefix '/software/components/metaconfig/services/{/etc/octavia/octavia.conf}';
 'module' = 'tiny';
 'convert/joincomma' = true;
 'convert/truefalse' = true;
-'daemons/octavia-api' = 'restart';
+# octavia-api doesn't need to be explicitely restarted after a config change: handled by uwsgi
 'daemons/octavia-health-manager' = 'restart';
 'daemons/octavia-housekeeping' = 'restart';
 'daemons/octavia-worker' = 'restart';
@@ -131,7 +150,7 @@ bind '/software/components/metaconfig/services/{/etc/octavia/octavia.conf}/conte
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
 
 # [api_settings] section
-'contents/api_settings/bind_port' = OS_OCTAVIA_API_BIND_PORT;
+'contents/api_settings/bind_port' = OS_OCTAVIA_API_PORT;
 
 # [certificates] section
 'contents/certificates/ca_certificate' = format('%s/server_ca.cert.pem', OS_OCTAVIA_CA_CERT_DIR);
@@ -159,7 +178,7 @@ bind '/software/components/metaconfig/services/{/etc/octavia/octavia.conf}/conte
 
 # [health_manager] section
 'contents/health_manager/bind_ip' = OS_OCTAVIA_MGMT_NETWORK_MGT_PORT_IP;
-'contents/health_manager/bind_port' = OS_OCTAVIA_HEALTH_MANAGER_BIND_PORT;
+'contents/health_manager/bind_port' = OS_OCTAVIA_HEALTH_MANAGER_PORT;
 'contents/health_manager/controller_ip_port_list' = OS_OCTAVIA_HEALTH_MANAGER_CONTROLLER_IP_PORT_LIST;
 'contents/health_manager/heartbeat_key' = OS_OCTAVIA_HEARTBEAT_KEY;
 
@@ -173,6 +192,10 @@ bind '/software/components/metaconfig/services/{/etc/octavia/octavia.conf}/conte
 
 # [oslo_messaging_notifications] section
 'contents/oslo_messaging_notifications' = openstack_load_config('features/oslo_messaging/notifications');
+
+#[oslo_messaging_rabbit] section
+'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/openstack/client/base');
+'contents/oslo_messaging_rabbit/heartbeat_in_pthread' = false;
 
 # [service_auth] section
 'contents/service_auth' = value(
@@ -215,4 +238,15 @@ prefix '/software/components/filecopy/services/{/root/octavia-initialization.REA
 'config' = file_contents('features/octavia/octavia-initialization.README');
 'perms' = '0644';
 
+
+###################
+# Configure uSWGI #
+###################
+include 'features/octavia/uwsgi/config';
+
+
+#########################################
+# Configure SSL proxy if SSL is enabled #
+#########################################
+include if ( OS_OCTAVIA_PROTOCOL == 'https' ) 'features/octavia/nginx/config';
 

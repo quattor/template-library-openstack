@@ -12,6 +12,7 @@ include 'types/openstack/core';
 type openstack_glance_defaults = {
     include openstack_DEFAULTS
 
+    'bind_host' ? type_hostname
     'bind_port' ? long(1..65535)
     'enabled_backends' ? string[]
     'location_strategy' ? choice('location_order', 'store_type')

@@ -15,6 +15,7 @@ type openstack_cinder_defaults = {
     'enable_v3_api' ? boolean
     'enabled_backends' ? string[]
     'glance_api_servers' : type_hostURI[]
+    'osapi_volume_listen' ? type_hostname
     'osapi_volume_listen_port' ? long(1..65535)
     'public_endpoint' ? type_hostURI
 };
@@ -33,7 +34,7 @@ type openstack_cinder_backend_defaults = {
     'rados_connect_timeout' ? long = -1
     'rbd_ceph_conf' ? absolute_file_path = '/etc/ceph/ceph.conf'
     'rbd_exclusive_cinder_pool' ? boolean = false
-    'rbd_flatten_volume_from_snapshot' ? boolean 
+    'rbd_flatten_volume_from_snapshot' ? boolean
     'rbd_max_clone_depth' ? long = 5
     'rbd_pool' ? string = 'rbd'
     'rbd_secret_uuid' ?  string

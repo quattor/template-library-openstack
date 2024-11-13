@@ -10,10 +10,12 @@ include 'types/openstack/core';
 # Add Nginx and its base configuration
 include 'features/nginx/openstack/config';
 
-# Nginx proxy configuration for Glance
+# Nginx proxy configuration for Cinder
+include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/nginx/conf.d/cinder.conf}';
 'module' = 'openstack/nginx-proxy';
 'daemons/nginx' = 'restart';
+# panlint disable=LP006
 bind '/software/components/metaconfig/services/{/etc/nginx/conf.d/cinder.conf}/contents' = openstack_nginx_proxy_config;
 
 'contents/bind_port' = OS_CINDER_PUBLIC_PORT;
@@ -25,5 +27,6 @@ bind '/software/components/metaconfig/services/{/etc/nginx/conf.d/cinder.conf}/c
 
 # Define bind port used by Cinder and its public endpoint
 prefix '/software/components/metaconfig/services/{/etc/cinder/cinder.conf}';
+'contents/DEFAULT/osapi_volume_listen' = OS_CINDER_CONTROLLER_HOST;
 'contents/DEFAULT/osapi_volume_listen_port' = OS_CINDER_CONTROLLER_PORT;
 'contents/DEFAULT/public_endpoint' = format('https://%s:%s', OS_CINDER_PUBLIC_HOST, OS_CINDER_PUBLIC_PORT);

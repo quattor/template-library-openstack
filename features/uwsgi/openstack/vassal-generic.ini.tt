@@ -1,0 +1,29 @@
+[uwsgi]
+uid = [% user %]
+gid = [% group %]
+
+wsgi-file = [% wsgi_file %]
+touch-reload = [% wsgi_file %]
+[%- IF config_files %]
+[%- FOREACH file IN config_files %]
+touch-reload = [% file %]
+[%- END %]
+[%- END %]
+socket =  [% bind_host %]:[% bind_port %]
+protocol = http
+plugin = python3
+
+master = true
+single-interpreter = true
+enable-threads = true
+processes = [% processes %]
+threads = [% threads %]
+exit-on-reload = true
+die-on-term = true
+lazy-apps = true
+add-header = Connection: close
+[%- IF buffer_size %]
+buffer-size = [% buffer_size %]
+[%- END %]
+thunder-lock = true
+logto = [% log_file %]

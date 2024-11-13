@@ -1,0 +1,20 @@
+server {
+  listen        [% port %] [% IF ssl.defined %]ssl[% END %];
+  listen        [::]:[% port %] [% IF ssl.defined %]ssl[% END %];
+  server_name   [% server_name %] [% server_aliases.join(" ") %];
+  access_log   /var/log/nginx/[% service %].access.log  combined;
+  error_log   /var/log/nginx/[% service %].error.log  warn;
+
+  [%- IF ssl.defined %]
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_certificate      [% ssl.cert_file %];
+  ssl_certificate_key  [% ssl.key_file %];
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 10m;
+  [%- END %]
+  client_max_body_size 0;
+
+  location / {
+    return 301 [% redirect_url %]$request_uri;
+  }
+}

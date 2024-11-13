@@ -17,11 +17,11 @@ bind '/software/components/metaconfig/services/{/root/openstack-octavia-rc}/cont
 'contents/config/OS_AUTH_URL' = format(
     '%s://%s:%s/v3',
     OS_KEYSTONE_CONTROLLER_PROTOCOL,
-    OS_KEYSTONE_PUBLIC_CONTROLLER_HOST,
-    OS_KEYSTONE_PUBLIC_CONTROLLER_PORT
+    OS_KEYSTONE_PUBLIC_HOST,
+    OS_KEYSTONE_PUBLIC_STANDARD_PORT
 );
-'contents/config/OS_PASSWORD' = OS_OCTAVIA_PASSWORD; 
-'contents/config/OS_PROJECT_DOMAIN_NAME' = 'Default'; 
-'contents/config/OS_PROJECT_NAME' = 'service'; 
-'contents/config/OS_USER_DOMAIN_NAME' = 'Default'; 
-'contents/config/OS_USERNAME' = OS_OCTAVIA_USERNAME; 
+'contents/config/OS_PASSWORD' = OS_OCTAVIA_PASSWORD;
+'contents/config/OS_PROJECT_DOMAIN_NAME' = 'Default';
+'contents/config/OS_PROJECT_NAME' = 'service';
+'contents/config/OS_USER_DOMAIN_NAME' = 'Default';
+'contents/config/OS_USERNAME' = OS_OCTAVIA_USERNAME;

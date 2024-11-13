@@ -34,8 +34,7 @@ if [ "$1" == "start" ]; then
   ip a show ${vxlan_if} >& /dev/null || exit_code=$?
   [[ ${exit_code} -eq 0 ]] && echo "Interface ${vxlan_if} already exists" && exit 0
   ip link add ${vxlan_if} type vxlan id ${MGMT_VLAN_ID} group 224.0.0.1 dev ${VXLAN_DEVICE} srcport 0 0 dstport 8472
-  ip link set dev ${vxlan_if} address $MGMT_PORT_MAC
-  ifconfig ${vxlan_if} up
+  ip link set dev ${vxlan_if} up address $MGMT_PORT_MAC
   iptables -I INPUT -i o-hm0 -p udp --dport ${HM_BIND_PORT} -j ACCEPT
   dhclient -v ${vxlan_if} -cf /etc/dhcp/octavia
 elif [ "$1" == "stop" ]; then

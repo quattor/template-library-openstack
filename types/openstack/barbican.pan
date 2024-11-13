@@ -13,6 +13,7 @@ type openstack_barbican_defaults = {
     include openstack_DEFAULTS
     'host_href' : type_hostURI
     'sql_connection': string
+    'wsgi_default_pool_size': number
 };
 
 @documentation {
@@ -21,4 +22,5 @@ type openstack_barbican_defaults = {
 type openstack_barbican_config = {
     'DEFAULT' : openstack_barbican_defaults
     'keystone_authtoken' : openstack_keystone_authtoken
+    'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
 };

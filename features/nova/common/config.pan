@@ -42,8 +42,10 @@ prefix '/software/components/metaconfig/services/{/etc/nova/nova.conf}';
 
 # [upgrade_levels] section
 # Require OS_NOVA_UPGRADE_LEVELS to be <= to current server version
+# With version >= Zed, names restart at the beginning of the alphabet
 'contents/upgrade_levels' = if ( is_defined(OS_NOVA_UPGRADE_LEVELS) ) {
-    if ( OS_NOVA_UPGRADE_LEVELS <= OPENSTACK_VERSION_NAME ) {
+    if ( (OS_NOVA_UPGRADE_LEVELS <= OPENSTACK_VERSION_NAME) ||
+        (OPENSTACK_VERSION_NAME <= "liberty") ) {
         dict('compute', OS_NOVA_UPGRADE_LEVELS);
     } else {
         error(

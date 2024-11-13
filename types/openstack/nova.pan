@@ -8,7 +8,7 @@ include 'types/openstack/core';
 
 @documentation {
     DEFAULT section for Nova
-};
+}
 type openstack_nova_defaults = {
     include openstack_DEFAULTS
 
@@ -24,6 +24,7 @@ type openstack_nova_defaults = {
     'ram_allocation_ratio' ? double with SELF > 0
     'initial_ram_allocation_ratio' ? double with SELF > 0
     'resume_guests_state_on_host_boot' : boolean = false
+    'rpc_response_timeout' ? long
 
     # Parameters related to SSL
     'cert' ? absolute_file_path
@@ -43,7 +44,24 @@ type openstack_nova_defaults = {
     'compute_monitors' ? string[]
     'enabled_apis' : string[] = list('osapi_compute', 'metadata')
     'enabled_ssl_apis' : string[] = list()
+    'osapi_compute_listen' ? type_hostname
+    'osapi_compute_listen_port' ? type_port
     'state_path' ? absolute_file_path
+};
+
+@documentation {
+    DEFAULT section for Nova compute
+}
+type openstack_nova_compute_defaults = {
+    include openstack_nova_defaults
+
+    'default_ephemeral_format' ? choice (
+        'ext2',
+        'ext3',
+        'ext4',
+        'xfs',
+        'ntfs'
+    )
 };
 
 @documentation {
@@ -65,6 +83,13 @@ type openstack_nova_api_database = {
 }
 type openstack_nova_cinder = {
     'os_region_name': string
+};
+
+@documentation {
+    parameters for nova compute configuration [workarounds] section
+}
+type openstack_nova_compute_workarounds = {
+    'skip_cpu_compare_on_dest' ? boolean
 };
 
 @documentation {
@@ -94,6 +119,7 @@ type openstack_nova_glance = {
 }
 type openstack_nova_libvirt = {
     'cpu_mode' ? string
+    'hw_machine_type' ? string with length(SELF) > 0 && match(SELF, '^(\w+=\w+\s*)+$')
     'disk_cachemodes' ? string[]
     'hw_disk_discard' ? choice('ignore', 'unmap')
     'images_rbd_ceph_conf' ? string
@@ -106,6 +132,7 @@ type openstack_nova_libvirt = {
     'inject_partition' ? long with SELF >= -2
     'live_migration_permit_auto_converge' ? boolean
     'live_migration_permit_post_copy' ? boolean
+    'num_pcie_ports' ? long with SELF >= 0 && SELF <= 28
     'virt_type' : choice('kvm', 'lxc', 'qemu', 'uml', 'parallels', 'xen')
 };
 
@@ -153,7 +180,8 @@ type openstack_nova_pci = {
     # Unfortunately it is not possible to use openstack_nova_pci_alias as a dict is not rendered
     # properly by metaconfig tiny module
     'alias' ? string
-    'passthrough_whitelist' ? string
+    'device_spec' ? string
+    'report_in_placement' ? boolean
 };
 
 @documentation {
@@ -205,9 +233,9 @@ type openstack_nova_wsgi = {
 };
 
 @documentation {
-    parameters for nova configuration [vnc] section
+    parameters for nova configuration [vnc] section for compute
 }
-type openstack_nova_vnc = {
+type openstack_nova_compute_vnc = {
     'enabled' : boolean = true
     'novncproxy_base_url' ? type_hostURI
     'server_listen' ? string with is_ipv4(SELF) || is_hostname(SELF)
@@ -215,10 +243,17 @@ type openstack_nova_vnc = {
 };
 
 @documentation {
+    parameters for nova configuration [vnc] section for server
+}
+type openstack_nova_server_vnc = {
+    'novncproxy_host' : type_hostname
+    'novncproxy_port' : type_port
+};
+
+@documentation {
     list of nova configuration sections common to server and compute
 }
 type openstack_nova_common_config = {
-    'DEFAULT' : openstack_nova_defaults
     'glance' ? openstack_nova_glance
     'keystone_authtoken' : openstack_keystone_authtoken
     'neutron' ? openstack_nova_neutron
@@ -228,7 +263,6 @@ type openstack_nova_common_config = {
     'placement' ? openstack_nova_placement
     'service_user' : openstack_nova_service_user
     'upgrade_levels' ? openstack_nova_upgrade_levels
-    'vnc' ? openstack_nova_vnc
 };
 
 @documentation {
@@ -236,12 +270,14 @@ type openstack_nova_common_config = {
 }
 type openstack_nova_server_config = {
     include openstack_nova_common_config
+    'DEFAULT' : openstack_nova_defaults
     'api' : openstack_nova_api
     'api_database' : openstack_nova_api_database
     'database' : openstack_database
     'filter_scheduler' : openstack_nova_filter_scheduler
     'pci' ? openstack_nova_pci
-    'wsgi' : openstack_nova_wsgi
+    'vnc' ? openstack_nova_server_vnc
+    'wsgi' ? openstack_nova_wsgi
 };
 
 @documentation {
@@ -249,8 +285,22 @@ type openstack_nova_server_config = {
 }
 type openstack_nova_compute_config = {
     include openstack_nova_common_config
+    'DEFAULT' : openstack_nova_compute_defaults
     'cinder' ? openstack_nova_cinder
     'libvirt' ? openstack_nova_libvirt
     'notifications' ? openstack_nova_notifications
     'pci' ? openstack_nova_pci
+    'vnc' ? openstack_nova_compute_vnc
+    'workarounds' ? openstack_nova_compute_workarounds
 };
+
+
+@documentation {
+    list of libvirt proxyd configuration options
+}
+type openstack_nova_libvirt_proxyd = {
+    'listen_tls' ? boolean
+    'listen_tcp' ? boolean
+    'auth_tcp' ? choice('none', 'polkit', 'sasl')
+};
+

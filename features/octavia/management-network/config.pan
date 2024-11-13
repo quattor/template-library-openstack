@@ -33,7 +33,8 @@ required = no
 variable OS_OCTAVIA_MGMT_NETWORK_MGMT_PORT_MAC ?= error(
     "%s\n%s",
     "You must define OS_OCTAVIA_MGMT_NETWORK_MGMT_PORT_MAC with the MAC address of the management port",
-    "on the management network as reported by the creation script. If it has not yet been created, use temporily 'ff:ff:ff:ff:ff:ff'",
+    "on the management network as reported by the creation script. If it has not yet been created, " +
+    "use temporily 'ff:ff:ff:ff:ff:ff'",
 );
 
 
@@ -101,16 +102,19 @@ prefix '/software/components/systemd/unit/octavia-interface/file/config/service'
 prefix '/software/components/metaconfig/services/{/etc/sysconfig/octavia-interface}';
 'module' = 'tiny';
 'daemons/octavia-interface' = 'restart';
+# panlint disable=LP006
 bind '/software/components/metaconfig/services/{/etc/sysconfig/octavia-interface}/contents' = octavia_mgt_interface_service_config;
 'contents/BRNAME' = openstack_add_if_defined(OS_OCTAVIA_MGMT_NETWORK_BRNAME);
-'contents/HM_BIND_PORT' = OS_OCTAVIA_HEALTH_MANAGER_BIND_PORT;
+'contents/HM_BIND_PORT' = OS_OCTAVIA_HEALTH_MANAGER_PORT;
 'contents/MGMT_PORT_MAC' = openstack_add_if_defined(OS_OCTAVIA_MGMT_NETWORK_MGMT_PORT_MAC);
 'contents/MGMT_VLAN_ID' = OS_OCTAVIA_MGMT_NETWORK_VLAN_ID;
 'contents/VXLAN_DEVICE' = openstack_add_if_defined(OS_OCTAVIA_MGMT_NETWORK_VXLAN_DEVICE);
 
 
 # Create interface definition in network service when running on the Neutron server
-include if ( OS_OCTAVIA_PUBLIC_HOST == OS_NEUTRON_PUBLIC_HOST ) 'features/octavia/management_network/add_systemd_interface';
+include if ( OS_OCTAVIA_PUBLIC_HOST == OS_NEUTRON_PUBLIC_HOST ) {
+    'features/octavia/management_network/add_systemd_interface';
+};
 
 # Configure DHCP client for management network
 # Note: before octavia-interface is fully configured, the service restart when the dhcp client

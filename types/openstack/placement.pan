@@ -30,6 +30,7 @@ type openstack_placement_config = {
     'api' : openstack_placement_api
     'keystone_authtoken' : openstack_keystone_authtoken
     'oslo_messaging_notifications' ? openstack_oslo_messaging_notifications
+    'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
     'placement' ? openstack_placement_placement
     'placement_database' : openstack_database
 };

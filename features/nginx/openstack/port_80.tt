@@ -1,0 +1,30 @@
+# Port 80 is configured to handle only AMCE challenge
+server {
+  listen       *:80;
+  listen       [::]:80;
+  server_name   [% server_name %];
+  access_log   /var/log/nginx/[% service %].access.log  combined;
+  error_log   /var/log/nginx/[% service %].error.log  warn;
+
+  [%- IF acme_challenge_url %]
+  location ^~ /.well-known/acme-challenge {
+    alias [% acme_challenge_url %];
+  }
+  [%- END %]
+
+  [%- SET catchall_deny = 1 %]
+  [%- IF redirect_urls.defined %]
+  [%- FOREACH redirect IN redirect_urls %]
+  [%- IF redirect.url == "/" %][% SET catchall_deny = 0 %][% END %]
+  location [% redirect.url %] {
+    return 301 [% redirect.target %]$request_uri;
+  }
+  [%- END %]
+  [%- END %]
+
+  [%- IF catchall_deny %]
+  location / {
+    deny all;
+  }
+  [% END %]
+}

@@ -9,7 +9,6 @@ include 'defaults/openstack/functions';
     pkg_repl('openstack-nova-scheduler');
     pkg_repl('python3-etcd3gw');
     pkg_repl('python3-novaclient');
-    openstack_add_httpd_packages( OS_NOVA_CONTROLLER_PROTOCOL == 'https' );
 
     SELF;
 };

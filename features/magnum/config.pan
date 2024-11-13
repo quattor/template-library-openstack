@@ -1,13 +1,5 @@
 unique template features/magnum/config;
 
-@desc{
-desc = defines the cluster creation timeout (max time)
-values = long
-default = 60
-required = no
-}
-variable OS_MAGNUM_CLUSTER_CREATION_TIMEOUT ?= 60;
-
 variable OS_NODE_SERVICES = append('magnum');
 
 # Load some useful functions
@@ -19,11 +11,29 @@ include 'types/openstack/magnum';
 # Include general openstack variables
 include 'defaults/openstack/config';
 
+@desc{
+desc = defines the cluster creation timeout (max time)
+values = long
+default = 60
+required = no
+}
+variable OS_MAGNUM_CLUSTER_CREATION_TIMEOUT ?= 60;
+
+variable OS_MAGNUM_API_PROCESSES ?= 8;
+variable OS_MAGNUM_GROUP ?= OS_MAGNUM_USERNAME;
+variable OS_MAGNUM_LOG_DIR ?= '/var/log/magnum';
+
+# Include policy file if OS_MAGNUM_POLICY is defined
+include 'components/filecopy/config';
+'/software/components/filecopy/services' = openstack_load_policy('magnum', OS_MAGNUM_POLICY);
+
+
 include 'features/magnum/rpms';
 
 include 'components/systemd/config';
 prefix '/software/components/systemd/unit';
-'openstack-magnum-api/startstop' = true;
+# magnum-api service is disabled as it is run via uwsgi
+'openstack-magnum-api/state' = 'disabled';
 'openstack-magnum-conductor/startstop' = true;
 
 # Configuration file for Magnum
@@ -32,7 +42,7 @@ prefix '/software/components/metaconfig/services/{/etc/magnum/magnum.conf}';
 'module' = 'tiny';
 'convert/joincomma' = true;
 'convert/truefalse' = true;
-'daemons/openstack-magnum-api' = 'restart';
+# magnum-api doesn't need to be explicitely restarted after a config change: handled by uwsgi
 'daemons/openstack-magnum-conductor' = 'restart';
 # Restart memcached to ensure considtency with service configuration changes
 'daemons/memcached' = 'restart';
@@ -41,16 +51,18 @@ bind '/software/components/metaconfig/services/{/etc/magnum/magnum.conf}/content
 # [DEFAULT] section
 'contents/DEFAULT' = openstack_load_config('features/openstack/base');
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
-'contents/DEFAULT' = openstack_load_ssl_config( OS_MAGNUM_PROTOCOL == 'https' );
 'contents/DEFAULT/my_ip' = PRIMARY_IP;
-'contents/DEFAULT/log_file' = 'magnum.log';
-'contents/DEFAULT/log_dir' = '/var/log/magnum';
+'contents/DEFAULT/log_dir' = OS_MAGNUM_LOG_DIR;
+'contents/DEFAULT/rpc_response_timeout' = 120;
 
 # [api] section
-'contents/api/host' = OS_MAGNUM_HOST;
-'contents/api/port' = OS_MAGNUM_PORT;
-'contents/api/enable_ssl' = OS_MAGNUM_PROTOCOL == 'https';
-'contents/api' = openstack_load_ssl_config( OS_MAGNUM_PROTOCOL == 'https' );
+# When using https, the API service is access through a local Nginx proxy
+'contents/api/host' = if ( OS_MAGNUM_PROTOCOL == 'https' ) {
+    '127.0.0.1';
+} else {
+    OS_MAGNUM_CONTROLLER_HOST;
+};
+'contents/api/port' = OS_MAGNUM_CONTROLLER_PORT;
 
 # [certificates] section
 'contents/certificates/cert_manager_type' = 'barbican';
@@ -65,7 +77,13 @@ bind '/software/components/metaconfig/services/{/etc/magnum/magnum.conf}/content
 'contents/cluster_heat/create_timeout' = OS_MAGNUM_CLUSTER_CREATION_TIMEOUT;
 
 # [database] section
-'contents/database/connection' = format('mysql+pymysql://%s:%s@%s/magnum', OS_MAGNUM_DB_USERNAME, OS_MAGNUM_DB_PASSWORD, OS_MAGNUM_DB_HOST);
+'contents/database/connection' = format(
+    'mysql+pymysql://%s:%s@%s/magnum',
+    OS_MAGNUM_DB_USERNAME,
+    OS_MAGNUM_DB_PASSWORD,
+    OS_MAGNUM_DB_HOST,
+);
+'contents/database/max_pool_size' =  OS_MAGNUM_DB_POOL_SIZE;
 
 # [heat_client] section
 'contents/heat_client/region_name' = OS_HEAT_REGION_NAME;
@@ -90,6 +108,8 @@ bind '/software/components/metaconfig/services/{/etc/magnum/magnum.conf}/content
 
 # [oslo_messaging_rabbit] section
 'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/openstack/client/base');
+'contents/oslo_messaging_rabbit/heartbeat_in_pthread' = false;
+'contents/oslo_messaging_rabbit/kombu_missing_consumer_retry_timeout' = 120;
 
 # [trust] section
 'contents/trust/cluster_user_trust' = OS_MAGNUM_CLUSTER_USER_TRUST;
@@ -97,3 +117,23 @@ bind '/software/components/metaconfig/services/{/etc/magnum/magnum.conf}/content
 'contents/trust/trustee_domain_admin_name' = OS_MAGNUM_DOMAIN_ADMIN_USERNAME;
 'contents/trust/trustee_domain_admin_password' = OS_MAGNUM_DOMAIN_ADMIN_PASSWORD;
 'contents/trust/trustee_keysone_interface' = 'public';
+
+
+###################
+# Configure uSWGI #
+###################
+include 'features/magnum/uwsgi/config';
+
+
+#########################################
+# Configure SSL proxy if SSL is enabled #
+#########################################
+include if ( OS_MAGNUM_PROTOCOL == 'https' ) 'features/magnum/nginx/config';
+
+
+################################################
+# Patches to Magnum K8s initialization scripts #
+# Patches must be applied manually             #
+################################################
+include 'features/magnum/k8s-fragment-fixes';
+

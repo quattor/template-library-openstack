@@ -11,9 +11,11 @@ include 'types/openstack/core';
 include 'features/nginx/openstack/config';
 
 # Nginx proxy configuration for Glance
+include 'components/metaconfig/config';
 prefix '/software/components/metaconfig/services/{/etc/nginx/conf.d/glance.conf}';
 'module' = 'openstack/nginx-proxy';
 'daemons/nginx' = 'restart';
+# panlint disable=LP006
 bind '/software/components/metaconfig/services/{/etc/nginx/conf.d/glance.conf}/contents' = openstack_nginx_proxy_config;
 
 'contents/bind_port' = OS_GLANCE_PUBLIC_PORT;
@@ -25,5 +27,6 @@ bind '/software/components/metaconfig/services/{/etc/nginx/conf.d/glance.conf}/c
 
 # Define bind port used by Glance and its public endpoint
 prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}';
+'contents/DEFAULT/bind_host' = OS_GLANCE_CONTROLLER_HOST;
 'contents/DEFAULT/bind_port' = OS_GLANCE_CONTROLLER_PORT;
 'contents/DEFAULT/public_endpoint' = format('https://%s:%s', OS_GLANCE_PUBLIC_HOST, OS_GLANCE_PUBLIC_PORT);

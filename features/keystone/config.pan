@@ -47,9 +47,15 @@ requied = no
 variable OS_KEYSTONE_FEDERATION_OIDC_PARAMS ?= undef;
 
 
+# Include policy file if OS_KEYSTONE_POLICY is defined
+include 'components/filecopy/config';
+'/software/components/filecopy/services' = openstack_load_policy('keystone', OS_KEYSTONE_POLICY);
+
+
 include 'features/keystone/rpms';
 
 #  httpd configuration
+# httpd is used instead of uwsgi because federation identity requires mod_openidc
 include 'features/httpd/openstack/config';
 include 'features/keystone/wsgi/config';
 
@@ -70,7 +76,6 @@ bind '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}/con
 # [DEFAULT] section
 'contents/DEFAULT' = openstack_load_config('features/openstack/base');
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
-'contents/DEFAULT' = openstack_load_ssl_config( OS_KEYSTONE_CONTROLLER_PROTOCOL == 'https' );
 'contents/DEFAULT/admin_token' ?= OS_ADMIN_TOKEN;
 # Remove unsupported parameters
 'contents/DEFAULT/auth_strategy' = null;
@@ -117,8 +122,8 @@ bind '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}/con
 'contents/federation' = if ( is_defined(OS_KEYSTONE_FEDERATION_OIDC_PARAMS) && is_defined(OS_HORIZON_PUBLIC_NAMES)) {
     SELF['trusted_dashboard'] = list();
     foreach (host; public; OS_HORIZON_PUBLIC_NAMES) {
-        # panlint disable=PP001
         SELF['trusted_dashboard'][length(SELF['trusted_dashboard'])] = format(
+            # panlint disable=PP001
             'https://%s%s/auth/websso/',
             public, OS_HORIZON_ROOT_URL
         );
@@ -145,3 +150,10 @@ bind '/software/components/metaconfig/services/{/etc/keystone/keystone.conf}/con
 
 # Configure identity backend
 include 'features/keystone/identity/' + OS_KEYSTONE_IDENTITY_DRIVER;
+
+
+#########################################
+# Configure SSL proxy if SSL is enabled #
+#########################################
+include if ( OS_KEYSTONE_CONTROLLER_PROTOCOL == 'https' ) 'features/keystone/nginx/config';
+
