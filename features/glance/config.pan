@@ -45,6 +45,16 @@ variable OS_GLANCE_MULTIPLE_LOCATIONS = {
     };
 };
 
+variable OS_GLANCE_API_PROCESSES ?= 8;
+variable OS_GLANCE_GROUP ?= OS_GLANCE_USERNAME;
+variable OS_GLANCE_LOG_DIR ?= '/var/log/glance';
+
+
+# Include policy file if OS_GLANCE_POLICY is defined
+include 'components/filecopy/config';
+'/software/components/filecopy/services' = openstack_load_policy('glance', OS_GLANCE_POLICY);
+
+
 # Add Glance bae RPMs
 include 'features/glance/rpms';
 
@@ -52,6 +62,7 @@ include 'features/glance/rpms';
 include 'components/systemd/config';
 prefix '/software/components/systemd/unit';
 'openstack-glance-api/startstop' = true;
+'openstack-glance-api/state' = "disabled";
 
 
 #######################################
@@ -72,7 +83,6 @@ prefix '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}';
 'module' = 'tiny';
 'convert/joincomma' = true;
 'convert/truefalse' = true;
-'daemons/openstack-glance-api' = 'restart';
 # Restart memcached to ensure considtency with service configuration changes
 'daemons/memcached' = 'restart';
 bind '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}/contents' = openstack_glance_api_config;
@@ -110,6 +120,10 @@ bind '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}/con
 # [oslo_messaging_notifications] section
 'contents/oslo_messaging_notifications' = openstack_load_config('features/oslo_messaging/notifications');
 
+# [oslo_messaging_rabbit] section
+'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/openstack/client/base');
+'contents/oslo_messaging_rabbit/heartbeat_in_pthread' = false;
+
 # [taskflow_executor] section
 'contents/taskflow_executor/max_workers' = to_long(OS_GLANCE_WORKERS_NUM * 1.2);
 
@@ -118,6 +132,12 @@ bind '/software/components/metaconfig/services/{/etc/glance/glance-api.conf}/con
 # Configure backends #
 ######################
 include 'features/glance/store/config';
+
+
+###################
+# Configure uSWGI #
+###################
+include 'features/glance/uwsgi/config';
 
 
 #########################################

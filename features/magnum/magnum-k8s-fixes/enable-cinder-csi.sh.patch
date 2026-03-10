@@ -1,0 +1,83 @@
+--- enable-cinder-csi.sh.original	2024-06-25 17:06:09.379005593 +0200
++++ enable-cinder-csi.sh	2024-07-05 15:10:25.648732433 +0200
+@@ -233,7 +233,7 @@
+         node-role.kubernetes.io/master: ""
+       containers:
+         - name: csi-attacher
+-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-attacher:${CSI_ATTACHER_TAG}
++          image: ${CONTAINER_INFRA_PREFIX:-registry.k8s.io/sig-storage/}csi-attacher:${CSI_ATTACHER_TAG}
+           args:
+             - "--csi-address=\$(ADDRESS)"
+             - "--timeout=3m"
+@@ -249,7 +249,7 @@
+             - name: socket-dir
+               mountPath: /var/lib/csi/sockets/pluginproxy/
+         - name: csi-provisioner
+-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-provisioner:${CSI_PROVISIONER_TAG}
++          image: ${CONTAINER_INFRA_PREFIX:-registry.k8s.io/sig-storage/}csi-provisioner:${CSI_PROVISIONER_TAG}
+           args:
+             - "--csi-address=\$(ADDRESS)"
+             - "--timeout=3m"
+@@ -268,7 +268,7 @@
+             - name: socket-dir
+               mountPath: /var/lib/csi/sockets/pluginproxy/
+         - name: csi-snapshotter
+-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-snapshotter:${CSI_SNAPSHOTTER_TAG}
++          image: ${CONTAINER_INFRA_PREFIX:-registry.k8s.io/sig-storage/}csi-snapshotter:${CSI_SNAPSHOTTER_TAG}
+           args:
+             - "--csi-address=\$(ADDRESS)"
+             - "--timeout=3m"
+@@ -285,7 +285,7 @@
+             - mountPath: /var/lib/csi/sockets/pluginproxy/
+               name: socket-dir
+         - name: csi-resizer
+-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-resizer:${CSI_RESIZER_TAG}
++          image: ${CONTAINER_INFRA_PREFIX:-registry.k8s.io/sig-storage/}csi-resizer:${CSI_RESIZER_TAG}
+           args:
+             - "--csi-address=\$(ADDRESS)"
+             - "--timeout=3m"
+@@ -302,7 +302,7 @@
+             - name: socket-dir
+               mountPath: /var/lib/csi/sockets/pluginproxy/
+         - name: liveness-probe
+-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
++          image: ${CONTAINER_INFRA_PREFIX:-registry.k8s.io/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
+           args:
+             - "--csi-address=\$(ADDRESS)"
+           resources:
+@@ -315,7 +315,7 @@
+             - mountPath: /var/lib/csi/sockets/pluginproxy/
+               name: socket-dir
+         - name: cinder-csi-plugin
+-          image: ${CONTAINER_INFRA_PREFIX:-docker.io/k8scloudprovider/}cinder-csi-plugin:${CINDER_CSI_PLUGIN_TAG}
++          image: ${CONTAINER_INFRA_PREFIX:-registry.k8s.io/provider-os/}cinder-csi-plugin:${CINDER_CSI_PLUGIN_TAG}
+           args:
+             - /bin/cinder-csi-plugin
+             - "--endpoint=\$(CSI_ENDPOINT)"
+@@ -416,7 +416,7 @@
+       hostNetwork: true
+       containers:
+         - name: node-driver-registrar
+-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-node-driver-registrar:${CSI_NODE_DRIVER_REGISTRAR_TAG}
++          image: ${CONTAINER_INFRA_PREFIX:-registry.k8s.io/sig-storage/}csi-node-driver-registrar:${CSI_NODE_DRIVER_REGISTRAR_TAG}
+           args:
+             - "--csi-address=\$(ADDRESS)"
+             - "--kubelet-registration-path=\$(DRIVER_REG_SOCK_PATH)"
+@@ -436,7 +436,7 @@
+             - name: registration-dir
+               mountPath: /registration
+         - name: liveness-probe
+-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
++          image: ${CONTAINER_INFRA_PREFIX:-registry.k8s.io/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
+           args:
+             - --csi-address=/csi/csi.sock
+           resources:
+@@ -451,7 +451,7 @@
+             capabilities:
+               add: ["SYS_ADMIN"]
+             allowPrivilegeEscalation: true
+-          image: ${CONTAINER_INFRA_PREFIX:-docker.io/k8scloudprovider/}cinder-csi-plugin:${CINDER_CSI_PLUGIN_TAG}
++          image: ${CONTAINER_INFRA_PREFIX:-registry.k8s.io/provider-os/}cinder-csi-plugin:${CINDER_CSI_PLUGIN_TAG}
+           args:
+             - /bin/cinder-csi-plugin
+             - "--endpoint=\$(CSI_ENDPOINT)"

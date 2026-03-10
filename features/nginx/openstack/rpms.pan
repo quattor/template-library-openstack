@@ -1,13 +1,15 @@
 unique template features/nginx/openstack/rpms;
 
-variable OS_NGINX_VERSION ?= "1.22";
+variable OS_NGINX_VERSION ?= "1.24";
 
+include 'components/spma/config';
 '/software/components/spma/modules' = true;
 
 '/software/modules' = {
-    SELF['nginx'] = nlist('stream', OS_NGINX_VERSION,
-                          'enable', true
-                          );
+    SELF['nginx'] = dict(
+        'stream', OS_NGINX_VERSION,
+        'enable', true,
+    );
     SELF;
 };
 

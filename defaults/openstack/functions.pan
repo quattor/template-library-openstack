@@ -120,8 +120,8 @@ function openstack_add_component_dependency = {
 
 @documentation {
 
-This function returns the value receive in argument if it is defined, null
-otherwise. It is a helper for assigning optional values to the schema.
+    This function returns the value received in argument if it is defined, null
+    otherwise. It is a helper for assigning optional values to the schema.
 
 }
 function openstack_add_if_defined = {
@@ -136,4 +136,36 @@ function openstack_add_if_defined = {
     } else {
         null;
     };
+};
+
+
+@documentation {
+
+    This function returns a filecopy/services entry to load the policy file passed as
+    argument, after checking it as a valid extension
+
+    Arguments:
+    - Name of the service the policy applies to (must match a directory under /etc on the target server)
+    - File path containing the policy source, relative to the current loadpath
+}
+function openstack_load_policy = {
+    if ( ARGC != 2 ) {
+        error('openstack_load_policy usage: openstack_load_policy(service, policy_file)');
+    };
+    service = ARGV[0];
+    policy_source = ARGV[1];
+    if ( is_defined(policy_source) ) {
+        if ( !match(policy_source, '.*\.yaml$') ) {
+            error('policy_source must be a file name with the extension .yaml');
+        };
+        policy_file = format('/etc/%s/policy.yaml', service);
+        SELF[escape(policy_file)] = dict(
+            'config', file_contents(policy_source),
+            'owner', 'root',
+            'perms', '0644',
+            'backup', true,
+        );
+    };
+
+    SELF;
 };

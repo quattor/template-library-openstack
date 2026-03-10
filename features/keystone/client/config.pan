@@ -16,7 +16,7 @@ structure template features/keystone/client/config;
 'www_authenticate_uri' = format(
     '%s://%s:%S/%s',
     OS_KEYSTONE_CONTROLLER_PROTOCOL,
-    OS_KEYSTONE_PUBLIC_CONTROLLER_HOST,
-    OS_KEYSTONE_PUBLIC_CONTROLLER_PORT,
+    OS_KEYSTONE_PUBLIC_HOST,
+    OS_KEYSTONE_PUBLIC_STANDARD_PORT,
     OS_KEYSTONE_VERSION,
 );

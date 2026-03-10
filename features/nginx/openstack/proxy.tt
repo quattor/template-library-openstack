@@ -1,11 +1,10 @@
 server {
-  listen        [% bind_port %] ssl;
-  listen       [::]:[% bind_port %];
+  listen        *:[% bind_port %] ssl;
+  listen        [::]:[% bind_port %] ssl;
   server_name   [% server_name %];
   access_log   /var/log/nginx/[% service %].access.log  combined;
   error_log   /var/log/nginx/[% service %].error.log  warn;
 
-  ssl on;
   ssl_protocols TLSv1.2 TLSv1.3;
   ssl_certificate      [% ssl.cert_file %];
   ssl_certificate_key  [% ssl.key_file %];
@@ -13,11 +12,21 @@ server {
   ssl_session_timeout 10m;
   client_max_body_size 0;
 
+  [%- IF http_https_redirect %]
+  # If they come here using HTTP (statut=497), bounce them to the correct scheme (https)
+  error_page 497 https://$server_name:$server_port$request_uri;
+  [%- END %]
+
   location / {
+    proxy_buffers           [% proxy_buffers_number %] [% proxy_buffers_size %];
     proxy_pass              http://[% proxy_host %]:[% proxy_port %];
     proxy_set_header        X-Real-IP $remote_addr;
     proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header        X-Forwarded-Proto https;
     proxy_set_header        Host $http_host;
+[%- IF websocket %]
+    proxy_set_header        Upgrade $http_upgrade;
+    proxy_set_header        Connection "Upgrade";
+[%- END %]
   }
 }

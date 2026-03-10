@@ -22,6 +22,13 @@ type openstack_heat_defaults = {
 };
 
 @documentation {
+    [heat_api] section for Heat
+};
+type openstack_heat_api_config = {
+    'bind_port' ? type_port = 8004
+};
+
+@documentation {
     list of Heat configuration sections
 }
 type openstack_heat_config = {
@@ -29,6 +36,7 @@ type openstack_heat_config = {
     'clients_keystone' : openstack_clients_keystone
     'database' : openstack_database
     'ec2authtoken' ? openstack_ec2authtoken
+    'heat_api' ? openstack_heat_api_config
     'keystone_authtoken' : openstack_keystone_authtoken
     'oslo_messaging_notifications' ? openstack_oslo_messaging_notifications
     'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit

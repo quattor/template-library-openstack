@@ -28,6 +28,7 @@ type openstack_DEFAULTS = {
     'log_file' ? string
     'my_ip' ? type_ip
     'notifications' ? string
+    'rpc_response_timeout' : long = 120
     'transport_url' : type_hostURI
 };
 
@@ -103,11 +104,18 @@ type openstack_keystone_memcache = {
 }
 type openstack_nginx_proxy_config = {
     'bind_port' : type_port
-    'proxy_host' : type_hostname
+    # http_https_redirect forwards a plain http request received on a ssl port to https
+    # Normally not needed
+    'http_https_redirect': boolean = false
+    'proxy_buffers_number' : long = 16
+    'proxy_buffers_size' : long = 65535
+    'proxy_host' : type_hostname = '127.0.0.1'
     'proxy_port' : type_port
     'server_name' : type_hostname
     'service' : string
     'ssl' : openstack_httpd_ssl_config
+    # Set to true if proxying websocket connections where connection must not be closed
+    'websocket' : boolean = false
 };
 
 
@@ -136,6 +144,9 @@ type openstack_oslo_messaging_notifications = {
     The configuration options in the oslo_messaging_rabbit section
 }
 type openstack_oslo_messaging_rabbit = {
+    'heartbeat_in_pthread' ? boolean
+    'heartbeat_timeout_threshold' : long = 120
+    'kombu_missing_consumer_retry_timeout' : long = 120
     'rabbit_host' ? type_hostname
     'rabbit_hosts' ? string # with match('*:*')
     'rabbit_userid' ? string
@@ -173,4 +184,21 @@ type openstack_trustee = {
     'username' : string
     'user_domain_id' ? string
 };
+
+@documentation {
+    Configuration for a uwsgi application
+}
+type openstack_uwsgi_application_config = {
+    'bind_host' : type_hostname = '0.0.0.0'
+    'bind_port' : type_port
+    'buffer_size' ? long(256..)
+    'config_files' ? absolute_file_path[]
+    'group' : string
+    'log_file' : absolute_file_path
+    'processes' : long(1..)
+    'threads' ? long(1..)
+    'user' : string
+    'wsgi_file' : absolute_file_path
+};
+
 

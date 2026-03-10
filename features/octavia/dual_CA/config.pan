@@ -14,11 +14,13 @@ include 'components/metaconfig/config';
 # Create CA creation script #
 #############################
 
-prefix '/software/components/filecopy/services/{/usr/share/templates/quattor/metaconfig/openstack/create_dual_intermediate_CA.tt}';
+prefix '/software/components/filecopy/services';
+prefix '{/usr/share/templates/quattor/metaconfig/openstack/create_dual_intermediate_CA.tt}';
 'config' = file_contents('features/octavia/dual_CA/create_dual_intermediate_CA.sh.tt');
 'perms' = '0644';
 
-prefix '/software/components/metaconfig/services/{/root/octavia_ca/create_dual_intermediate_CA.sh}';
+prefix '/software/components/metaconfig/services';
+prefix '{/root/octavia_ca/create_dual_intermediate_CA.sh}';
 'module' = 'openstack/create_dual_intermediate_CA';
 'convert/truefalse' = true;
 'convert/joincomma' = true;
@@ -37,7 +39,8 @@ prefix '/software/components/filecopy/services/{/root/octavia_ca/priv_key_pwd}';
 # Create openssl.cnf used by the creation script #
 ##################################################
 
-prefix '/software/components/filecopy/services/{/usr/share/templates/quattor/metaconfig/openstack/openssl.cnf.tt}';
+prefix '/software/components/filecopy';
+prefix '{/usr/share/templates/quattor/metaconfig/openstack/openssl.cnf.tt}';
 'config' = file_contents('features/octavia/dual_CA/openssl.cnf.tt');
 'perms' = '0644';
 
@@ -47,7 +50,9 @@ prefix '/software/components/metaconfig/services/{/root/octavia_ca/openssl.cnf}'
 'convert/joincomma' = true;
 'mode' = 0600;
 bind '/software/components/metaconfig/services/{/root/octavia_ca/openssl.cnf}/contents' = octavia_ca_parameters_config;
-'contents' = value('/software/components/metaconfig/services/{/root/octavia_ca/create_dual_intermediate_CA.sh}/contents');
+'contents' = {
+    value('/software/components/metaconfig/services/{/root/octavia_ca/create_dual_intermediate_CA.sh}/contents');
+};
 
 
 #############################################################
@@ -56,11 +61,11 @@ bind '/software/components/metaconfig/services/{/root/octavia_ca/openssl.cnf}/co
 include 'components/dirperm/config';
 prefix '/software/components/dirperm';
 'paths' = {
-  SELF[length(SELF)] = dict(
-    'path', OS_OCTAVIA_CA_CERT_DIR,
-    'owner', 'octavia:octavia',
-    'type', 'd',
-    'perm', '0755',
-  );
-  SELF;
+    SELF[length(SELF)] = dict(
+        'path', OS_OCTAVIA_CA_CERT_DIR,
+        'owner', format('%s:%s', OS_OCTAVIA_USERNAME, OS_OCTAVIA_GROUP),
+        'type', 'd',
+        'perm', '0755',
+    );
+    SELF;
 };

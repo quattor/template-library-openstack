@@ -15,3 +15,6 @@ include 'components/filecopy/config';
 prefix '/software/components/filecopy/services/{/usr/share/templates/quattor/metaconfig/openstack/nginx-proxy.tt}';
 'config' = file_contents('features/nginx/openstack/proxy.tt');
 'perms' = '0644';
+
+# If ACME protocol is enabled, configure a VH to handle port 80
+include if ( is_defined(OS_SSL_ACME_CHALLENGE_URL) ) 'features/nginx/openstack/port_80';

@@ -1,0 +1,30 @@
+--- /usr/lib/python3.9/site-packages/magnum/drivers/common/templates/kubernetes/fragments/enable-auto-scaling.sh.original       2024-06-25 17:20:49.122542315 +0200
++++ /usr/lib/python3.9/site-packages/magnum/drivers/common/templates/kubernetes/fragments/enable-auto-scaling.sh        2024-06-26 09:12:01.252586815 +0200
+@@ -38,6 +38,9 @@
+     resources: ["endpoints"]
+     resourceNames: ["cluster-autoscaler"]
+     verbs: ["get", "update", "patch", "delete"]
++  - apiGroups: [""]
++    resources: ["namespaces"]
++    verbs: ["get", "list"]
+   # accessing & modifying cluster state (nodes & pods)
+   - apiGroups: [""]
+     resources: ["nodes"]
+@@ -65,7 +68,7 @@
+     resources: ["poddisruptionbudgets"]
+     verbs: ["get", "list", "watch"]
+   - apiGroups: ["storage.k8s.io"]
+-    resources: ["storageclasses", "csinodes"]
++    resources: ["storageclasses", "csinodes", "csidrivers", "csistoragecapacities"]
+     verbs: ["get", "list", "watch"]
+   # misc access
+   - apiGroups: [""]
+@@ -136,7 +139,7 @@
+       serviceAccountName: cluster-autoscaler-account
+       containers:
+         - name: cluster-autoscaler
+-          image: ${_docker_ca_prefix}cluster-autoscaler:${AUTOSCALER_TAG}
++          image: registry.k8s.io/autoscaling/cluster-autoscaler:${AUTOSCALER_TAG}
+           imagePullPolicy: Always
+           command:
+             - ./cluster-autoscaler

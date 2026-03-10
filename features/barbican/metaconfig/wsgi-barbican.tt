@@ -7,7 +7,7 @@ Listen [% port %]
 <VirtualHost *:[% vhost.port %]>
     WSGIDaemonProcess [% vhost.processgroup %] processes=2 threads=8 user=barbican group=barbican display-name=%{GROUP}
     WSGIProcessGroup [% vhost.processgroup %]
-    WSGIScriptAlias / [% vhost.script %]
+    WSGIScriptAlias / [% vhost.script_path %]/[% vhost.script_name %]
     WSGIApplicationGroup %{GLOBAL}
     WSGIPassAuthorization On
     <IfVersion >= 2.4>
@@ -23,7 +23,7 @@ Listen [% port %]
     ErrorLog /var/log/httpd//barbican_wsgi_main_error_ssl.log
     CustomLog /var/log/httpd/barbican_wsgi_main_access_ssl.log combined
 
-    <Directory /usr/lib/python3.6/site-packages/barbican/api>
+    <Directory [% vhost.script_path %]>
         <IfVersion >= 2.4>
             Require all granted
         </IfVersion>

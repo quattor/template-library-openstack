@@ -17,6 +17,11 @@ prefix '/software/components/systemd/unit';
 
 include 'components/metaconfig/config';
 
+# Since Antelope, linuxbridge-agent plugin is considered experimental as it is
+# not well maintained. Must be enabled explicitely.
+prefix '/software/components/metaconfig/services/{/etc/neutron/neutron.conf}';
+'contents/experimental/linuxbridge' = true;
+
 # Configure Netfilter for linuxbridge-agent
 # Do not take any special action in case of changes as they are not expected to happen
 # and taking a change into account basically requires a reboot

@@ -76,6 +76,7 @@ type openstack_octavia_config = {
     'keystone_authtoken' : openstack_keystone_authtoken
     'oslo_messaging' : openstack_oslo_messaging
     'oslo_messaging_notifications' : openstack_oslo_messaging_notifications
+    'oslo_messaging_rabbit' ? openstack_oslo_messaging_rabbit
     'service_auth' : openstack_keystone_authtoken
 };
 

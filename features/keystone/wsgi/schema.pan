@@ -1,6 +1,6 @@
 declaration template features/keystone/wsgi/schema;
 
-include 'types/openstack/core';
+include 'types/openstack/httpd';
 
 
 type openstack_keystone_httpd_oidc_provider = {
@@ -16,17 +16,4 @@ type openstack_keystone_httpd_oidc_provider = {
 
 type openstack_keystone_httpd_oidc = {
     'oidc' : openstack_keystone_httpd_oidc_provider{}
-};
-
-type openstack_keystone_httpd_vhost = {
-    'port' : type_port
-    'processgroup' : string
-    'script' : absolute_file_path
-    'ssl' : openstack_httpd_ssl_config
-};
-
-type openstack_keystone_httpd_config = {
-    'listen' : type_port[]
-    'oidc_enabled' : boolean = false
-    'vhosts' : openstack_keystone_httpd_vhost[]
 };

@@ -1,0 +1,22 @@
+[uwsgi]
+uid = [% user %]
+gid = [% group %]
+socket = [% bind_host %]:[% bind_port %]
+protocol = http
+processes = [% processes %]
+lazy = true
+vacuum = true
+no-default-app = true
+memory-report = true
+plugins = python3
+paste = config:[% wsgi_file %]
+touch-reload = [% wsgi_file %]
+[%- IF config_files %]
+[%- FOREACH file IN config_files %]
+touch-reload = [% file %]
+[%- END %]
+[%- END %]
+add-header = Connection: close
+[%- IF buffer_size %]
+buffer-size = [% buffer_size %]
+[%- END %]

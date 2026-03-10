@@ -2,6 +2,11 @@ unique template features/barbican/config;
 
 variable OS_NODE_SERVICES = append('barbican');
 
+final variable OS_BARBICAN_API_PROCESSES ?= 8;
+final variable OS_BARBICAN_LOG_DIR ?= '/var/log/barbican';
+final variable OS_BARBICAN_GROUP ?= OS_BARBICAN_USERNAME;
+
+
 # Load some useful functions
 include 'defaults/openstack/functions';
 
@@ -11,11 +16,13 @@ include 'types/openstack/barbican';
 # Include general openstack variables
 include 'defaults/openstack/config';
 
+# Include policy file if OS_BARBICAN_POLICY is defined
+include 'components/filecopy/config';
+'/software/components/filecopy/services' = openstack_load_policy('barbican', OS_BARBICAN_POLICY);
+
+
 include 'features/barbican/rpms';
 
-include 'components/systemd/config';
-prefix '/software/components/systemd/unit';
-'httpd/startstop' = true;
 
 ###################################
 # Configuration file for Barbican #
@@ -26,7 +33,6 @@ prefix '/software/components/metaconfig/services/{/etc/barbican/barbican.conf}';
 'module' = 'tiny';
 'convert/joincomma' = true;
 'convert/truefalse' = true;
-'daemons/httpd' = 'restart';
 # Restart memcached to ensure considtency with service configuration changes
 'daemons/memcached' = 'restart';
 bind '/software/components/metaconfig/services/{/etc/barbican/barbican.conf}/contents' = openstack_barbican_config;
@@ -35,37 +41,41 @@ bind '/software/components/metaconfig/services/{/etc/barbican/barbican.conf}/con
 # [DEFAULT] section
 'contents/DEFAULT' = openstack_load_config('features/openstack/base');
 'contents/DEFAULT' = openstack_load_config('features/openstack/logging/' + OS_LOGGING_TYPE);
-'contents/DEFAULT' = openstack_load_ssl_config( OS_BARBICAN_PROTOCOL == 'https' );
 'contents/DEFAULT/my_ip' = PRIMARY_IP;
 'contents/DEFAULT/log_file' = 'barbican-api.log';
-'contents/DEFAULT/host_href' = format('%s://%s:%s', OS_BARBICAN_PROTOCOL, OS_BARBICAN_HOST, OS_BARBICAN_PORT);
+'contents/DEFAULT/host_href' = format(
+    '%s://%s:%s',
+    OS_BARBICAN_PROTOCOL,
+    OS_BARBICAN_PUBLIC_HOST,
+    if ( is_defined(OS_BARBICAN_PUBLIC_PORT) ) OS_BARBICAN_PUBLIC_PORT else OS_BARBICAN_CONTROLLER_PORT,
+);
 'contents/DEFAULT/log_dir' = '/var/log/barbican';
-'contents/DEFAULT/sql_connection' = format('mysql+pymysql://%s:%s@%s/barbican', OS_BARBICAN_DB_USERNAME, OS_BARBICAN_DB_PASSWORD, OS_BARBICAN_DB_HOST);
+'contents/DEFAULT/rpc_response_timeout' = 120;
+'contents/DEFAULT/sql_connection' = format(
+    'mysql+pymysql://%s:%s@%s/barbican',
+    OS_BARBICAN_DB_USERNAME,
+    OS_BARBICAN_DB_PASSWORD,
+    OS_BARBICAN_DB_HOST,
+);
+'contents/DEFAULT/wsgi_default_pool_size' = OS_BARBICAN_WSGI_POOL_SIZE;
 
 # [keystone_authtoken] section
 'contents/keystone_authtoken' = openstack_load_config(OS_AUTH_CLIENT_CONFIG);
 'contents/keystone_authtoken/username' = OS_BARBICAN_USERNAME;
 'contents/keystone_authtoken/password' = OS_BARBICAN_PASSWORD;
 
+#[oslo_messaging_rabbit] section
+'contents/oslo_messaging_rabbit' = openstack_load_config('features/rabbitmq/openstack/client/base');
+'contents/oslo_messaging_rabbit/heartbeat_in_pthread' = false;
+'contents/oslo_messaging_rabbit/kombu_missing_consumer_retry_timeout' = 120;
 
-# ############
-# httpd conf #
-# ############
+###################
+# Configure uSWGI #
+###################
+include 'features/barbican/uwsgi/config';
 
-prefix '/software/components/metaconfig/services/{/etc/httpd/conf.d/wsgi-barbican.conf}';
-'module' = 'openstack/wsgi-barbican';
-'daemons/httpd' = 'restart';
-'contents/listen' = '9311';
 
-'contents/vhosts/0/port' = 9311;
-'contents/vhosts/0/processgroup' = 'barbican-api';
-'contents/vhosts/0/script' = ' /usr/lib/python3.6/site-packages/barbican/api/app.wsgi';
-'contents/vhosts/0/ssl' = openstack_load_ssl_config( OS_BARBICAN_PROTOCOL == 'https' );
-
-# Load TT file to configure Barbican virtual host
-# Run metaconfig in case the TT file was modified and configuration must be regenerated
-include 'components/filecopy/config';
-'/software/components/filecopy/dependencies/post' = openstack_add_component_dependency('metaconfig');
-prefix '/software/components/filecopy/services/{/usr/share/templates/quattor/metaconfig/openstack/wsgi-barbican.tt}';
-'config' = file_contents('features/barbican/metaconfig/wsgi-barbican.tt');
-'perms' = '0644';
+#########################################
+# Configure SSL proxy if SSL is enabled #
+#########################################
+include if ( OS_BARBICAN_PROTOCOL == 'https' ) 'features/barbican/nginx/config';
